@@ -1,0 +1,15 @@
+[package]
+name = "aldaron"
+version = "0.1.0"
+authors = ["jeron <deadbeef.jal@gmail.com>"]
+
+[lib]
+name = "aldaron"
+path = "src/aldaron/lib.rs"
+
+[dependencies]
+libc = "0.2.0"
+
+[[bin]]
+name = "demo"
+path = "src/demo/main.rs"
