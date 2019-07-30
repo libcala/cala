@@ -1,6 +1,6 @@
-<p align="center">
-<img src="https://jeronaldaron.github.io/cala/icon.svg" alt="Cala" width="256px" height="256px">
-</p>
+<h1 align="center">
+<img src="https://aldarobot.plopgrizzly.com/cala/icon.svg" alt="Cala" width="256px" height="256px">
+</h1>
 
 ### Note
 Cala is a complete redesign of previous library [ADI](https://crates.io/crates/adi).  It is still in it's early stages.
@@ -16,20 +16,20 @@ Cala is a platform-agnostic system interface for hardware IO.  This means that e
 - Playing / recording audio (Linux)
 - Filesystem loading / saving ZIP files (Linux, Windows)
 - Game Controller - JoyStick (Linux)
-- Hardware acceleration - SIMD, GPU (NOT IMPLEMENTED YET)
-- Clock - Date, Time of day, Timer (NOT IMPLEMENTED YET)
-- GUI - Render, Mouse & Keyboard (NOT IMPLEMENTED YET)
+- Clock - Date, Time of day, Timer (All Platforms)
+- Graphics - Render and User Interface (Linux)
 - Camera - Webcam (NOT IMPLEMENTED YET)
+- Hardware acceleration - SIMD, GPU (NOT IMPLEMENTED YET)
 - Network - Bluetooth & Wifi Direct (NOT IMPLEMENTED YET)
 
 ## Getting Started
 - TODO
 
 ## Links
-- [Website](https://jeronaldaron.github.io/cala/)
+- [Website](https://aldarobot.github.io/cala/)
 - [Cargo](https://crates.io/crates/cala)
 - [Documentation](https://docs.rs/cala)
-- [Change Log](https://jeronaldaron.github.io/cala/CHANGELOG)
-- [Contributors](https://jeronaldaron.github.io/cala/CONTRIBUTORS)
-- [Code of Conduct](https://jeronaldaron.github.io/cala/CODEOFCONDUCT)
+- [Change Log](https://aldarobot.github.io/cala/CHANGELOG)
+- [Contributors](https://aldarobot.github.io/cala/CONTRIBUTORS)
+- [Code of Conduct](https://aldarobot.github.io/cala/CODEOFCONDUCT)
 - [Join Zulip Chat](https://plopgrizzly.zulipchat.com/join/pp13s6clnexk03tvlnrtjvi1/)

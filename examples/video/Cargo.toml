@@ -1,0 +1,14 @@
+[package]
+name = "video"
+version = "0.1.0"
+authors = ["Jeron Aldaron Lau <jeronlau@plopgrizzly.com>"]
+edition = "2018"
+build = "build.rs"
+
+[dependencies.cala]
+features = ["graphics"]
+path = "../../"
+
+[build-dependencies]
+# yeet = { path = "../../../yeet" }
+res = "0.3" # { path = "../../../res" }

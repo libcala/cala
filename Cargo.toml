@@ -1,21 +1,22 @@
 # Cala
 #
 # Copyright © 2017-2019 Jeron Aldaron Lau.
-# Dual-licensed under either the MIT License or the Boost Software License, Version 1.0.
-# (See accompanying file LICENSE_BSL.txt or copy at https://www.boost.org/LICENSE_1_0.txt
-#  and accompanying file LICENSE_MIT.txt or copy at https://opensource.org/licenses/MIT)
+# Dual-licensed under either the MIT License or the Boost Software License,
+# Version 1.0.  (See accompanying file LICENSE_BSL.txt or copy at
+# https://www.boost.org/LICENSE_1_0.txt and accompanying file LICENSE_MIT.txt or
+# copy at https://opensource.org/licenses/MIT)
 
 [package]
 name = "cala"
-version = "0.3.0"
-authors = ["Jeron Aldaron Lau <jeronaldaron@gmail.com>"]
+version = "0.4.0"
+authors = ["Jeron Aldaron Lau <jeronlau@plopgrizzly.com>"]
 edition = "2018"
 
 license = "MIT / BSL-1.0"
 description = "Cross-platform system interface for hardware IO."
 documentation = "https://docs.rs/cala"
-homepage = "https://jeronaldaron.github.io/cala/"
-repository = "https://github.com/JeronAldaron/cala"
+homepage = "https://aldarobot.plopgrizzly.com/cala"
+repository = "https://github.com/aldarobot/cala"
 readme = "README.md"
 keywords = ["device", "platform-agnostic", "cross-platform", "io", "gui"]
 categories = ["game-engines", "hardware-support", "multimedia", "os"]
@@ -26,18 +27,19 @@ wavy = {version = "0.1", optional = true} # audio
 stronghold = {version = "0.2", optional = true} # file
 serde = {version = "1.0", optional = true}
 stick = {version = "0.7", optional = true} # joystick / controller
-# barg = {path = "../barg", optional = true}
+barg = {version = "0.1", optional = true}
+chrono = {version = "0.4", optional = true} # clock
 
 [package.metadata.docs.rs]
-features = ["all"]
+all-features = true
+default-target = "x86_64-unknown-linux-gnu"
 
 [features]
-default = []
-all = ["user", "audio", "files", "controller",
-#"gui"
-]
 user = ["whoami"]
 audio = ["wavy"]
 files = ["stronghold", "serde"]
 controller = ["stick"]
-# gui = ["barg"]
+graphics = ["barg", "timer"]
+camera = []
+clock = ["chrono", "timer"]
+timer = []

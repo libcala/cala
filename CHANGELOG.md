@@ -2,11 +2,16 @@
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://free.plopgrizzly.com/semver/).
+and this project adheres to [Semantic Versioning](https://code.plopgrizzly.com/semver/).
 
 ## [Unreleased]
 ### TODO
 - Possibly redesign the controller API to be event based using a message queue.
+
+## [0.4.0] - 2019-07-07
+### Added
+- `graphics` feature and support for graphical user interfaces.
+- `clock` feature and support for getting date and time.
 
 ## [0.3.0] - 2019-05-23
 ### Added

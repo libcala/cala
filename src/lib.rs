@@ -1,5 +1,5 @@
 //! <p align="center">
-//! <img src="https://jeronaldaron.github.io/cala/icon.svg" alt="Cala" width="256px" height="256px">
+//! <img src="https://aldarobot.plopgrizzly.com/cala/icon.svg" alt="Cala" width="256px" height="256px">
 //! </p>
 //!
 //! ### Note
@@ -11,16 +11,16 @@
 //! Dive is a platform-agnostic system interface for hardware IO.  This means that eventually, Dive should support all of the different hardware that's connected to your computer.  Dive is designed so that it talks to the operating system to interface with the hardware, so no special permissions are needed for your application.
 //!
 //! ## Features
-//! * Targeted Platforms: Linux (includes Raspberry Pi), MacOS, Redox, Android, Windows, iOS, Web (WASM), Nintendo Switch, XBox, PlayStation, FreeBSD, others (Maybe FreeDOS for fun 😉️).
-//! * Getting user information (Linux, Windows, MacOS)
-//! * Playing / recording audio (Linux)
-//! * Filesystem loading / saving ZIP files (Linux, Windows)
-//! * Game Controller - JoyStick (Linux)
-//! * Hardware acceleration - SIMD, GPU (NOT IMPLEMENTED YET)
-//! * Clock - Date, Time of day, Timer (NOT IMPLEMENTED YET)
-//! * GUI - Render, Mouse & Keyboard (NOT IMPLEMENTED YET)
-//! * Camera - Webcam (NOT IMPLEMENTED YET)
-//! * Network - Bluetooth & Wifi Direct (NOT IMPLEMENTED YET)
+//! - Targeted Platforms: Linux (includes Raspberry Pi), MacOS, Redox, Android, Windows, iOS, Web (WASM), Nintendo Switch, XBox, PlayStation, FreeBSD, others (Maybe FreeDOS for fun 😉️).
+//! - Getting user information (Linux, Windows, MacOS)
+//! - Playing / recording audio (Linux)
+//! - Filesystem loading / saving ZIP files (Linux, Windows)
+//! - Game Controller - JoyStick (Linux)
+//! - Clock - Date, Time of day, Timer (All Platforms)
+//! - Graphics - Render and User Interface (Linux)
+//! - Camera - Webcam (NOT IMPLEMENTED YET)
+//! - Hardware acceleration - SIMD, GPU (NOT IMPLEMENTED YET)
+//! - Network - Bluetooth & Wifi Direct (NOT IMPLEMENTED YET)
 //!
 //! # Getting Started
 //! * TODO
@@ -31,11 +31,14 @@
 
 #![warn(missing_docs)]
 #![doc(
-    html_logo_url = "https://jeronaldaron.github.io/cala/icon.svg",
-    html_favicon_url = "https://jeronaldaron.github.io/cala/icon.svg"
+    html_logo_url = "https://aldarobot.plopgrizzly.com/cala/icon.svg",
+    html_favicon_url = "https://aldarobot.plopgrizzly.com/cala/icon.svg"
 )]
 
 mod run;
+
+#[cfg(feature = "timer")]
+mod timer;
 
 #[cfg(feature = "user")]
 pub mod user {
@@ -141,6 +144,47 @@ pub mod files {
     include!("internal/stronghold.rs");
 }
 
+#[cfg(feature = "graphics")]
+#[macro_use]
+pub mod graphics {
+    //! API for rendering graphics.  Enable with the `graphics` feature.
+    //!
+    //! # Getting Started
+    //! This API is designed to be high-level without sacrificing optimization.
+    //! Graphics are complicated though, so before you start, a few things need
+    //! to be defined.
+    //!
+    //! ## Shader
+    //! A Shader is a program that runs on the GPU for the purpose of drawing
+    //! Shapes.  When you make your program, start by creating a shader.
+    //! Shaders are built at compile time, so you'll need to make a build.rs and
+    //! depend on the [`res`](https://crates.io/crates/res) crate.  Calling
+    //! `generate()` in your build.rs will generate your shaders.
+    //!
+    //! ## Shape
+    //! A shape is a collection of vertices that when connected make a 2D or 3D
+    //! shape.  Shapes can only be used with one Shader because they may have
+    //! shader-specific additional information attached to them like color or
+    //! graphic coordinates.
+    //!
+    //! ## Instance
+    //! Shapes themselves can't be drawn, first you must make an Instance of the
+    //! Shape.  Instances can have position attached to them, and/or rotation
+    //! and size.
+    //!
+    //! # Example
+    //! ```rust
+    //! // TODO
+    //! ```
+
+    include!("internal/barg.rs");
+
+    pub use crate::timer::*;
+}
+
+#[cfg(feature = "clock")]
+pub mod clock;
+
 // Export all types to root.
 pub use run::Loop;
 
@@ -156,10 +200,20 @@ pub use controller::*;
 #[doc(hidden)]
 pub use audio::*;
 
+#[cfg(feature = "graphics")]
 #[doc(hidden)]
-pub use internal::init;
+pub use graphics::*;
+
+#[cfg(feature = "clock")]
+#[doc(hidden)]
+pub use clock::*;
+
+#[doc(hidden)]
+pub use internal::start;
 #[doc(hidden)]
 pub use run::Loop::*;
+
+pub use internal::delta;
 
 //mod audio;
 // mod dive;
@@ -192,44 +246,34 @@ mod internal;
 /// }
 /// ```
 #[macro_export]
-macro_rules! loop_init {
+macro_rules! init {
     ($home_loop: expr, $init_data: expr) => {
         fn main() {
-            cala::init();
+            let mut window_title = String::new();
+            let mut cap = true;
 
-            let mut current_loops: Vec<fn(&mut _) -> cala::Loop<_>> = vec![$home_loop];
+            let fallback = env!("CARGO_PKG_NAME");
 
-            let mut data = { $init_data };
-
-            'a: loop {
-                match current_loops[current_loops.len() - 1](&mut data) {
-                    cala::Exit => {
-                        break 'a;
+            for c in fallback.chars() {
+                match c {
+                    '.' | '-' | '_' => {
+                        window_title.push(' ');
+                        cap = true;
                     }
-                    cala::Continue => { /* do nothing */ }
-                    cala::Back => {
-                        if current_loops.pop().is_none() {
-                            break 'a;
+                    a => {
+                        if cap {
+                            cap = false;
+                            for i in a.to_uppercase() {
+                                window_title.push(i);
+                            }
+                        } else {
+                            window_title.push(a);
                         }
-                    }
-                    cala::Replace(loop_a) => {
-                        if current_loops.pop().is_none() {
-                            break 'a;
-                        }
-                        current_loops.push(loop_a);
-                    }
-                    cala::Append(loop_a) => {
-                        current_loops.push(loop_a);
-                    }
-                    cala::ReplaceWithBack(loop_a, loop_b) => {
-                        if current_loops.pop().is_none() {
-                            break 'a;
-                        }
-                        current_loops.push(loop_b);
-                        current_loops.push(loop_a);
                     }
                 }
             }
+
+            cala::start(window_title.as_str(), $home_loop, &|| $init_data);
         }
     };
 }
