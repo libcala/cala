@@ -7,7 +7,7 @@
 
 [package]
 name = "cala"
-version = "0.1.0"
+version = "0.2.0"
 authors = ["Jeron Aldaron Lau <jeronaldaron@gmail.com>"]
 edition = "2018"
 
@@ -25,3 +25,4 @@ whoami = "0.5" # user
 wavy = "0.1" # audio
 stronghold = "0.2" # file
 serde = "1.0"
+stick = "0.5" # joystick / controller

@@ -1,3 +1,2 @@
 # Contributors
-
-* [OxyDeadbeef](https://github.com/OxyDeadbeef)
+- [JeronAldaron](https://github.com/JeronAldaron)

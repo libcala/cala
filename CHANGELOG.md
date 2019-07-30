@@ -6,19 +6,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added
-- ...
-
 ### Removed
-- ...
-
 ### Changed
-- ...
-
 ### Fixed
-- ...
+
+## [0.2.0] - 2019-05-12
+### Added
+- Joystick / controller support with API for emulation (not complete yet).
 
 ## [0.1.0] - 2019-05-01
 ### Added
-- Getting user information (Linux, Windows, MacOS)
-- Playing / recording audio (Linux)
-- Filesystem loading / saving ZIP files (Linux, Windows)
+- Getting user information (Linux, Windows, MacOS).
+- Playing / recording audio (Linux).
+- Filesystem loading / saving ZIP files (Linux, Windows).

@@ -1,13 +1,21 @@
 use crate::user::*;
 use crate::audio::*;
+use crate::controller::*;
 
 /// The Dive Application Context.
 pub struct App<T> {
+    // User
     user: User,
+    // Audio
     mic: MicrophoneSystem,
     speaker: SpeakerSystem,
+    // Store
     file: T,
     changed: bool,
+    // Controller
+    controller_port: ControllerPort,
+    axis: [f32; 8],
+    btns: [bool; 16],
 }
 
 impl<T> App<T> {
@@ -19,6 +27,9 @@ impl<T> App<T> {
             speaker: SpeakerSystem::new(SampleRate::Normal).unwrap(),
             file,
             changed: false,
+            controller_port: ControllerPort::new(),
+            axis: [0.0; 8],
+            btns: [false; 16],
         }
     }
 
@@ -70,5 +81,113 @@ impl<T> App<T> {
     /// Play Audio.  Callback generates audio samples sent directly to speakers.
     pub fn play(&mut self, callback: &mut FnMut() -> AudioSample) {
         self.speaker.play(callback);
+    }
+
+    /// Return the number of controllers.
+    pub fn controller_update(&mut self) -> u16 {
+        self.controller_port.update()
+    }
+
+    /// Get the state of a controller from the requested controller layout.
+    pub fn controller_get(&mut self, id: u16, layout: &ControllerLayout) -> (&[f32], &[bool]) {
+        let mut state = self.controller_port.get(id);
+        let mut i_axis = 0;
+        let mut i_btns = 0;
+
+        for axis in 0..layout.axis.len() {
+            match layout.axis[axis] {
+                Axis::JoyXY => {
+                    // TODO: Fallback.
+                    let (x, y) = state.joy().unwrap_or((0.0, 0.0));
+                    self.axis[i_axis] = x;
+                    i_axis += 1;
+                    self.axis[i_axis] = y;
+                    i_axis += 1;
+                },
+                Axis::CamXY => {
+                    // TODO: Fallback.
+                    let (x, y) = state.cam().unwrap_or((0.0, 0.0));
+                    self.axis[i_axis] = x;
+                    i_axis += 1;
+                    self.axis[i_axis] = y;
+                    i_axis += 1;
+                },
+                Axis::Lrt => {
+                    // TODO: Fallback.
+//                    let (x, y) = state.lr().unwrap_or((0.0, 0.0));
+                    // TODO: Not supported yet.
+                    let (x, y) = (0.0, 0.0);
+                    self.axis[i_axis] = x;
+                    i_axis += 1;
+                    self.axis[i_axis] = y;
+                    i_axis += 1;
+                },
+                Axis::Pitch => {
+                    // TODO: Fallback.
+                    let x = state.pitch().unwrap_or(0.0);
+                    self.axis[i_axis] = x;
+                    i_axis += 1;
+                },
+                Axis::Yaw => {
+//                    let x = state.yaw().unwrap_or(0.0);
+                    // TODO: Not supported yet.
+                    self.axis[i_axis] = 0.0;
+                    i_axis += 1;
+                },
+            }
+        }
+
+        for btn in  0..layout.btns.len() {
+            match layout.btns[btn] {
+                Btns::Abxy => {
+                    self.btns[i_btns] = state.btn(Btn::A).unwrap_or(false);
+                    i_btns += 1;
+                    self.btns[i_btns] = state.btn(Btn::B).unwrap_or(false);
+                    i_btns += 1;
+                    self.btns[i_btns] = state.btn(Btn::X).unwrap_or(false);
+                    i_btns += 1;
+                    self.btns[i_btns] = state.btn(Btn::Y).unwrap_or(false);
+                    i_btns += 1;
+                },
+                Btns::Dpad => {
+                    self.btns[i_btns] = state.btn(Btn::Up).unwrap_or(false);
+                    i_btns += 1;
+                    self.btns[i_btns] = state.btn(Btn::Down).unwrap_or(false);
+                    i_btns += 1;
+                    self.btns[i_btns] = state.btn(Btn::Left).unwrap_or(false);
+                    i_btns += 1;
+                    self.btns[i_btns] = state.btn(Btn::Right).unwrap_or(false);
+                    i_btns += 1;
+                },
+                Btns::Quit => {
+                    self.btns[i_btns] = state.btn(Btn::E).unwrap_or(false);
+                    i_btns += 1;
+                },
+                Btns::Menu => {
+                    self.btns[i_btns] = state.btn(Btn::F).unwrap_or(false);
+                    i_btns += 1;
+                },
+                Btns::Wz => {
+                    self.btns[i_btns] = state.btn(Btn::W).unwrap_or(false);
+                    i_btns += 1;
+                    self.btns[i_btns] = state.btn(Btn::Z).unwrap_or(false);
+                    i_btns += 1;
+                },
+                Btns::Lr => {
+                    self.btns[i_btns] = state.btn(Btn::L).unwrap_or(false);
+                    i_btns += 1;
+                    self.btns[i_btns] = state.btn(Btn::R).unwrap_or(false);
+                    i_btns += 1;
+                },
+                Btns::Dc => {
+                    self.btns[i_btns] = state.btn(Btn::D).unwrap_or(false);
+                    i_btns += 1;
+                    self.btns[i_btns] = state.btn(Btn::C).unwrap_or(false);
+                    i_btns += 1;
+                }
+            }
+        }
+
+        (&self.axis[..i_axis], &self.btns[..i_btns])
     }
 }
