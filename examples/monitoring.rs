@@ -3,12 +3,12 @@
 use cala::*;
 
 use std::collections::VecDeque;
- 
+
 fn main() {
     let mut app = App::new(());
 
     let mut buffer = VecDeque::new();
- 
+
     loop {
         // Record some sound.
         app.record(&mut |_whichmic, l, r| {

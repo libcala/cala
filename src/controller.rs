@@ -1,5 +1,5 @@
-pub(crate) use stick::Port as ControllerPort;
 pub(crate) use stick::Btn;
+pub(crate) use stick::Port as ControllerPort;
 
 pub(crate) enum Axis {
     JoyXY,
@@ -65,7 +65,9 @@ impl ControllerLayout {
     /// Request an x & y axis for main joystick.
     pub fn joy(mut self, optional: bool) -> Self {
         // Don't do twice!
-        if self.joy.is_some() { return self; }
+        if self.joy.is_some() {
+            return self;
+        }
 
         self.joy = Some(optional);
         self.axis.push(Axis::JoyXY);
@@ -75,7 +77,9 @@ impl ControllerLayout {
     /// Request an x & y axis for camera (secondary) joystick.
     pub fn cam(mut self, optional: bool) -> Self {
         // Don't do twice!
-        if self.cam.is_some() { return self; }
+        if self.cam.is_some() {
+            return self;
+        }
 
         self.cam = Some(optional);
         self.axis.push(Axis::CamXY);
@@ -85,7 +89,9 @@ impl ControllerLayout {
     /// Request an x & y axis for camera (secondary) joystick.
     pub fn lrt(mut self, optional: bool) -> Self {
         // Don't do twice!
-        if self.lrt.is_some() { return self; }
+        if self.lrt.is_some() {
+            return self;
+        }
 
         self.cam = Some(optional);
         self.axis.push(Axis::Lrt);
@@ -95,7 +101,9 @@ impl ControllerLayout {
     /// Request an axis for pitch (stationary throttle).
     pub fn pitch(mut self, optional: bool) -> Self {
         // Don't do twice!
-        if self.pitch.is_some() { return self; }
+        if self.pitch.is_some() {
+            return self;
+        }
 
         self.pitch = Some(optional);
         self.axis.push(Axis::Pitch);
@@ -105,7 +113,9 @@ impl ControllerLayout {
     /// Request an axis for yaw (stationary throttle).
     pub fn yaw(mut self, optional: bool) -> Self {
         // Don't do twice!
-        if self.yaw.is_some() { return self; }
+        if self.yaw.is_some() {
+            return self;
+        }
 
         self.yaw = Some(optional);
         self.axis.push(Axis::Yaw);
@@ -114,7 +124,9 @@ impl ControllerLayout {
 
     /// Request ABXY buttons.
     pub fn abxy(mut self, optional: bool) -> Self {
-        if self.abxy.is_some() { return self; }
+        if self.abxy.is_some() {
+            return self;
+        }
 
         self.abxy = Some(optional);
         self.btns.push(Btns::Abxy);
@@ -123,7 +135,9 @@ impl ControllerLayout {
 
     /// Request arrow buttons.
     pub fn arrow(mut self, optional: bool) -> Self {
-        if self.dpad.is_some() { return self; }
+        if self.dpad.is_some() {
+            return self;
+        }
 
         self.dpad = Some(optional);
         self.btns.push(Btns::Dpad);
@@ -132,7 +146,9 @@ impl ControllerLayout {
 
     /// Request Back button.
     pub fn back(mut self, optional: bool) -> Self {
-        if self.quit.is_some() { return self; }
+        if self.quit.is_some() {
+            return self;
+        }
 
         self.quit = Some(optional);
         self.btns.push(Btns::Quit);
@@ -141,7 +157,9 @@ impl ControllerLayout {
 
     /// Request Menu button.
     pub fn menu(mut self, optional: bool) -> Self {
-        if self.menu.is_some() { return self; }
+        if self.menu.is_some() {
+            return self;
+        }
 
         self.menu = Some(optional);
         self.btns.push(Btns::Menu);
@@ -150,7 +168,9 @@ impl ControllerLayout {
 
     /// Request W & Z buttons.
     pub fn wz(mut self, optional: bool) -> Self {
-        if self.wz.is_some() { return self; }
+        if self.wz.is_some() {
+            return self;
+        }
 
         self.wz = Some(optional);
         self.btns.push(Btns::Wz);
@@ -159,7 +179,9 @@ impl ControllerLayout {
 
     /// Request D & C buttons (Push in joystick).
     pub fn dc(mut self, optional: bool) -> Self {
-        if self.cd.is_some() { return self; }
+        if self.cd.is_some() {
+            return self;
+        }
 
         self.cd = Some(optional);
         self.btns.push(Btns::Dc);
@@ -168,7 +190,9 @@ impl ControllerLayout {
 
     /// Request L & R buttons.
     pub fn lrb(mut self, optional: bool) -> Self {
-        if self.lrb.is_some() { return self; }
+        if self.lrb.is_some() {
+            return self;
+        }
 
         self.lrb = Some(optional);
         self.btns.push(Btns::Lr);

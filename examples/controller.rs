@@ -5,7 +5,7 @@ use cala::*;
 fn main() {
     let mut app = App::new(());
 
-    let layout = cala::ControllerLayout::new().joy(false).abxy(false);
+    let layout = cala::ControllerLayout::new().joy(false).lrt(false).abxy(false);
 
     loop {
         for id in 0..app.controller_update() {
