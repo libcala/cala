@@ -1,4 +1,22 @@
-![cala](https://raw.githubusercontent.com/Aldarobot/cala/stable/logo.png)
+<p align="center">
+  <img alt="Cala" src="https://raw.githubusercontent.com/Aldarobot/cala/v0.5.0/logo.svg">
+</p>
+<p align="center">
+  <a href="https://docs.rs/cala">
+    <img src="https://docs.rs/cala/badge.svg">
+  </a>
+  <a href="https://travis-ci.com/Aldarobot/cala">
+      <img src="https://api.travis-ci.com/Aldarobot/cala.svg?branch=stable" alt="Cala Build Status">
+  </a>
+  <a href="https://crates.io/crates/cala">
+      <img src="http://img.shields.io/crates/v/cala.svg?label=cala" alt = "cala on crates.io">
+  </a>
+  <a href="https://discord.gg/nXwF59K">
+    <img src="https://img.shields.io/badge/discord-join%20server-green.svg?style=flat-square" alt="Discord">
+  </a>
+  <br>
+  <strong><a href="https://aldarobot.github.io/cala/">Website</a> | <a href="https://aldarobot.github.io/cala/CHANGELOG">Changelog</a> | <a href=https://aldarobot.github.io/cala/CONTRIBUTORS>Contributors</a> | <a href=https://aldarobot.github.io/cala/CODEOFCONDUCT>Code of Conduct</a> </strong>
+</p>
 
 ### Note
 Cala is a complete redesign of previous library [ADI](https://crates.io/crates/adi).  It is still in it's early stages.
@@ -22,12 +40,3 @@ Cala is a platform-agnostic system interface for hardware IO.  This means that e
 
 ## Getting Started
 - TODO
-
-## Links
-- [Website](https://aldarobot.github.io/cala/)
-- [Cargo](https://crates.io/crates/cala)
-- [Documentation](https://docs.rs/cala)
-- [Change Log](https://aldarobot.github.io/cala/CHANGELOG)
-- [Contributors](https://aldarobot.github.io/cala/CONTRIBUTORS)
-- [Code of Conduct](https://aldarobot.github.io/cala/CODEOFCONDUCT)
-- [Join Zulip Chat](https://plopgrizzly.zulipchat.com/join/pp13s6clnexk03tvlnrtjvi1/)
