@@ -1,6 +1,4 @@
-<h1 align="center">
-<img src="https://aldarobot.plopgrizzly.com/cala/icon.svg" alt="Cala" width="256px" height="256px">
-</h1>
+![cala](https://raw.githubusercontent.com/Aldarobot/cala/master/logo.png)
 
 ### Note
 Cala is a complete redesign of previous library [ADI](https://crates.io/crates/adi).  It is still in it's early stages.

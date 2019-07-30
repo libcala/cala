@@ -6,9 +6,9 @@
 //! Cala is a complete redesign of previous library [ADI](https://crates.io/crates/adi).  It is still in it's early stages.
 //!
 //! # About
-//! Easily create cross-platform applications.  Some common tasks are not easily portable across different platforms, and this crate hopes to fix that.  That way you don't have to worry about how to port your GUI, audio, or bluetooth interface, etc. and can dive right in to building your application's content!
+//! Easily create cross-platform applications.  Some common tasks are not easily portable across different platforms, and this crate hopes to fix that.  That way you don't have to worry about how to port your GUI, audio, or bluetooth interface, etc.  and can get straight to building your application's content!
 //!
-//! Dive is a platform-agnostic system interface for hardware IO.  This means that eventually, Dive should support all of the different hardware that's connected to your computer.  Dive is designed so that it talks to the operating system to interface with the hardware, so no special permissions are needed for your application.
+//! Cala is a platform-agnostic system interface for hardware IO.  This means that eventually, Cala should support all of the different hardware that's connected to your computer.  Cala is designed so that it talks to the operating system to interface with the hardware, so no special permissions are needed for your application.
 //!
 //! ## Features
 //! - Targeted Platforms: Linux (includes Raspberry Pi), MacOS, Redox, Android, Windows, iOS, Web (WASM), Nintendo Switch, XBox, PlayStation, FreeBSD, others (Maybe FreeDOS for fun 😉️).

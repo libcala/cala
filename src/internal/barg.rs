@@ -3,7 +3,7 @@
 #[doc(hidden)]
 pub use barg::{ShaderBuilder};
 
-pub use barg::{ShapeBuilder, Transform, Graphic};
+pub use barg::{ShapeBuilder, Transform, Graphic, Key};
 
 /// **video** Load a generated shader from `res`.
 #[macro_export(self)] macro_rules! shader {
@@ -17,30 +17,13 @@ pub use barg::{ShapeBuilder, Transform, Graphic};
 pub struct Shader(usize);
 /// A shape.  Shapes are a list of indices into a `VertexList`.
 pub struct Shape(usize);
-/*/// A vertex list.  Vertex lists are a list of vertex positions, and associated
-/// data.  Associated data may refer to graphic coordinates and/or colors.
-pub struct VertexList(usize);*/
-
-/*enum VideoMsg {
-    Background{r:f32,g:f32,b:f32},
-    ShaderNew{builder:ShaderBuilder, index:usize},
-    ShaderOld{index:usize},
-//    ShapeNew{builder:ShapeBuilder<'_>, index:usize},
-    ShapeOld{index:usize},
-//    VertexListNew{vertices:Vec<f32>, dim: u8, gradient: u8, graphic_coords: u8, index:usize},
-//    VertexListOld{index:usize},
-}*/
 
 struct VideoIO {
     window: Box<barg::Window>,
-//    sender: Sender<VideoMsg>,
-//    recver: Receiver<VideoMsg>,
     shader: Vec<Option<barg::Shader>>,
     shadet: Vec<usize>,
     shapes: Vec<Option<barg::Shape>>,
     shapet: Vec<usize>,
-//    vertls: Vec<Option<barg::VertexList>>,
-//    vertlt: Vec<usize>,
 }
 
 static mut VIDEO_IO: FakeVideoIO = FakeVideoIO([0; std::mem::size_of::<VideoIO>()]);
@@ -55,30 +38,17 @@ impl Drop for Shader {
         let video_io = unsafe { &mut VIDEO_IO as *mut _ as *mut VideoIO };
 
         unsafe {
-//            (*video_io).sender.send(VideoMsg::ShaderOld{index:self.0}).unwrap();
             (*video_io).shadet.push(self.0);
             (*video_io).shader[self.0] = None;
         }
     }
 }
 
-/*impl Drop for VertexList {
-    fn drop(&mut self) {
-        let video_io = unsafe { &mut VIDEO_IO as *mut _ as *mut VideoIO };
-
-        unsafe {
-            (*video_io).sender.send(VideoMsg::VertexListOld{index:self.0}).unwrap();
-            (*video_io).vertlt.push(self.0);
-        }
-    }
-}*/
-
 impl Drop for Shape {
     fn drop(&mut self) {
         let video_io = unsafe { &mut VIDEO_IO as *mut _ as *mut VideoIO };
 
         unsafe {
-//            (*video_io).sender.send(VideoMsg::ShapeOld{index:self.0}).unwrap();
             (*video_io).shapet.push(self.0);
             (*video_io).shapes[self.0] = None;
         }
@@ -106,47 +76,12 @@ impl Shader {
                 (*video_io).shader[index] = Some(shader);
             }
 
-//            (*video_io).sender.send(VideoMsg::ShaderNew{builder, index}).unwrap();
-
             index
         };
 
         Shader(index)
     }
-
-/*    /// Add a shape that uses this shader.
-    pub fn add<'a>(&'a mut self) -> ShapeBuilder<'a> {
-        ShapeBuilder {
-            dimensions: 0,
-            vertices: Vec::new(),
-            ops: Vec::new(),
-            shader: self,
-        }
-
-//        Shape(0) // TODO
-    }*/
 }
-
-/*impl VertexList {
-    /// Build a vertex list.
-    pub fn new(vertices: Vec<f32>, dim: u8, gradient: u8, graphic_coords: u8) -> VertexList {
-        let video_io = unsafe { &mut VIDEO_IO as *mut _ as *mut VideoIO };
-
-        let index = unsafe {
-            let index = if let Some(index) = (*video_io).vertlt.pop() {
-                index
-            } else {
-                (*video_io).vertls.len()
-            };
-
-            (*video_io).sender.send(VideoMsg::VertexListNew{vertices, dim, gradient, graphic_coords, index}).unwrap();
-
-            index
-        };
-
-        VertexList(index)
-    }
-}*/
 
 impl Shape {
     /// Build a shape.
@@ -193,73 +128,19 @@ impl Shape {
     }
 }
 
-// fn run(nanos: u64) {
-/*    let video_io = unsafe { &mut VIDEO_IO as *mut _ as *mut VideoIO };
-
-    unsafe {
-        while let Ok(msg) = (*video_io).recver.try_recv() {
-            match msg {
-                VideoMsg::Background{r,g,b} => {
-                    (*video_io).window.background(r, g, b);
-                }
-                VideoMsg::ShaderNew{builder, index} => {
-                    let shader = (*video_io).window.shader_new(builder);
-
-                    if index == (*video_io).shader.len() {
-                        (*video_io).shader.push(Some(shader));
-                    } else {
-                        (*video_io).shader[index] = Some(shader);
-                    }
-                }
-                VideoMsg::ShaderOld{index} => {
-                    (*video_io).shader[index] = None;
-                }
-/*                VideoMsg::ShapeNew{builder, index} => {
-                    let shape = (*video_io).window.shape_new(builder);
-
-                    if index == (*video_io).shapes.len() {
-                        (*video_io).shapes.push(Some(shape));
-                    } else {
-                        (*video_io).shapes[index] = Some(shape);
-                    }
-                }*/
-                VideoMsg::ShapeOld{index} => {
-                    (*video_io).shapes[index] = None;
-                }
-/*                VideoMsg::VertexListNew{vertices, dim, gradient, graphic_coords, index} => {
-                    let vl = (*video_io).window.vertex_list_new(vertices.as_slice(), dim, gradient, graphic_coords);
-
-                    if index == (*video_io).vertls.len() {
-                        (*video_io).vertls.push(Some(vl));
-                    } else {
-                        (*video_io).vertls[index] = Some(vl);
-                    }
-                }
-                VideoMsg::VertexListOld{index} => {
-                    (*video_io).vertls[index] = None;
-                }*/
-            }
-        }
-    }*/
-// }
-
 pub(crate) fn initialize_video_io(name: &str, run: fn(nanos: u64) -> ()) {
     use barg::*;
 
     unsafe {
         let video_io = &mut VIDEO_IO as *mut _ as *mut VideoIO;
-//        let (sender, recver) = channel();
         let shader = vec![];
         let shadet = vec![];
         let shapes = vec![];
         let shapet = vec![];
-//        let vertls = vec![];
-//        let vertlt = vec![];
 
         std::ptr::write(video_io, VideoIO {
-            window: Window::new(name, run),
-            //sender, recver,
-            shader, shadet, shapes, shapet, // vertls, vertlt
+            window: Window::new(name, run, init_toolbar),
+            shader, shadet, shapes, shapet,
         });
     }
 }
@@ -278,7 +159,6 @@ pub fn background(r: f32, g: f32, b: f32) {
 
     unsafe {
         (*video_io).window.background(r, g, b);
-//        (*video_io).sender.send(VideoMsg::Background{r,g,b}).unwrap();
     }
 }
 
@@ -294,11 +174,38 @@ pub fn shape(shader: &Shader) -> ShapeBuilder {
 }
 
 /// Draw multiple instances of shapes on the screen.
-pub fn draw(shader: &Shader, shape: &Shape/*, shape: &[Instance]*/) {
+pub fn draw(shader: &Shader, shape: &Shape) {
     let video_io = unsafe { &mut VIDEO_IO as *mut _ as *mut VideoIO };
 
     unsafe {
         (*video_io).window.draw((*video_io).shader[shader.0].as_ref().unwrap(), (*video_io).shapes[shape.0].as_ref().unwrap());
+    }
+}
+
+/// Set camera for shader.
+pub fn set_camera(shader: &Shader, camera: Transform) {
+    let video_io = unsafe { &mut VIDEO_IO as *mut _ as *mut VideoIO };
+
+    unsafe {
+        (*video_io).window.camera((*video_io).shader[shader.0].as_ref().unwrap(), camera);
+    }
+}
+
+/// Set texture coordinates for shader.
+pub fn texture_coords(shader: &Shader, coords: ([f32; 2], [f32; 2])) {
+    let video_io = unsafe { &mut VIDEO_IO as *mut _ as *mut VideoIO };
+
+    unsafe {
+        (*video_io).window.texture_coords((*video_io).shader[shader.0].as_ref().unwrap(), coords);
+    }
+}
+
+/// Draw multiple instances of shapes on the screen.
+pub fn draw_graphic(shader: &Shader, shape: &Shape, graphic: &Graphic) {
+    let video_io = unsafe { &mut VIDEO_IO as *mut _ as *mut VideoIO };
+
+    unsafe {
+        (*video_io).window.draw_graphic((*video_io).shader[shader.0].as_ref().unwrap(), (*video_io).shapes[shape.0].as_ref().unwrap(), graphic);
     }
 }
 
@@ -317,5 +224,14 @@ pub fn build(shader: &Shader) {
 
     unsafe {
         (*video_io).window.build((*video_io).shader[shader.0].as_mut().unwrap());
+    }
+}
+
+/// If a key is being held down.
+pub fn key(key: Key) -> bool {
+    let video_io = unsafe { &mut VIDEO_IO as *mut _ as *mut VideoIO };
+
+    unsafe {
+        (*video_io).window.key(key)
     }
 }
