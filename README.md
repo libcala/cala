@@ -1,5 +1,5 @@
 <p align="center">
-  <img alt="Cala" src="https://raw.githubusercontent.com/Aldarobot/cala/v0.5.0/logo.svg">
+  <img alt="Cala" src="https://aldarobot.plopgrizzly.com/cala/logo.svg">
 </p>
 <p align="center">
   <a href="https://docs.rs/cala">
