@@ -1,4 +1,4 @@
-![cala](https://raw.githubusercontent.com/Aldarobot/cala/master/logo.png)
+![cala](https://raw.githubusercontent.com/Aldarobot/cala/stable/logo.png)
 
 ### Note
 Cala is a complete redesign of previous library [ADI](https://crates.io/crates/adi).  It is still in it's early stages.
