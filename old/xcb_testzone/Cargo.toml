@@ -1,0 +1,10 @@
+[package]
+name = "xcb_testzone"
+version = "0.1.0"
+authors = ["Jeron Aldaron Lau <jeronaldaron@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+cgmath = "0.17"
+footile = "0.3"
+png = "0.14"

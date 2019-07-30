@@ -1,15 +1,27 @@
-[package]
-name = "aldaron"
-version = "0.1.0"
-authors = ["jeron <deadbeef.jal@gmail.com>"]
+# Cala
+#
+# Copyright © 2017-2019 Jeron Aldaron Lau.
+# Dual-licensed under either the MIT License or the Boost Software License, Version 1.0.
+# (See accompanying file LICENSE_BSL.txt or copy at https://www.boost.org/LICENSE_1_0.txt, and
+# accompanying file LICENSE_MIT.txt or copy at https://opensource.org/licenses/MIT)
 
-[lib]
-name = "aldaron"
-path = "src/aldaron/lib.rs"
+[package]
+name = "cala"
+version = "0.1.0"
+authors = ["Jeron Aldaron Lau <jeronaldaron@gmail.com>"]
+edition = "2018"
+
+license = "MIT / BSL-1.0"
+description = "Cross-platform system interface for hardware IO."
+documentation = "https://docs.rs/cala"
+homepage = "https://jeronaldaron.github.io/cala/"
+repository = "https://github.com/JeronAldaron/cala"
+readme = "README.md"
+keywords = ["device", "platform-agnostic", "cross-platform", "io", "gui"]
+categories = ["game-engines", "hardware-support", "multimedia", "os"]
 
 [dependencies]
-libc = "0.2.0"
-
-[[bin]]
-name = "demo"
-path = "src/demo/main.rs"
+whoami = "0.5" # user
+wavy = "0.1" # audio
+stronghold = "0.2" # file
+serde = "1.0"

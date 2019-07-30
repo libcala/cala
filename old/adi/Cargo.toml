@@ -1,0 +1,31 @@
+# Copyright © Jeron Aldaron Lau 2017 - 2019.
+# Dual-licensed under either the MIT License or the Boost Software License, Version 1.0.
+# (See accompanying file LICENSE_1_0.txt or copy at https://www.boost.org/LICENSE_1_0.txt)
+#
+# XXXX  X                    /5\——————/5\       XXXX      X           X
+# X   X X   XXX   XXXX      |   0    0   |     X      XXX   XXXX XXXX X X   X
+# X   X X  X   X  X   X  /"\|     <>     |/"\  X      X   X    X    X X X   X
+# XXXX  X  X   X  X   X  \  \\_  ====  _//  /  X   XX X   X   X    X  X  X X
+# X     X  X   X  XXXX    \_              _/   X    X X   X  X    X   X   X
+# X     X   XXX   X       / \            / \    XXXX  X   X XXXX XXXX X   X
+#                 X       \                /                            XX
+#                          --____________--
+
+[package]
+name = "adi"
+version = "0.14.0"
+authors = ["Jeron Aldaron Lau <jeronaldaron@gmail.com>"]
+edition = "2018"
+
+license = "MIT / BSL-1.0"
+documentation = "https://docs.rs/adi"
+homepage = "https://free.plopgrizzly.com/siyo"
+repository = "https://github.com/plopgrizzly/siyo"
+readme = "README.md"
+description = "Cross-platform system interface for hardware IO."
+keywords = ["graphics", "device", "hardware", "audio", "peripheral"]
+categories = ["hardware-support", "multimedia", "rendering::graphics-api"]
+
+[dependencies]
+build-helper = "0.1" # To detect target_os and target_arch.
+webgl_generator = "0.2" # For WebGL bindings.

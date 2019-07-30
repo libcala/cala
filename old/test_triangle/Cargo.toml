@@ -1,0 +1,20 @@
+[package]
+name = "test_triangle"
+version = "0.1.0"
+authors = ["Jeron Aldaron Lau <jeronaldaron@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+stdweb = "0.4"
+stdweb-derive = "0.5"
+serde = "1.0"
+serde_derive = "1.0"
+
+[dependencies.siyo]
+version = "0.1.0"
+path = "../siyo"
+default-features = false
+features = ["gui"]
+
+[build-dependencies]
+adi = { path = "../adi" }

@@ -1,0 +1,55 @@
+# Copyright © Jeron Aldaron Lau 2017 - 2019.
+# Dual-licensed under either the MIT License or the Boost Software License, Version 1.0.
+# (See accompanying file LICENSE_1_0.txt or copy at https://www.boost.org/LICENSE_1_0.txt)
+#
+# XXXX  X                    /5\——————/5\       XXXX      X           X
+# X   X X   XXX   XXXX      |   0    0   |     X      XXX   XXXX XXXX X X   X
+# X   X X  X   X  X   X  /"\|     <>     |/"\  X      X   X    X    X X X   X
+# XXXX  X  X   X  X   X  \  \\_  ====  _//  /  X   XX X   X   X    X  X  X X
+# X     X  X   X  XXXX    \_              _/   X    X X   X  X    X   X   X
+# X     X   XXX   X       / \            / \    XXXX  X   X XXXX XXXX X   X
+#                 X       \                /                            XX
+#                          --____________--
+
+[package]
+name = "siyo"
+version = "0.1.0"
+authors = ["Jeron Aldaron Lau <jeronaldaron@gmail.com>"]
+edition = "2018"
+
+license = "MIT / BSL-1.0"
+documentation = "https://docs.rs/siyo"
+homepage = "https://free.plopgrizzly.com/siyo"
+repository = "https://github.com/plopgrizzly/siyo"
+readme = "README.md"
+description = "Cross-platform system interface for hardware IO."
+keywords = ["graphics", "device", "hardware", "audio", "peripheral"]
+categories = ["hardware-support", "multimedia", "rendering::graphics-api"]
+
+[[bin]]
+name = "siyo"
+path = "siyo/main.rs"
+# TODO when: https://github.com/rust-lang/cargo/issues/1982
+required-features = ["dirs", "Inflector"]
+
+[dependencies]
+libc = "0.2" # For all system interfaces.
+chrono = "0.4" # For clock interface.
+
+[dependencies.dirs]
+version = "1.0"
+optional = true
+
+[dependencies.Inflector]
+version = "0.11"
+optional = true
+
+[features]
+default = [
+    # For siyo command line tool.
+    "dirs",
+    "Inflector",
+    # For CLI programs, don't have this feature.
+    "gui",
+]
+gui = [] # Changes which parts of the code get built.
