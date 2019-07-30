@@ -2,12 +2,12 @@
 #
 # Copyright © 2017-2019 Jeron Aldaron Lau.
 # Dual-licensed under either the MIT License or the Boost Software License, Version 1.0.
-# (See accompanying file LICENSE_BSL.txt or copy at https://www.boost.org/LICENSE_1_0.txt, and
-# accompanying file LICENSE_MIT.txt or copy at https://opensource.org/licenses/MIT)
+# (See accompanying file LICENSE_BSL.txt or copy at https://www.boost.org/LICENSE_1_0.txt
+#  and accompanying file LICENSE_MIT.txt or copy at https://opensource.org/licenses/MIT)
 
 [package]
 name = "cala"
-version = "0.2.1"
+version = "0.3.0"
 authors = ["Jeron Aldaron Lau <jeronaldaron@gmail.com>"]
 edition = "2018"
 
@@ -21,8 +21,23 @@ keywords = ["device", "platform-agnostic", "cross-platform", "io", "gui"]
 categories = ["game-engines", "hardware-support", "multimedia", "os"]
 
 [dependencies]
-whoami = "0.5" # user
-wavy = "0.1" # audio
-stronghold = "0.2" # file
-serde = "1.0"
-stick = "0.6" # joystick / controller
+whoami = {version = "0.5", optional = true} # user
+wavy = {version = "0.1", optional = true} # audio
+stronghold = {version = "0.2", optional = true} # file
+serde = {version = "1.0", optional = true}
+stick = {version = "0.7", optional = true} # joystick / controller
+# barg = {path = "../barg", optional = true}
+
+[package.metadata.docs.rs]
+features = ["all"]
+
+[features]
+default = []
+all = ["user", "audio", "files", "controller",
+#"gui"
+]
+user = ["whoami"]
+audio = ["wavy"]
+files = ["stronghold", "serde"]
+controller = ["stick"]
+# gui = ["barg"]
