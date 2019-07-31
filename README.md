@@ -60,12 +60,12 @@ found <a href="https://aldarobot.plopgrizzly.com/cala/tutorials">here</a>.
 <p>Here's a list of the features, with links to documentation.</p>
 
 <ul>
-<li><a href="https://docs.rs/cala/0.4.0/cala/user/index.html"><code>user</code></a> - Getting user information</li>
-<li><a href="https://docs.rs/cala/0.4.0/cala/audio/index.html"><code>audio</code></a> - Playing / recording audio</li>
-<li><a href="https://docs.rs/cala/0.4.0/cala/clock/index.html"><code>clock</code></a> - Date, Time of day, Timer</li>
-<li><a href="https://docs.rs/cala/0.4.0/cala/controller/index.html"><code>controller</code></a> - Game Controller - JoyStick</li>
-<li><a href="https://docs.rs/cala/0.4.0/cala/files/index.html"><code>files</code></a> - Containerized filesystem loading / saving ZIP files</li>
-<li><a href="https://docs.rs/cala/0.4.0/cala/graphics/index.html"><code>graphics</code></a> - Render and User Interface</li>
+<li><a href="https://docs.rs/cala/0.5.0/cala/user/index.html"><code>user</code></a> - Getting user information</li>
+<li><a href="https://docs.rs/cala/0.5.0/cala/audio/index.html"><code>audio</code></a> - Playing / recording audio</li>
+<li><a href="https://docs.rs/cala/0.5.0/cala/clock/index.html"><code>clock</code></a> - Date, Time of day, Timer</li>
+<li><a href="https://docs.rs/cala/0.5.0/cala/controller/index.html"><code>controller</code></a> - Game Controller - JoyStick</li>
+<li><a href="https://docs.rs/cala/0.5.0/cala/files/index.html"><code>files</code></a> - Containerized filesystem loading / saving ZIP files</li>
+<li><a href="https://docs.rs/cala/0.5.0/cala/graphics/index.html"><code>graphics</code></a> - Render and User Interface</li>
 <li>Camera - Webcam <a href="https://github.com/Aldarobot/cala/issues/1"><i>unimplemented</i></a></li>
 <li>Network - Bluetooth & Wifi Direct <a href="https://github.com/Aldarobot/cala/issues/10"><i>unimplemented</i></a></li>
 <li>Hardware acceleration - SIMD, GPU <a href="https://github.com/Aldarobot/cala/issues/11"><i>unimplemented</i></a></li>

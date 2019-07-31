@@ -1,33 +1,57 @@
 //! <p align="center">
-//! <img src="https://aldarobot.plopgrizzly.com/cala/icon.svg" alt="Cala" width="256px" height="256px">
+//!   <img alt="Cala" src="https://aldarobot.plopgrizzly.com/cala/logo.svg">
 //! </p>
-//!
-//! ### Note
-//! Cala is a complete redesign of previous library [ADI](https://crates.io/crates/adi).  It is still in it's early stages.
-//!
-//! # About
-//! Easily create cross-platform applications.  Some common tasks are not easily portable across different platforms, and this crate hopes to fix that.  That way you don't have to worry about how to port your GUI, audio, or bluetooth interface, etc.  and can get straight to building your application's content!
-//!
-//! Cala is a platform-agnostic system interface for hardware IO.  This means that eventually, Cala should support all of the different hardware that's connected to your computer.  Cala is designed so that it talks to the operating system to interface with the hardware, so no special permissions are needed for your application.
-//!
-//! ## Features
-//! - Targeted Platforms: Linux (includes Raspberry Pi), MacOS, Redox, Android, Windows, iOS, Web (WASM), Nintendo Switch, XBox, PlayStation, FreeBSD, others (Maybe FreeDOS for fun 😉️).
-//! - Getting user information (Linux, Windows, MacOS)
-//! - Playing / recording audio (Linux)
-//! - Filesystem loading / saving ZIP files (Linux, Windows)
-//! - Game Controller - JoyStick (Linux)
-//! - Clock - Date, Time of day, Timer (All Platforms)
-//! - Graphics - Render and User Interface (Linux)
-//! - Camera - Webcam (NOT IMPLEMENTED YET)
-//! - Hardware acceleration - SIMD, GPU (NOT IMPLEMENTED YET)
-//! - Network - Bluetooth & Wifi Direct (NOT IMPLEMENTED YET)
-//!
-//! # Getting Started
-//! * TODO
-//!
-//! ## Features
-//! Each hardware interface can be enabled with a feature.  By default, all features are
-//! enabled.  There is a module for each feature (feature and module names match).
+//! <p align="center">
+//! <a href="https://docs.rs/cala"><img src="https://docs.rs/cala/badge.svg"></a>
+//! <a href="https://travis-ci.com/Aldarobot/cala"><img src="https://api.travis-ci.com/Aldarobot/cala.svg?branch=stable" alt="Cala Build Status"></a>
+//! <a href="https://crates.io/crates/cala"><img src="https://img.shields.io/crates/v/cala.svg" alt = "cala on crates.io"></a>
+//! <a href="https://discord.gg/nXwF59K"><img src="https://img.shields.io/badge/discord-join%20server-green.svg" alt="Discord"></a>
+//! 	  <br>
+//!   <strong><a href="https://aldarobot.plopgrizzly.com/cala/">Website</a> | <a href="https://github.com/Aldarobot/cala">GitHub</a> | <a href="https://aldarobot.plopgrizzly.com/cala/changelog">Changelog</a> | <a href="https://aldarobot.plopgrizzly.com/cala/tutorials">Tutorials</a> </strong>
+//! </p>
+//! 
+//! <p>
+//! <h4>Note</h4>
+//! <p>Cala is a complete redesign of previous library <a href="https://crates.io/crates/adi">ADI</a>.  It is still in it's early stages.
+//! </p>
+//! </p>
+//! <h1>About</h1>
+//! <p>Easily create cross-platform applications.  Some common tasks are not easily portable across different platforms, and this crate hopes to fix that.  That way you don't have to worry about how to port your GUI, audio, or bluetooth interface, etc. and can get straight to building your application's content!
+//! </p>
+//! <p>Cala is a platform-agnostic system interface for hardware IO.  This means that eventually, Cala should support all of the different hardware that's connected to your computer.  Cala is designed so that it talks to the operating system to interface with the hardware, so no special permissions are needed for your application.  Here's a list of all of the targeted platforms (<b>bold</b> means a port has been made, <i>italic</i> means the feature doesn't work on the platform):
+//! <ul>
+//! <li><b>Linux</b></li>
+//! <li><b>MacOS</b> - missing <a href="https://github.com/Aldarobot/cala/issues/5"><i>audio</i></a>, <a href="https://github.com/Aldarobot/cala/issues/7"><i>controller</i></a>, <a href="https://github.com/Aldarobot/cala/issues/9"><i>graphics</i></a></li>
+//! <li><b>Windows</b> - missing <a href="https://github.com/Aldarobot/cala/issues/4"><i>audio</i></a>, <a href="https://github.com/Aldarobot/cala/issues/6"><i>controller</i></a>, <a href="https://github.com/Aldarobot/cala/issues/8"><i>graphics</i></a></li>
+//! <li>Redox</li>
+//! <li>Android</li>
+//! <li>iOS</li>
+//! <li>Web (WASM)</li>
+//! <li>Nintendo Switch</li>
+//! <li>XBox</li>
+//! <li>PlayStation</li>
+//! <li>FreeBSD</li>
+//! <li>Maybe FreeDOS for fun 😉️</li>
+//! <li>Others not on this list that you will make a pull request for adding them</li>
+//! </ul>
+//! </p>
+//! 
+//! <h1>Motivation & Naming</h1>
+//! <p>
+//! The aim is to create a newer, better GTK + SDL in Rust!  Why GTK + SDL?  Because a lot of programs need to depend on both anyway (like <a href="https://en.wikipedia.org/wiki/Totem_Video_Player">totem</a>), and they do a lot of the same things; Usually one library does each specific task better than the other.  The goal of this library is to provide the common ground for video games and general GUI applications together.  The name cala is derived from the fungus known as calafate rust.
+//! 
+//! <h1>Getting Started</h1>
+//! <p>Each hardware interface can be enabled with a feature.  For example, If you
+//! want to depend on the <code>audio</code> feature and the <code>clock</code>
+//! feature, you might put this in your <code>Cargo.toml</code>:</p>
+//! <p style="width:100%"><pre style="width:100%"><code style="width:100%"><span style="color:#FFF;font-weight:bold;">[dependencies.cala]</span>
+//! <span style="color:#0F0;font-weight:bold;">version</span> = <span style="color:#0F0">"0.5"</span>
+//! <span style="color:#0F0;font-weight:bold;">features</span> = [<span style="color:#0F0">"audio"</span>, <span style="color:#0F0">"clock"</span>]</code></pre></p>
+//! 
+//! <p>
+//! There is a module for each feature (feature and module names match).  Module documentation may include simple tutorials.  More in depth tutorials may be
+//! found <a href="https://aldarobot.plopgrizzly.com/cala/tutorials">here</a>.
+//! </p>
 
 #![warn(missing_docs)]
 #![doc(
