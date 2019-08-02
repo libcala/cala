@@ -40,4 +40,4 @@ after_failure:
   - ./send.sh failure $WEBHOOK_URL
 
 script:
-  - cargo test --verbose --all-features --all
+  - cargo test --all --features="user, clock, files" # --all-features # TODO
