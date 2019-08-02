@@ -1,5 +1,5 @@
 // Set the home loop to `run()`.
-cala::loop_init!(run, ());
+cala::init!(run, ());
 
 // Function that runs while your app runs.
 pub fn run(_: &mut ()) -> cala::Loop<()> {

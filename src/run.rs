@@ -5,7 +5,7 @@ pub enum Loop<T> {
     /// # Usage
     /// ```
     /// // Set the home loop to `do_nothing()`.
-    /// cala::loop_init!(do_nothing, ());
+    /// cala::init!(do_nothing, ());
     ///  
     /// // This program just quits right away.
     /// pub fn do_nothing(_: &mut ()) -> cala::Loop<()> {
@@ -19,7 +19,7 @@ pub enum Loop<T> {
     /// # Usage
     /// ```
     /// // Set the home loop to `infinite_loop()`.
-    /// cala::loop_init!(infinite_loop, ());
+    /// cala::init!(infinite_loop, ());
     ///  
     /// // This program runs until the user interupts it.
     /// pub fn infinite_loop(_: &mut ()) -> cala::Loop<()> {
@@ -33,7 +33,7 @@ pub enum Loop<T> {
     /// # Usage
     /// ```
     /// // Set the home loop to `home()`.
-    /// cala::loop_init!(home, ());
+    /// cala::init!(home, ());
     ///  
     /// // This program creates 2 new activities, which both go back right away.
     /// pub fn home(_: &mut ()) -> cala::Loop<()> {
@@ -59,7 +59,7 @@ pub enum Loop<T> {
     /// # Usage
     /// ```
     /// // Set the home loop to `home()`.
-    /// cala::loop_init!(home, ());
+    /// cala::init!(home, ());
     ///  
     /// // Infinite loop.
     /// pub fn home(_: &mut ()) -> cala::Loop<()> {
@@ -79,7 +79,7 @@ pub enum Loop<T> {
     /// # Usage
     /// ```
     /// // Set the home loop to `home()`.
-    /// cala::loop_init!(home, ());
+    /// cala::init!(home, ());
     ///  
     /// // This program creates 1 new activity, which quits right away.
     /// pub fn home(_: &mut ()) -> cala::Loop<()> {
@@ -100,7 +100,7 @@ pub enum Loop<T> {
     /// # Usage
     /// ```
     /// // Set the home loop to `home()`.
-    /// cala::loop_init!(home, ());
+    /// cala::init!(home, ());
     ///  
     /// // This program creates 2 new activities, which both go back right away.
     /// pub fn home(_: &mut ()) -> cala::Loop<()> {

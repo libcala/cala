@@ -10,5 +10,4 @@ features = ["graphics"]
 path = "../../"
 
 [build-dependencies]
-# yeet = { path = "../../../yeet" }
-res = "0.3" # { path = "../../../res" }
+res = "0.4"

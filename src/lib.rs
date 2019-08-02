@@ -9,7 +9,7 @@
 //! 	  <br>
 //!   <strong><a href="https://aldarobot.plopgrizzly.com/cala/">Website</a> | <a href="https://github.com/Aldarobot/cala">GitHub</a> | <a href="https://aldarobot.plopgrizzly.com/cala/changelog">Changelog</a> | <a href="https://aldarobot.plopgrizzly.com/cala/tutorials">Tutorials</a> </strong>
 //! </p>
-//! 
+//!
 //! <p>
 //! <h4>Note</h4>
 //! <p>Cala is a complete redesign of previous library <a href="https://crates.io/crates/adi">ADI</a>.  It is still in it's early stages.
@@ -35,11 +35,11 @@
 //! <li>Others not on this list that you will make a pull request for adding them</li>
 //! </ul>
 //! </p>
-//! 
+//!
 //! <h1>Motivation & Naming</h1>
 //! <p>
 //! The aim is to create a newer, better GTK + SDL in Rust!  Why GTK + SDL?  Because a lot of programs need to depend on both anyway (like <a href="https://en.wikipedia.org/wiki/Totem_Video_Player">totem</a>), and they do a lot of the same things; Usually one library does each specific task better than the other.  The goal of this library is to provide the common ground for video games and general GUI applications together.  The name cala is derived from the fungus known as calafate rust.
-//! 
+//!
 //! <h1>Getting Started</h1>
 //! <p>Each hardware interface can be enabled with a feature.  For example, If you
 //! want to depend on the <code>audio</code> feature and the <code>clock</code>
@@ -47,7 +47,7 @@
 //! <p style="width:100%"><pre style="width:100%"><code style="width:100%"><span style="color:#FFF;font-weight:bold;">[dependencies.cala]</span>
 //! <span style="color:#0F0;font-weight:bold;">version</span> = <span style="color:#0F0">"0.5"</span>
 //! <span style="color:#0F0;font-weight:bold;">features</span> = [<span style="color:#0F0">"audio"</span>, <span style="color:#0F0">"clock"</span>]</code></pre></p>
-//! 
+//!
 //! <p>
 //! There is a module for each feature (feature and module names match).  Module documentation may include simple tutorials.  More in depth tutorials may be
 //! found <a href="https://aldarobot.plopgrizzly.com/cala/tutorials">here</a>.
@@ -71,7 +71,7 @@ pub mod user {
     //! # Usage
     //! ```rust
     //! // Set the home loop to `run()`.
-    //! cala::loop_init!(run, ());
+    //! cala::init!(run, ());
     //!
     //! // Function that runs while your app runs.
     //! pub fn run(_: &mut ()) -> cala::Loop<()> {
@@ -93,7 +93,7 @@ pub mod controller {
     //! # Usage
     //! ```rust
     //! // Set the home loop to `run()`.
-    //! cala::loop_init!(run, ());
+    //! cala::init!(run, ());
     //!
     //! // Function that runs while your app runs.
     //! pub fn run(_: &mut ()) -> cala::Loop<()> {
@@ -129,7 +129,7 @@ pub mod audio {
     //! }
     //!
     //! // Set the home loop to `run()`.
-    //! cala::loop_init!(run, Data {
+    //! cala::init!(run, Data {
     //!     buffer: VecDeque::new(),
     //! });
     //!
@@ -259,7 +259,7 @@ mod internal;
 /// # Usage
 /// ```rust
 /// // Set the home loop to `run()`.
-/// cala::loop_init!(run, ());
+/// cala::init!(run, ());
 ///
 /// // Function that runs while your app runs.
 /// pub fn run(_: &mut ()) -> cala::Loop<()> {

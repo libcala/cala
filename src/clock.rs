@@ -46,10 +46,13 @@ impl Div<i32> for Duration {
 
     fn div(mut self, mut other: i32) -> Self::Output {
         if other.is_negative() {
-            self.0 = -self.0;
+            self.seconds = -self.seconds;
             other = -other;
         }
-        Duration(self.0, self.1 * (other as u32))
+        Duration {
+            seconds: self.seconds,
+            denominator: self.denominator * (other as u32),
+        }
     }
 }
 
@@ -58,16 +61,19 @@ impl Mul<i32> for Duration {
 
     fn mul(mut self, mut other: i32) -> Self::Output {
         if other.is_negative() {
-            self.0 = -self.0;
+            self.seconds = -self.seconds;
             other = -other;
         }
-        Duration(self.0 * (other as i32), self.1)
+        Duration {
+            seconds: self.seconds * (other as i32),
+            denominator: self.denominator,
+        }
     }
 }
 
 impl Display for Duration {
     fn fmt(&self, f: &mut Formatter) -> Result {
-        write!(f, "{}/{}", self.0, self.1)
+        write!(f, "{}/{}", self.seconds, self.denominator)
     }
 }
 
@@ -238,7 +244,7 @@ impl Clock {
     ///
     /// ```
     /// let start = cala::Clock::new();
-    /// let nanos_since_start = Clock::new().since(&start, NANOSECOND);
+    /// let nanos_since_start = cala::Clock::new().since(&start, cala::NANOSECOND);
     /// assert!(nanos_since_start >= 0);
     /// ```
     pub fn since(&self, other: &Self, frac: Duration) -> i64 {
@@ -250,8 +256,8 @@ impl Clock {
         .unwrap();
 
         // Multiply time by reciprocal fraction (numerator).
-        let frac_den = frac.0 as i128;
-        let frac_num = frac.1 as i128;
+        let frac_den = frac.denominator as i128;
+        let frac_num = frac.seconds as i128;
         let seconds = seconds as i128 * frac_num;
         let nanos = nanos as i128 * frac_num;
 
