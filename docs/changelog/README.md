@@ -8,6 +8,18 @@ and this project adheres to [Semantic Versioning](https://code.plopgrizzly.com/s
 ### TODO
 - Possibly redesign the controller API to be event based using a message queue.
 
+## [0.5.0] - 2019-08-02
+### Added
+- Toolbar
+- `draw_graphic()` - for textures.
+- `texture_coords()` - for texture atlas.
+- `set_camera()` - for camera.
+- `key()` - for getting keyboard input.
+
+### Fixed
+- `clock` feature not compiling.
+- Examples not compiling
+
 ## [0.4.0] - 2019-07-07
 ### Added
 - `graphics` feature and support for graphical user interfaces.

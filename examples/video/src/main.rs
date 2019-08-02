@@ -25,12 +25,7 @@ cala::init!(run, {
 
     // Build triangle Shape
     let mut triangle =
-        cala::Shape::new(cala::shape(&mut colors).vert(&vertices).face([
-            [1.0, 0.0, 0.0, 0.0],
-            [0.0, 1.0, 0.0, 0.0],
-            [0.0, 0.0, 1.0, 0.0],
-            [0.0, 0.0, 0.0, 1.0],
-        ]));
+        cala::Shape::new(cala::shape(&mut colors).vert(&vertices).face(cala::Transform::new()   ));
 
     triangle.instances(&[
         cala::Transform::new()

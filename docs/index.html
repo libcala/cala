@@ -1,15 +1,27 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cala Project</title>
+<link rel="icon" href="icon.svg"><link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+<!-- Content Begin -->
+<div id="content" class="content">
+
+<div><div class="page">
 <p align="center">
   <img alt="Cala" src="logo.svg">
 </p>
 <p align="center">
 <a href="https://docs.rs/cala"><img src="https://docs.rs/cala/badge.svg"></a>
-<a href="https://travis-ci.com/Aldarobot/cala"><img src="https://api.travis-ci.com/Aldarobot/cala.svg?branch=stable"></a>
-<a href="https://crates.io/crates/cala"><img src="https://img.shields.io/crates/v/cala.svg"></a>
-<a href="https://discord.gg/nXwF59K"><img src="https://img.shields.io/badge/discord-Cala%20Project-green.svg"></a>
+<a href="https://travis-ci.com/Aldarobot/cala"><img src="https://api.travis-ci.com/Aldarobot/cala.svg?branch=stable" alt="Cala Build Status"></a>
+<a href="https://crates.io/crates/cala"><img src="https://img.shields.io/crates/v/cala.svg" alt = "cala on crates.io"></a>
+<a href="https://discord.gg/nXwF59K"><img src="https://img.shields.io/badge/discord-join%20server-green.svg" alt="Discord"></a>
 	  <br>
   <strong><a href="https://aldarobot.plopgrizzly.com/cala/">Website</a> | <a href="https://github.com/Aldarobot/cala">GitHub</a> | <a href="https://aldarobot.plopgrizzly.com/cala/changelog">Changelog</a> | <a href="https://aldarobot.plopgrizzly.com/cala/tutorials">Tutorials</a> </strong>
 </p>
+</div></div>
 
+<div><div class="page">
 <p>
 <h4>Note</h4>
 <p>Cala is a complete redesign of previous library <a href="https://crates.io/crates/adi">ADI</a>.  It is still in it's early stages.
@@ -44,12 +56,9 @@ The aim is to create a newer, better GTK + SDL in Rust!  Why GTK + SDL?  Because
 <p>Each hardware interface can be enabled with a feature.  For example, If you
 want to depend on the <code>audio</code> feature and the <code>clock</code>
 feature, you might put this in your <code>Cargo.toml</code>:</p>
-
-```toml
-[dependencies.cala]
-version = "0.5"
-features = ["audio", "clock"]
-```
+<p style="width:100%"><pre style="width:100%"><code style="width:100%"><span style="color:#FFF;font-weight:bold;">[dependencies.cala]</span>
+<span style="color:#0F0;font-weight:bold;">version</span> = <span style="color:#0F0">"0.5"</span>
+<span style="color:#0F0;font-weight:bold;">features</span> = [<span style="color:#0F0">"audio"</span>, <span style="color:#0F0">"clock"</span>]</code></pre></p>
 
 <p>
 There is a module for each feature (feature and module names match).  Module documentation may include simple tutorials.  More in depth tutorials may be
@@ -95,3 +104,17 @@ at your option.
 <p>
 Unless you explicitly state otherwise, any contribution intentionally submitted for inclusion in the work by you shall be dual licensed as above without any additional terms or conditions.
 </p>
+
+</div></div>
+<div style="flex: 1 1 auto;"></div>
+<!-- Content End -->
+
+<div><div class="foot">
+<hr/>
+<div style="display:flex;border:0px">
+<div style="flex: 0 0 60%">© 2017-2019 <a href="mailto:jeronlau@plopgrizzly.com">Jeron Aldaron Lau</a>.</div>
+<div style="flex:1;text-align:right"><a href="https://aldarobot.plopgrizzly.com">About Jeron Aldaron Lau</a></div>
+</div>
+</div></div>
+
+</div></body></html>

@@ -6,7 +6,7 @@ struct Data {
 }
 
 // Set the home loop to `run()`.
-cala::loop_init!(run, Data {
+cala::init!(run, Data {
     buffer: VecDeque::new(),
 });
 

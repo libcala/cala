@@ -210,11 +210,11 @@ pub fn draw_graphic(shader: &Shader, shape: &Shape, graphic: &Graphic) {
 }
 
 /// Load a graphic.
-pub fn graphic(pixels: &[u8], width: usize) -> Graphic {
+pub fn graphic(pixels: &[u8], width: usize, height: usize) -> Graphic {
     let video_io = unsafe { &mut VIDEO_IO as *mut _ as *mut VideoIO };
 
     unsafe {
-        (*video_io).window.graphic(pixels, width)
+        (*video_io).window.graphic(pixels, width, height)
     }
 }
 
