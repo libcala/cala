@@ -1,13 +1,13 @@
 <p align="center">
-  <img alt="Cala" src="logo.svg">
+  <img alt="Cala" src="https://libcala.github.io/logo.svg">
 </p>
 <p align="center">
 <a href="https://docs.rs/cala"><img src="https://docs.rs/cala/badge.svg"></a>
-<a href="https://travis-ci.com/Aldarobot/cala"><img src="https://api.travis-ci.com/Aldarobot/cala.svg?branch=master"></a>
+<a href="https://travis-ci.com/libcala/cala"><img src="https://api.travis-ci.com/libcala/cala.svg?branch=master"></a>
 <a href="https://crates.io/crates/cala"><img src="https://img.shields.io/crates/v/cala.svg"></a>
 <a href="https://discord.gg/nXwF59K"><img src="https://img.shields.io/badge/discord-Cala%20Project-green.svg"></a>
 	  <br>
-  <strong><a href="https://aldarobot.plopgrizzly.com/cala/">Website</a> | <a href="https://github.com/Aldarobot/cala">GitHub</a> | <a href="https://aldarobot.plopgrizzly.com/cala/changelog">Changelog</a> | <a href="https://aldarobot.plopgrizzly.com/cala/tutorials">Tutorials</a> </strong>
+  <strong><a href="https://libcala.github.io">Website</a> | <a href="https://github.com/libcala/cala">GitHub</a> | <a href="https://libcala.github.io/changelog">Changelog</a> | <a href="https://libcala.github.io/tutorials">Tutorials</a> </strong>
 </p>
 
 <p>
@@ -21,8 +21,8 @@
 <p>Cala is a platform-agnostic system interface for hardware IO.  This means that eventually, Cala should support all of the different hardware that's connected to your computer.  Cala is designed so that it talks to the operating system to interface with the hardware, so no special permissions are needed for your application.  Here's a list of all of the targeted platforms (<b>bold</b> means a port has been made, <i>italic</i> means the feature doesn't work on the platform):
 <ul>
 <li><b>Linux</b></li>
-<li><b>MacOS</b> - missing <a href="https://github.com/Aldarobot/cala/issues/5"><i>audio</i></a>, <a href="https://github.com/Aldarobot/cala/issues/7"><i>controller</i></a>, <a href="https://github.com/Aldarobot/cala/issues/9"><i>graphics</i></a></li>
-<li><b>Windows</b> - missing <a href="https://github.com/Aldarobot/cala/issues/4"><i>audio</i></a>, <a href="https://github.com/Aldarobot/cala/issues/6"><i>controller</i></a>, <a href="https://github.com/Aldarobot/cala/issues/8"><i>graphics</i></a></li>
+<li><b>MacOS</b> - missing <a href="https://github.com/libcala/cala/issues/5"><i>audio</i></a>, <a href="https://github.com/libcala/cala/issues/7"><i>controller</i></a>, <a href="https://github.com/libcala/cala/issues/9"><i>graphics</i></a></li>
+<li><b>Windows</b> - missing <a href="https://github.com/libcala/cala/issues/4"><i>audio</i></a>, <a href="https://github.com/libcala/cala/issues/6"><i>controller</i></a>, <a href="https://github.com/libcala/cala/issues/8"><i>graphics</i></a></li>
 <li>Redox</li>
 <li>Android</li>
 <li>iOS</li>
@@ -53,7 +53,7 @@ features = ["audio", "clock"]
 
 <p>
 There is a module for each feature (feature and module names match).  Module documentation may include simple tutorials.  More in depth tutorials may be
-found <a href="https://aldarobot.plopgrizzly.com/cala/tutorials">here</a>.
+found <a href="https://libcala.github.io/tutorials">here</a>.
 </p>
 
 <h2>Features</h2>
@@ -66,17 +66,17 @@ found <a href="https://aldarobot.plopgrizzly.com/cala/tutorials">here</a>.
 <li><a href="https://docs.rs/cala/0.5.0/cala/controller/index.html"><code>controller</code></a> - Game Controller - JoyStick</li>
 <li><a href="https://docs.rs/cala/0.5.0/cala/files/index.html"><code>files</code></a> - Containerized filesystem loading / saving ZIP files</li>
 <li><a href="https://docs.rs/cala/0.5.0/cala/graphics/index.html"><code>graphics</code></a> - Render and User Interface</li>
-<li>Camera - Webcam <a href="https://github.com/Aldarobot/cala/issues/1"><i>unimplemented</i></a></li>
-<li>Network - Bluetooth & Wifi Direct <a href="https://github.com/Aldarobot/cala/issues/10"><i>unimplemented</i></a></li>
-<li>Hardware acceleration - SIMD, GPU <a href="https://github.com/Aldarobot/cala/issues/11"><i>unimplemented</i></a></li>
+<li>Camera - Webcam <a href="https://github.com/libcala/cala/issues/1"><i>unimplemented</i></a></li>
+<li>Network - Bluetooth & Wifi Direct <a href="https://github.com/libcala/cala/issues/10"><i>unimplemented</i></a></li>
+<li>Hardware acceleration - SIMD, GPU <a href="https://github.com/libcala/cala/issues/11"><i>unimplemented</i></a></li>
 </ul>
 
 <h1>Contributing</h1>
 <p>
-Contributors are always welcome!  Whether it is a bug report, bug fix, feature request, feature implementation or whatever.  Don't be shy about getting involved.  I always make time to fix bugs, so usually a patched version of the library will be out soon after a report.  Features take me longer, though.  I'll also always listen to any design critiques you have.  If you have any questions you can email me at <a href="mailto:jeronlau@plopgrizzly.com">jeronlau@plopgrizzly.com</a>.  Otherwise, <a href="https://github.com/Aldarobot/cala/issues">here's a link to the issues on GitHub</a>.
+Contributors are always welcome!  Whether it is a bug report, bug fix, feature request, feature implementation or whatever.  Don't be shy about getting involved.  I always make time to fix bugs, so usually a patched version of the library will be out soon after a report.  Features take me longer, though.  I'll also always listen to any design critiques you have.  If you have any questions you can email me at <a href="mailto:jeronlau@plopgrizzly.com">jeronlau@plopgrizzly.com</a>.  Otherwise, <a href="https://github.com/libcala/cala/issues">here's a link to the issues on GitHub</a>.
 </p>
 <p>
-And, as always, make sure to always follow the <a href="https://github.com/Aldarobot/cala/blob/master/CODEOFCONDUCT.md">code of conduct</a>.  Happy coding!
+And, as always, make sure to always follow the <a href="https://github.com/libcala/cala/blob/master/CODEOFCONDUCT.md">code of conduct</a>.  Happy coding!
 </p>
 
 <h1>License</h1>
@@ -84,8 +84,8 @@ And, as always, make sure to always follow the <a href="https://github.com/Aldar
 This repository is licensed under either of the following:
 </p>
 <ul>
-<li>MIT License (MIT) - See accompanying file <a href="https://github.com/Aldarobot/cala/blob/master/LICENSE_MIT.txt">LICENSE_MIT.txt</a> or copy at <a href="https://opensource.org/licenses/MIT">https://opensource.org/licenses/MIT</a></li>
-<li>Boost Software License (BSL-1.0) - See accompanying file <a href="https://github.com/Aldarobot/cala/blob/master/LICENSE_BSL.txt">LICENSE_BSL.txt</a> or copy at <a href="https://www.boost.org/LICENSE_1_0.txt">https://www.boost.org/LICENSE_1_0.txt</a></li>
+<li>MIT License (MIT) - See accompanying file <a href="https://github.com/libcala/cala/blob/master/LICENSE_MIT.txt">LICENSE_MIT.txt</a> or copy at <a href="https://opensource.org/licenses/MIT">https://opensource.org/licenses/MIT</a></li>
+<li>Boost Software License (BSL-1.0) - See accompanying file <a href="https://github.com/libcala/cala/blob/master/LICENSE_BSL.txt">LICENSE_BSL.txt</a> or copy at <a href="https://www.boost.org/LICENSE_1_0.txt">https://www.boost.org/LICENSE_1_0.txt</a></li>
 </ul>
 <p>
 at your option.

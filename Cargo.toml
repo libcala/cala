@@ -15,18 +15,18 @@ edition = "2018"
 license = "MIT / BSL-1.0"
 description = "Cross-platform system interface for hardware IO."
 documentation = "https://docs.rs/cala"
-homepage = "https://aldarobot.plopgrizzly.com/cala"
-repository = "https://github.com/aldarobot/cala"
+homepage = "https://libcala.github.io/cala"
+repository = "https://github.com/libcala/cala"
 readme = "README.md"
 keywords = ["device", "platform-agnostic", "cross-platform", "io", "gui"]
 categories = ["game-engines", "hardware-support", "multimedia", "os"]
 
 [badges]
-travis-ci = { repository = "Aldarobot/cala" }
-codecov = { repository = "Aldarobot/cala", branch = "master", service = "github" }
-coveralls = { repository = "Aldarobot/cala", branch = "master", service = "github" }
-is-it-maintained-issue-resolution = { repository = "Aldarobot/cala" }
-is-it-maintained-open-issues = { repository = "Aldarobot/cala" }
+travis-ci = { repository = "libcala/cala" }
+codecov = { repository = "libcala/cala", branch = "master", service = "github" }
+coveralls = { repository = "libcala/cala", branch = "master", service = "github" }
+is-it-maintained-issue-resolution = { repository = "libcala/cala" }
+is-it-maintained-open-issues = { repository = "libcala/cala" }
 maintenance = { status = "actively-developed" }
 
 [dependencies]

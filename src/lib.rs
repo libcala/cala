@@ -1,13 +1,13 @@
 //! <p align="center">
-//!   <img alt="Cala" src="https://aldarobot.plopgrizzly.com/cala/logo.svg">
+//!   <img alt="Cala" src="https://libcala.github.io/logo.svg">
 //! </p>
 //! <p align="center">
 //! <a href="https://docs.rs/cala"><img src="https://docs.rs/cala/badge.svg"></a>
-//! <a href="https://travis-ci.com/Aldarobot/cala"><img src="https://api.travis-ci.com/Aldarobot/cala.svg?branch=master" alt="Cala Build Status"></a>
+//! <a href="https://travis-ci.com/libcala/cala"><img src="https://api.travis-ci.com/libcala/cala.svg?branch=master" alt="Cala Build Status"></a>
 //! <a href="https://crates.io/crates/cala"><img src="https://img.shields.io/crates/v/cala.svg" alt = "cala on crates.io"></a>
 //! <a href="https://discord.gg/nXwF59K"><img src="https://img.shields.io/badge/discord-join%20server-green.svg" alt="Discord"></a>
 //! 	  <br>
-//!   <strong><a href="https://aldarobot.plopgrizzly.com/cala/">Website</a> | <a href="https://github.com/Aldarobot/cala">GitHub</a> | <a href="https://aldarobot.plopgrizzly.com/cala/changelog">Changelog</a> | <a href="https://aldarobot.plopgrizzly.com/cala/tutorials">Tutorials</a> </strong>
+//!   <strong><a href="https://libcala.github.io">Website</a> | <a href="https://github.com/libcala/cala">GitHub</a> | <a href="https://libcala.github.io/changelog">Changelog</a> | <a href="https://libcala.github.io/tutorials">Tutorials</a> </strong>
 //! </p>
 //!
 //! <p>
@@ -21,8 +21,8 @@
 //! <p>Cala is a platform-agnostic system interface for hardware IO.  This means that eventually, Cala should support all of the different hardware that's connected to your computer.  Cala is designed so that it talks to the operating system to interface with the hardware, so no special permissions are needed for your application.  Here's a list of all of the targeted platforms (<b>bold</b> means a port has been made, <i>italic</i> means the feature doesn't work on the platform):
 //! <ul>
 //! <li><b>Linux</b></li>
-//! <li><b>MacOS</b> - missing <a href="https://github.com/Aldarobot/cala/issues/5"><i>audio</i></a>, <a href="https://github.com/Aldarobot/cala/issues/7"><i>controller</i></a>, <a href="https://github.com/Aldarobot/cala/issues/9"><i>graphics</i></a></li>
-//! <li><b>Windows</b> - missing <a href="https://github.com/Aldarobot/cala/issues/4"><i>audio</i></a>, <a href="https://github.com/Aldarobot/cala/issues/6"><i>controller</i></a>, <a href="https://github.com/Aldarobot/cala/issues/8"><i>graphics</i></a></li>
+//! <li><b>MacOS</b> - missing <a href="https://github.com/libcala/cala/issues/5"><i>audio</i></a>, <a href="https://github.com/libcala/cala/issues/7"><i>controller</i></a>, <a href="https://github.com/libcala/cala/issues/9"><i>graphics</i></a></li>
+//! <li><b>Windows</b> - missing <a href="https://github.com/libcala/cala/issues/4"><i>audio</i></a>, <a href="https://github.com/libcala/cala/issues/6"><i>controller</i></a>, <a href="https://github.com/libcala/cala/issues/8"><i>graphics</i></a></li>
 //! <li>Redox</li>
 //! <li>Android</li>
 //! <li>iOS</li>
@@ -50,13 +50,13 @@
 //!
 //! <p>
 //! There is a module for each feature (feature and module names match).  Module documentation may include simple tutorials.  More in depth tutorials may be
-//! found <a href="https://aldarobot.plopgrizzly.com/cala/tutorials">here</a>.
+//! found <a href="https://libcala.github.io/tutorials">here</a>.
 //! </p>
 
 #![warn(missing_docs)]
 #![doc(
-    html_logo_url = "https://aldarobot.plopgrizzly.com/cala/icon.svg",
-    html_favicon_url = "https://aldarobot.plopgrizzly.com/cala/icon.svg"
+    html_logo_url = "https://libcala.github.io/icon.svg",
+    html_favicon_url = "https://libcala.github.io/icon.svg"
 )]
 
 mod run;
