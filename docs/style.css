@@ -1,11 +1,11 @@
 body {
    display: flex;
-   overflow-y: hidden;
    flex-flow: column;
+   width: 100%;
    height: 100vh;
-   color:#000;
-   font-size: 16pt;
-   background-color:#AAC;
+   color:#FDB;
+   font-size: 15pt;
+   background: #a52;
    font-family:Dejavu Sans;
 }
 body, h1, h2, h3, h4, h5, h6, p, details, summary, div {
@@ -14,22 +14,18 @@ body, h1, h2, h3, h4, h5, h6, p, details, summary, div {
    border: 0px;
 }
 h1 {
-   color: #175f00;
    font-size: 28pt;
    margin-bottom: 14px;
 }
 h2 {
-   color: #173f00;
    font-size: 20pt;
    margin-bottom: 10px;
 }
 h3 {
-   color: #083f08;
    font-size: 15pt;
    margin-bottom: 7.5px;
 }
 h4 {
-   color: #005511;
    font-size: 12pt;
    margin-bottom: 6px;
 }
@@ -37,67 +33,96 @@ p {
    margin-bottom: 14px;
    min-height: 0px;
 }
-body .header {
-   background: #9a9af5;
-   margin: 0px;
-   padding: 0px;
-   border: 0px;
-   border-image-width: 0px;
-   flex: 0 1 auto;
-   height: 65px;
-   display:flex;
-   z-index:2;
-   top: 0px;
-   -webkit-touch-callout: none;-webkit-user-select: none;-khtml-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;
+.page p, .page h1, .page h2, .page h3, .page h4 {
+   margin-left: 48px;
+   margin-right: 48px;
 }
 img {
-   margin: 0px;
-   padding: 0px;
-   border: 0px;
-   -webkit-touch-callout: none;-webkit-user-select: none;-khtml-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;
-   max-width:640px;
+   padding: 0;
+   border: 0;
    width:100%;
+   max-width:640px;
+   margin: 0;
 }
-a:link img {
+body .page p img {
+   display: block;
+   margin: 0 auto;
+}
+body .page a:link img {
    width:auto;
    height:28px;
+   display: inline-block;
+}
+body .menu p {
+   height: 40px;
+   line-height: 40px;
+}
+body .menu img {
+   width:auto;
+   height:40px;
+   max-width:none;
+   margin: 0;
+   padding: 0;
 }
 body .page {
-   margin: 4px auto;
-   padding: 48px;
-   padding-bottom: 24px;
-   border-radius: 24px;
-   width: auto;
-   max-width: 1200px;
-/*   border: 3px solid #24a;*/
-   -webkit-box-shadow: inset 0px 0px 20px 20px #AAC; /* WebKit */
-   -moz-box-shadow: inset 0px 0px 20px 20px #AAC; /* Firefox */
-   box-shadow: inset 0px 0px 20px 20px #AAC; /* Standard */
-   background: #FFF;
+   color: black;
+   padding-bottom: 12px;
+   padding-top: 24px;
+
+/*   border-radius: 24px;*/
+   width: 100%;
+   max-width: 1250px;
+   margin: 0 auto;
+   background: #C9E7BC;
 }
-body .foot {
-   font-size: 10pt;
-   margin: 4px auto;
-   padding-bottom: 24px;
-   width: auto;
-   max-width: 1248px;
-/*   border: 3px solid #24a;*/
-   background: #0000;
+body .page li {
+    margin-left: 48px;
+    margin-right: 48px;
 }
-a:link{
+body .menu {
+   display: flex;
+   flex-flow: row;
+   background: #18100B;
+   width: 100%;
+   height: 40px;
+   line-height: 40px;
+}
+body .menu ul, body .menu li{
+   list-style:none;
+   margin:0;
+   padding:0;
+}
+a:link, a:visited {
+   color:#000;
+   font-weight: bold;
+}
+p a:link, p a:visited, li a:link, li a:visited {
    color:#33f;
    font-weight: bold;
 }
-a:visited{
-   color:#33f;
-   font-weight: bold;
+body .menu p a:link, body .menu p a:visited {
+   height: 40px;
+   line-height: 40px;
+   color: #C9E7BC;
+   padding-right: 5px;
+}
+body .menu a:link {
+   font-size: 17px;
+   margin: 0px;
+   padding: 0px;
+   padding-top: 10px;
+   padding-bottom: 10px;
+   top: -15px;
+   position: relative;
+}
+body .menu a:link img {
+   top: 15px;
+   position: relative;
+   padding-right: 0px;
 }
 body .content {
+   flex: 1;
    overflow-y: scroll;
-   flex: 1 1 auto;
-   display: flex;
-   flex-flow: column;
-   padding-top: 12px;
 }
 a h1:hover, a h2:hover, a h3:hover {
    text-decoration: underline;
@@ -107,28 +132,27 @@ hr {
    border-width: 0px;
    height: 10px;
    background-color: black;
-   -webkit-box-shadow: inset -0px 0px 2px 2px #AAC; /* WebKit */
-   -moz-box-shadow: inset -0px 0px 2px 2px #AAC; /* Firefox */
-   box-shadow: inset -0px 0px 2px 2px #AAC; /* Standard */
-}
-.page hr {
-   -webkit-box-shadow: inset -0px 0px 2px 2px #FFF; /* WebKit */
-   -moz-box-shadow: inset -0px 0px 2px 2px #FFF; /* Firefox */
-   box-shadow: inset -0px 0px 2px 2px #FFF; /* Standard */
+   -webkit-box-shadow: inset -0px 0px 2px 2px #50332F; /* WebKit */
+   -moz-box-shadow: inset -0px 0px 2px 2px #50332F; /* Firefox */
+   box-shadow: inset -0px 0px 2px 2px #50332F; /* Standard */
 }
 pre {
-    padding: 10px;
-    margin-right: 20px;
+   padding: 10px;
+   margin-left: 48px;
+   margin-right: 48px;
 }
 code {
-    padding-left: 5px;
-    padding-right: 5px;
+   padding-left: 3px;
+   padding-right: 3px;
 }
 pre code {
-    padding: 0px;
+   padding: 0px;
+   margin: 0px;
+   background-color: #0000;
+   border-radius: 0px;
 }
 pre, code {
-    color: white;
-    background-color: #233;
-    border-radius: 5pt;
+   color: white;
+   background-color: #102020;
+   border-radius: 5pt;
 }

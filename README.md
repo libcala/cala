@@ -1,97 +1,79 @@
-<p align="center">
-  <img alt="Cala" src="https://libcala.github.io/logo.svg">
-</p>
-<p align="center">
-<a href="https://docs.rs/cala"><img src="https://docs.rs/cala/badge.svg"></a>
-<a href="https://travis-ci.com/libcala/cala"><img src="https://api.travis-ci.com/libcala/cala.svg?branch=master"></a>
-<a href="https://crates.io/crates/cala"><img src="https://img.shields.io/crates/v/cala.svg"></a>
-<a href="https://discord.gg/nXwF59K"><img src="https://img.shields.io/badge/discord-Cala%20Project-green.svg"></a>
-	  <br>
-  <strong><a href="https://libcala.github.io">Website</a> | <a href="https://github.com/libcala/cala">GitHub</a> | <a href="https://libcala.github.io/changelog">Changelog</a> | <a href="https://libcala.github.io/tutorials">Tutorials</a> </strong>
-</p>
+![Cala](https://libcala.github.io/logo.svg)
 
-<p>
-<h4>Note</h4>
-<p>Cala is a complete redesign of previous library <a href="https://crates.io/crates/adi">ADI</a>.  It is still in it's early stages.
-</p>
-</p>
-<h1>About</h1>
-<p>Easily create cross-platform applications.  Some common tasks are not easily portable across different platforms, and this crate hopes to fix that.  That way you don't have to worry about how to port your GUI, audio, or bluetooth interface, etc. and can get straight to building your application's content!
-</p>
-<p>Cala is a platform-agnostic system interface for hardware IO.  This means that eventually, Cala should support all of the different hardware that's connected to your computer.  Cala is designed so that it talks to the operating system to interface with the hardware, so no special permissions are needed for your application.  Here's a list of all of the targeted platforms (<b>bold</b> means a port has been made, <i>italic</i> means the feature doesn't work on the platform):
-<ul>
-<li><b>Linux</b></li>
-<li><b>MacOS</b> - missing <a href="https://github.com/libcala/cala/issues/5"><i>audio</i></a>, <a href="https://github.com/libcala/cala/issues/7"><i>controller</i></a>, <a href="https://github.com/libcala/cala/issues/9"><i>graphics</i></a></li>
-<li><b>Windows</b> - missing <a href="https://github.com/libcala/cala/issues/4"><i>audio</i></a>, <a href="https://github.com/libcala/cala/issues/6"><i>controller</i></a>, <a href="https://github.com/libcala/cala/issues/8"><i>graphics</i></a></li>
-<li>Redox</li>
-<li>Android</li>
-<li>iOS</li>
-<li>Web (WASM)</li>
-<li>Nintendo Switch</li>
-<li>XBox</li>
-<li>PlayStation</li>
-<li>FreeBSD</li>
-<li>Maybe FreeDOS for fun 😉️</li>
-<li>Others not on this list that you will make a pull request for adding them</li>
-</ul>
-</p>
+[![docs.rs](https://docs.rs/cala/badge.svg)](https://docs.rs/cala) [![build status](https://api.travis-ci.com/libcala/cala.svg?branch=master)](https://travis-ci.com/libcala/cala) [![crates.io](https://img.shields.io/crates/v/cala.svg)](https://crates.io/crates/cala) [![discord](https://img.shields.io/badge/discord-Cala%20Project-green.svg)](https://discord.gg/nXwF59K)
 
-<h1>Motivation & Naming</h1>
-<p>
-The aim is to create a newer, better GTK + SDL in Rust!  Why GTK + SDL?  Because a lot of programs need to depend on both anyway (like <a href="https://en.wikipedia.org/wiki/Totem_Video_Player">totem</a>), and they do a lot of the same things; Usually one library does each specific task better than the other.  The goal of this library is to provide the common ground for video games and general GUI applications together.  The name cala is derived from the fungus known as calafate rust.
+[About](https://libcala.github.io/cala) | [Source](https://github.com/libcala/cala) | [Changelog](https://libcala.github.io/cala/changelog) | [Tutorials](https://libcala.github.io/tutorials) | [Blog](https://libcala.github.io)
 
-<h1>Getting Started</h1>
-<p>Each hardware interface can be enabled with a feature.  For example, If you
-want to depend on the <code>audio</code> feature and the <code>clock</code>
-feature, you might put this in your <code>Cargo.toml</code>:</p>
+### Note
+Cala is a complete redesign of previous library [ADI]("https://crates.io/crates/adi").  It is still in it's early stages.
 
+# About
+Easily create cross-platform applications.  Some common tasks are not easily portable across different platforms, and this crate hopes to fix that.  That way you don't have to worry about how to port your GUI, audio, or bluetooth interface, etc. and can get straight to building your application's content!
+
+Cala is a platform-agnostic system interface for hardware IO.  This means that eventually, Cala should support all of the different hardware that's connected to your computer.  Cala is designed so that it talks to the operating system to interface with the hardware, so no special permissions are needed for your application.  Here's a list of all of the targeted platforms (**bold** means a port has been made, *italic* means the feature doesn't work on the platform):
+
+- **Linux**
+- **MacOS** - missing [*audio*](https://github.com/libcala/cala/issues/5), [*controller*](https://github.com/libcala/cala/issues/7), [*graphics*](https://github.com/libcala/cala/issues/9)
+- **Windows** - missing [*audio*](https://github.com/libcala/cala/issues/4), [*controller*](https://github.com/libcala/cala/issues/6), [*graphics*](https://github.com/libcala/cala/issues/8)
+- Redox
+- Android
+- iOS
+- Web (WASM)
+- Nintendo Switch
+- XBox
+- PlayStation
+- FreeBSD
+- Maybe FreeDOS for fun 😉️
+- Others not on this list that you will make a pull request for adding them
+
+# Motivation & Naming
+The aim is to create a newer, better GTK + SDL in Rust!  Why GTK + SDL?  Because a lot of programs need to depend on both anyway (like [totem](https://en.wikipedia.org/wiki/Totem_Video_Player)), and they do a lot of the same things; Usually one library does each specific task better than the other.  The goal of this library is to provide the common ground for video games and general GUI applications together.  The name cala is derived from the fungus known as calafate rust.
+
+# Getting Started
+Each hardware interface can be enabled with a feature.  For example, If you
+want to depend on the `audio` feature and the `clock`
+feature, you might put this in your `Cargo.toml`:
+
+<!--
 ```toml
 [dependencies.cala]
 version = "0.5"
 features = ["audio", "clock"]
 ```
+-->
 
-<p>
+<p style="width:100%"><pre lang="toml"><code><span style="color:#FFF;font-weight:bold;">[dependencies.cala]</span>
+<span style="color:#0F0;font-weight:bold;">version</span> = <span style="color:#0F0">"0.5"</span>
+<span style="color:#0F0;font-weight:bold;">features</span> = [<span style="color:#0F0">"audio"</span>, <span style="color:#0F0">"clock"</span>]</code></pre></p>
+
 There is a module for each feature (feature and module names match).  Module documentation may include simple tutorials.  More in depth tutorials may be
-found <a href="https://libcala.github.io/tutorials">here</a>.
-</p>
+found [here](https://libcala.github.io/tutorials).
 
-<h2>Features</h2>
-<p>Here's a list of the features, with links to documentation.</p>
+## Features
+Here's a list of the features, with links to documentation.
 
-<ul>
-<li><a href="https://docs.rs/cala/0.5.0/cala/user/index.html"><code>user</code></a> - Getting user information</li>
-<li><a href="https://docs.rs/cala/0.5.0/cala/audio/index.html"><code>audio</code></a> - Playing / recording audio</li>
-<li><a href="https://docs.rs/cala/0.5.0/cala/clock/index.html"><code>clock</code></a> - Date, Time of day, Timer</li>
-<li><a href="https://docs.rs/cala/0.5.0/cala/controller/index.html"><code>controller</code></a> - Game Controller - JoyStick</li>
-<li><a href="https://docs.rs/cala/0.5.0/cala/files/index.html"><code>files</code></a> - Containerized filesystem loading / saving ZIP files</li>
-<li><a href="https://docs.rs/cala/0.5.0/cala/graphics/index.html"><code>graphics</code></a> - Render and User Interface</li>
-<li>Camera - Webcam <a href="https://github.com/libcala/cala/issues/1"><i>unimplemented</i></a></li>
-<li>Network - Bluetooth & Wifi Direct <a href="https://github.com/libcala/cala/issues/10"><i>unimplemented</i></a></li>
-<li>Hardware acceleration - SIMD, GPU <a href="https://github.com/libcala/cala/issues/11"><i>unimplemented</i></a></li>
-</ul>
+- [`user`](https://docs.rs/cala/0.5.0/cala/user/index.html) - Getting user information
+- [`audio`](https://docs.rs/cala/0.5.0/cala/audio/index.html) - Playing / recording audio
+- [`clock`](https://docs.rs/cala/0.5.0/cala/clock/index.html) - Date, Time of day, Timer
+- [`controller`](https://docs.rs/cala/0.5.0/cala/controller/index.html) - Game Controller - JoyStick
+- [`files`](https://docs.rs/cala/0.5.0/cala/files/index.html) - Containerized filesystem loading / saving ZIP files
+- [`graphics`](https://docs.rs/cala/0.5.0/cala/graphics/index.html) - Render and User Interface
+- Camera - Webcam [unimplemented](https://github.com/libcala/cala/issues/1)
+- Network - Bluetooth & Wifi Direct [unimplemented](https://github.com/libcala/cala/issues/10)
+- Hardware acceleration - SIMD, GPU [unimplemented](https://github.com/libcala/cala/issues/11)
 
-<h1>Contributing</h1>
-<p>
-Contributors are always welcome!  Whether it is a bug report, bug fix, feature request, feature implementation or whatever.  Don't be shy about getting involved.  I always make time to fix bugs, so usually a patched version of the library will be out soon after a report.  Features take me longer, though.  I'll also always listen to any design critiques you have.  If you have any questions you can email me at <a href="mailto:jeronlau@plopgrizzly.com">jeronlau@plopgrizzly.com</a>.  Otherwise, <a href="https://github.com/libcala/cala/issues">here's a link to the issues on GitHub</a>.
-</p>
-<p>
-And, as always, make sure to always follow the <a href="https://github.com/libcala/cala/blob/master/CODEOFCONDUCT.md">code of conduct</a>.  Happy coding!
-</p>
+# Contributing
+Contributors are always welcome!  Whether it is a bug report, bug fix, feature request, feature implementation or whatever.  Don't be shy about getting involved.  I always make time to fix bugs, so usually a patched version of the library will be out soon after a report.  Features take me longer, though.  I'll also always listen to any design critiques you have.  If you have any questions you can email me at jeronlau@plopgrizzly.com.  Otherwise, [here's a link to the issues on GitHub](https://github.com/libcala/cala/issues).
 
-<h1>License</h1>
-<p>
+And, as always, make sure to always follow the [code of conduct](https://github.com/libcala/cala/blob/master/CODEOFCONDUCT.md).  Happy coding!
+
+# License
 This repository is licensed under either of the following:
-</p>
-<ul>
-<li>MIT License (MIT) - See accompanying file <a href="https://github.com/libcala/cala/blob/master/LICENSE_MIT.txt">LICENSE_MIT.txt</a> or copy at <a href="https://opensource.org/licenses/MIT">https://opensource.org/licenses/MIT</a></li>
-<li>Boost Software License (BSL-1.0) - See accompanying file <a href="https://github.com/libcala/cala/blob/master/LICENSE_BSL.txt">LICENSE_BSL.txt</a> or copy at <a href="https://www.boost.org/LICENSE_1_0.txt">https://www.boost.org/LICENSE_1_0.txt</a></li>
-</ul>
-<p>
-at your option.
-</p>
 
-<h2>Contribution Licensing</h2>
-<p>
+- MIT License (MIT) - See accompanying file [LICENSE_MIT.txt](https://github.com/libcala/cala/blob/master/LICENSE_MIT.txt) or copy at https://opensource.org/licenses/MIT
+- Boost Software License (BSL-1.0) - See accompanying file [LICENSE_BSL.txt](https://github.com/libcala/cala/blob/master/LICENSE_BSL.txt) or copy at https://www.boost.org/LICENSE_1_0.txt
+
+at your option.
+
+## Contribution Licensing
 Unless you explicitly state otherwise, any contribution intentionally submitted for inclusion in the work by you shall be dual licensed as above without any additional terms or conditions.
-</p>
