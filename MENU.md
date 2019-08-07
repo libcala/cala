@@ -1,1 +1,1 @@
-[![Cala](https://libcala.github.io/logo.svg)](https://libcala.github.io)[About](https://libcala.github.io/cala)[Source](https://github.com/libcala/cala)[Changelog](https://libcala.github.io/changelog)[Tutorials](https://libcala.github.io/tutorials)
+[![Cala](https://libcala.github.io/logo.svg)](https://libcala.github.io)[About](https://libcala.github.io/cala)[Source](https://github.com/libcala/cala)[Changelog](https://libcala.github.io/cala/changelog)[Tutorials](https://libcala.github.io/tutorials)
