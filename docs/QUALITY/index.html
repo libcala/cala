@@ -1,0 +1,41 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Quality</title><link rel="icon" href="icon.svg"><link rel="stylesheet" href="style.css"/></head><body><div class="menu"><p><a href="https://libcala.github.io"><img src="https://libcala.github.io/logo.svg" alt="Cala" /></a><a href="https://libcala.github.io/cala">About</a><a href="https://github.com/libcala/cala">Source</a><a href="https://libcala.github.io/changelog">Changelog</a><a href="https://libcala.github.io/tutorials">Tutorials</a></p>
+</div><div class="content"><div class="page"><h1><a href="#quality" aria-hidden="true" class="anchor" id="quality"></a><a href="#quality">Quality</a></h1>
+<p>To ensure the quality of the crate, we use some helpers:</p>
+<pre lang="bash"><code># Install tool `cargo fmt`
+rustup component add rustfmt
+
+# Install tool `cargo clippy`
+rustup component add clippy
+
+## # Install tool `cargo semver`
+## rustup toolchain add nightly
+## cargo +nightly install semverver
+
+# Install tool `cargo geiger`
+cargo install cargo-geiger
+
+# Install tool `cargo outdated`
+cargo install cargo-outdated
+</code></pre>
+<h2><a href="#commit" aria-hidden="true" class="anchor" id="commit"></a><a href="#commit">Commit</a></h2>
+<p>First, run these commands:</p>
+<pre lang="rust"><code># Mandatory
+cargo fmt
+cargo clippy
+cargo outdated
+# Fun
+cargo geiger
+</code></pre>
+<p>If clippy doesn’t print out anything, then do these commands:</p>
+<pre lang="rust"><code>git add .
+git commit
+git push
+</code></pre>
+<h2><a href="#publish" aria-hidden="true" class="anchor" id="publish"></a><a href="#publish">Publish</a></h2>
+<p>After a commit meant for publish, do:</p>
+<pre lang="rust"><code>cargo outdated
+# cargo semver
+cargo package
+</code></pre>
+<p>Only if no warnings or errors are found, do <code>cargo publish</code>.</p>
+</div></div></body>
