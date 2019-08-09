@@ -23,8 +23,6 @@ categories = ["game-engines", "hardware-support", "multimedia", "os"]
 
 [badges]
 travis-ci = { repository = "libcala/cala" }
-codecov = { repository = "libcala/cala", branch = "master", service = "github" }
-coveralls = { repository = "libcala/cala", branch = "master", service = "github" }
 is-it-maintained-issue-resolution = { repository = "libcala/cala" }
 is-it-maintained-open-issues = { repository = "libcala/cala" }
 maintenance = { status = "actively-developed" }
