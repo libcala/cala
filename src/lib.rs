@@ -44,9 +44,9 @@
 //! <p>Each hardware interface can be enabled with a feature.  For example, If you
 //! want to depend on the <code>audio</code> feature and the <code>clock</code>
 //! feature, you might put this in your <code>Cargo.toml</code>:</p>
-//! <p style="width:100%"><pre style="width:100%"><code style="width:100%"><span style="color:#FFF;font-weight:bold;">[dependencies.cala]</span>
-//! <span style="color:#0F0;font-weight:bold;">version</span> = <span style="color:#0F0">"0.5"</span>
-//! <span style="color:#0F0;font-weight:bold;">features</span> = [<span style="color:#0F0">"audio"</span>, <span style="color:#0F0">"clock"</span>]</code></pre></p>
+//! <p style="width:100%"><pre style="width:100%"><code style="width:100%"><span style="font-weight:bold;">[dependencies.cala]</span>
+//! <span style="color:#0A0;font-weight:bold;">version</span> = <span style="color:#0A0">"0.5"</span>
+//! <span style="color:#0A0;font-weight:bold;">features</span> = [<span style="color:#0A0">"audio"</span>, <span style="color:#0A0">"clock"</span>]</code></pre></p>
 //!
 //! <p>
 //! There is a module for each feature (feature and module names match).  Module documentation may include simple tutorials.  More in depth tutorials may be
@@ -55,7 +55,7 @@
 
 #![warn(missing_docs)]
 #![doc(
-    html_logo_url = "https://libcala.github.io/icon.svg",
+    html_logo_url = "https://libcala.github.io/logo.svg",
     html_favicon_url = "https://libcala.github.io/icon.svg"
 )]
 
