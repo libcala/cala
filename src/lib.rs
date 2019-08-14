@@ -169,6 +169,9 @@ pub mod files {
 }
 
 #[cfg(feature = "graphics")]
+mod icons;
+
+#[cfg(feature = "graphics")]
 #[macro_use]
 pub mod graphics {
     //! API for rendering graphics.  Enable with the `graphics` feature.

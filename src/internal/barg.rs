@@ -1,9 +1,9 @@
 // use std::sync::mpsc::{channel, Sender, Receiver};
 
 #[doc(hidden)]
-pub use barg::{ShaderBuilder};
+pub use window::{ShaderBuilder};
 
-pub use barg::{ShapeBuilder, Transform, Graphic, Key};
+pub use window::{ShapeBuilder, Transform, Graphic, Key};
 
 /// **video** Load a generated shader from `res`.
 #[macro_export(self)] macro_rules! shader {
@@ -19,10 +19,10 @@ pub struct Shader(usize);
 pub struct Shape(usize);
 
 struct VideoIO {
-    window: Box<barg::Window>,
-    shader: Vec<Option<barg::Shader>>,
+    window: Box<window::Window>,
+    shader: Vec<Option<window::Shader>>,
     shadet: Vec<usize>,
-    shapes: Vec<Option<barg::Shape>>,
+    shapes: Vec<Option<window::Shape>>,
     shapet: Vec<usize>,
 }
 
@@ -128,8 +128,66 @@ impl Shape {
     }
 }
 
+fn toolbar(buffer: &mut [u8], width: u16) {
+    let height = buffer.len() / (4 * width as usize);
+    let size = (width, height as u16);
+    let mut p = fonterator::footile::Plotter::new(size.0 as u32, size.1 as u32);
+    let mut image = fonterator::footile::RasterB::new(p.width(), p.height());
+
+    use fonterator::PathOp::*;
+    use fonterator::footile::PixFmt;
+
+    // Render Background.
+    let shape = [
+        Move(0.0, 0.0),
+        Line(width.into(), 0.0),
+        Line(width.into(), height as f32),
+        Line(0.0, height as f32),
+    ];
+    let mut pix = fonterator::footile::Rgba8::as_slice_mut(buffer);
+    image.over(p.fill(&shape, fonterator::footile::FillRule::EvenOdd), fonterator::footile::Rgba8::rgb(52, 32, 64), pix /**/);
+    // 
+    let length = buffer.len() / 4;
+    let pointer = buffer as *mut _ as *mut _;
+    let slice = unsafe { std::slice::from_raw_parts_mut(pointer, length) };
+
+    crate::icons::menu(slice, 0, width, height as u16);
+    crate::icons::zoom_out(slice, 1, width, height as u16);
+    crate::icons::zoom_in(slice, 3, width, height as u16);
+    crate::icons::view(slice, 5, width, height as u16);
+    crate::icons::search(slice, 7, width, height as u16);
+    crate::icons::fullscreen(slice, 9, width, height as u16);
+    crate::icons::grid(slice, 11, width, height as u16);
+    crate::icons::next(slice, 13, width, height as u16);
+    crate::icons::text(slice, width, height as u16, "Plop Grizzlyhna2");
+}
+
+// Initialize graphic shader.
+pub fn init_toolbar(window: &mut window::Window) -> (window::Shader, window::Shape) {
+    let mut gui = window.shader_new(window::shader!("gui"));
+
+    // Define vertices.
+    #[rustfmt::skip]
+    let vertices = [
+        -1.0, -1.0,  0.0, 1.0,
+         1.0, -1.0,  1.0, 1.0,
+         1.0,  1.0,  1.0, 0.0,
+
+        -1.0,  1.0,  0.0, 0.0,
+        -1.0, -1.0,  0.0, 1.0,
+         1.0,  1.0,  1.0, 0.0,
+    ];
+
+    // Build cube Shape
+    let mut rect = window.shape_new(ShapeBuilder::new(&mut gui).vert(&vertices).face(Transform::new()));
+    window.instances(&mut rect, &[Transform::new()]);
+    window.build(&mut gui);
+
+    (gui, rect)
+}
+
 pub(crate) fn initialize_video_io(name: &str, run: fn(nanos: u64) -> ()) {
-    use barg::*;
+    use window::*;
 
     unsafe {
         let video_io = &mut VIDEO_IO as *mut _ as *mut VideoIO;
@@ -138,9 +196,11 @@ pub(crate) fn initialize_video_io(name: &str, run: fn(nanos: u64) -> ()) {
         let shapes = vec![];
         let shapet = vec![];
 
+        let mut window = Window::new(name, run, init_toolbar);
+        window.toolbar(toolbar);
+
         std::ptr::write(video_io, VideoIO {
-            window: Window::new(name, run, init_toolbar),
-            shader, shadet, shapes, shapet,
+            window, shader, shadet, shapes, shapet,
         });
     }
 }
@@ -188,6 +248,15 @@ pub fn set_camera(shader: &Shader, camera: Transform) {
 
     unsafe {
         (*video_io).window.camera((*video_io).shader[shader.0].as_ref().unwrap(), camera);
+    }
+}
+
+/// Set tinit for shader.
+pub fn set_tint(shader: &Shader, tint: [f32; 4]) {
+    let video_io = unsafe { &mut VIDEO_IO as *mut _ as *mut VideoIO };
+
+    unsafe {
+        (*video_io).window.tint((*video_io).shader[shader.0].as_ref().unwrap(), tint);
     }
 }
 
