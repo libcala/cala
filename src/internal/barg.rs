@@ -261,7 +261,7 @@ pub fn set_tint(shader: &Shader, tint: [f32; 4]) {
 }
 
 /// Set texture coordinates for shader.
-pub fn texture_coords(shader: &Shader, coords: ([f32; 2], [f32; 2])) {
+pub fn texture_coords(shader: &Shader, coords: (u32, [f32; 2], [f32; 2])) {
     let video_io = unsafe { &mut VIDEO_IO as *mut _ as *mut VideoIO };
 
     unsafe {
@@ -302,5 +302,14 @@ pub fn key(key: Key) -> bool {
 
     unsafe {
         (*video_io).window.key(key)
+    }
+}
+
+/// Get the window aspect ratio.
+pub fn aspect() -> f32 {
+    let video_io = unsafe { &mut VIDEO_IO as *mut _ as *mut VideoIO };
+
+    unsafe {
+        (*video_io).window.aspect()
     }
 }

@@ -51,7 +51,7 @@ pub fn delta() -> u64 {
 pub fn start<T>(
     window_title: &str,
     home_loop: fn(a: &mut T) -> crate::Loop<T>,
-    init_data: &Fn() -> T,
+    init_data: &dyn Fn() -> T,
 ) {
     use std::ffi::c_void;
 
