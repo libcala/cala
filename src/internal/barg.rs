@@ -95,13 +95,13 @@ impl Shape {
                 (*video_io).shapes.len()
             };
 
-                    let shape = (*video_io).window.shape_new(builder);
+            let shape = (*video_io).window.shape_new(builder);
 
-                    if index == (*video_io).shapes.len() {
-                        (*video_io).shapes.push(Some(shape));
-                    } else {
-                        (*video_io).shapes[index] = Some(shape);
-                    }
+            if index == (*video_io).shapes.len() {
+                (*video_io).shapes.push(Some(shape));
+            } else {
+                (*video_io).shapes[index] = Some(shape);
+            }
 
             index
         };
@@ -132,7 +132,7 @@ fn toolbar(buffer: &mut [u8], width: u16) {
     let height = buffer.len() / (4 * width as usize);
     let size = (width, height as u16);
     let mut p = fonterator::footile::Plotter::new(size.0 as u32, size.1 as u32);
-    let mut image = fonterator::footile::RasterB::new(p.width(), p.height());
+    let image = fonterator::footile::RasterB::new(p.width(), p.height());
 
     use fonterator::PathOp::*;
     use fonterator::footile::PixFmt;
@@ -144,7 +144,7 @@ fn toolbar(buffer: &mut [u8], width: u16) {
         Line(width.into(), height as f32),
         Line(0.0, height as f32),
     ];
-    let mut pix = fonterator::footile::Rgba8::as_slice_mut(buffer);
+    let pix = fonterator::footile::Rgba8::as_slice_mut(buffer);
     image.over(p.fill(&shape, fonterator::footile::FillRule::EvenOdd), fonterator::footile::Rgba8::rgb(52, 32, 64), pix /**/);
     // 
     let length = buffer.len() / 4;
@@ -163,7 +163,7 @@ fn toolbar(buffer: &mut [u8], width: u16) {
 }
 
 // Initialize graphic shader.
-pub fn init_toolbar(window: &mut window::Window) -> (window::Shader, window::Shape) {
+pub(crate) fn init_toolbar(window: &mut window::Window) -> (window::Shader, window::Shape) {
     let mut gui = window.shader_new(window::shader!("gui"));
 
     // Define vertices.
