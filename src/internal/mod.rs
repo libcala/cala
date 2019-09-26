@@ -1,4 +1,4 @@
-static START: std::sync::Once = std::sync::ONCE_INIT;
+static START: std::sync::Once = std::sync::Once::new();
 static NANOS: std::sync::atomic::AtomicU64 =
     std::sync::atomic::AtomicU64::new(0);
 
