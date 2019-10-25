@@ -1,3 +1,5 @@
+#![allow(unused)] // FIXME: remove this
+
 use fonterator::footile;
 use rvg::*;
 
