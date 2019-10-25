@@ -1,4 +1,4 @@
-static START: std::sync::Once = std::sync::ONCE_INIT;
+static START: std::sync::Once = std::sync::Once::new();
 static NANOS: std::sync::atomic::AtomicU64 =
     std::sync::atomic::AtomicU64::new(0);
 
@@ -51,7 +51,7 @@ pub fn delta() -> u64 {
 pub fn start<T>(
     window_title: &str,
     home_loop: fn(a: &mut T) -> crate::Loop<T>,
-    init_data: &Fn() -> T,
+    init_data: &dyn Fn() -> T,
 ) {
     use std::ffi::c_void;
 

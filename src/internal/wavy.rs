@@ -45,13 +45,13 @@ pub fn set_record_hz(sr: SampleRate) {
 }
 
 /// Play Audio.  Callback generates audio samples sent directly to speakers.
-pub fn play(callback: &mut FnMut() -> AudioSample) {
+pub fn play(callback: &mut dyn FnMut() -> AudioSample) {
     let aud_io = unsafe { &mut AUD_IO as *mut _ as *mut AudioIO };
     unsafe { (*aud_io).speaker.lock().unwrap().play(callback) };
 }
 
 /// Record Audio.  Callback's parameters are (microphone ID, left sample, right sample).
-pub fn record(callback: &mut FnMut(usize, i16, i16)) {
+pub fn record(callback: &mut dyn FnMut(usize, i16, i16)) {
     let aud_io = unsafe { &mut AUD_IO as *mut _ as *mut AudioIO };
     unsafe { (*aud_io).mic.lock().unwrap().record(callback) };
 }

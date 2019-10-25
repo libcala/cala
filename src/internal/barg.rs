@@ -1,9 +1,9 @@
 // use std::sync::mpsc::{channel, Sender, Receiver};
 
 #[doc(hidden)]
-pub use barg::{ShaderBuilder};
+pub use window::{ShaderBuilder};
 
-pub use barg::{ShapeBuilder, Transform, Graphic, Key};
+pub use window::{ShapeBuilder, Shape, Group, Transform, Graphic, Key};
 
 /// **video** Load a generated shader from `res`.
 #[macro_export(self)] macro_rules! shader {
@@ -15,15 +15,11 @@ pub use barg::{ShapeBuilder, Transform, Graphic, Key};
 /// A shader.  Shaders are programs that run on the GPU that render things on
 /// the screen.
 pub struct Shader(usize);
-/// A shape.  Shapes are a list of indices into a `VertexList`.
-pub struct Shape(usize);
 
 struct VideoIO {
-    window: Box<barg::Window>,
-    shader: Vec<Option<barg::Shader>>,
+    window: Box<window::Window>,
+    shader: Vec<Option<window::Shader>>,
     shadet: Vec<usize>,
-    shapes: Vec<Option<barg::Shape>>,
-    shapet: Vec<usize>,
 }
 
 static mut VIDEO_IO: FakeVideoIO = FakeVideoIO([0; std::mem::size_of::<VideoIO>()]);
@@ -40,17 +36,6 @@ impl Drop for Shader {
         unsafe {
             (*video_io).shadet.push(self.0);
             (*video_io).shader[self.0] = None;
-        }
-    }
-}
-
-impl Drop for Shape {
-    fn drop(&mut self) {
-        let video_io = unsafe { &mut VIDEO_IO as *mut _ as *mut VideoIO };
-
-        unsafe {
-            (*video_io).shapet.push(self.0);
-            (*video_io).shapes[self.0] = None;
         }
     }
 }
@@ -83,64 +68,77 @@ impl Shader {
     }
 }
 
-impl Shape {
-    /// Build a shape.
-    pub fn new<'a>(builder: ShapeBuilder<'a>) -> Shape {
-        let video_io = unsafe { &mut VIDEO_IO as *mut _ as *mut VideoIO };
+fn toolbar(buffer: &mut [u8], width: u16) {
+    let height = buffer.len() / (4 * width as usize);
+    let size = (width, height as u16);
+    let mut p = fonterator::footile::Plotter::new(size.0 as u32, size.1 as u32);
+    let image = fonterator::footile::RasterB::new(p.width(), p.height());
 
-        let index = unsafe {
-            let index = if let Some(index) = (*video_io).shapet.pop() {
-                index
-            } else {
-                (*video_io).shapes.len()
-            };
+    use fonterator::PathOp::*;
+    use fonterator::footile::PixFmt;
 
-                    let shape = (*video_io).window.shape_new(builder);
+    // Render Background.
+    let shape = [
+        Move(0.0, 0.0),
+        Line(width.into(), 0.0),
+        Line(width.into(), height as f32),
+        Line(0.0, height as f32),
+    ];
+    let pix = fonterator::footile::Rgba8::as_slice_mut(buffer);
+    image.over(p.fill(&shape, fonterator::footile::FillRule::EvenOdd), fonterator::footile::Rgba8::rgb(52, 32, 64), pix /**/);
+    // 
+    let length = buffer.len() / 4;
+    let pointer = buffer as *mut _ as *mut _;
+    let slice = unsafe { std::slice::from_raw_parts_mut(pointer, length) };
 
-                    if index == (*video_io).shapes.len() {
-                        (*video_io).shapes.push(Some(shape));
-                    } else {
-                        (*video_io).shapes[index] = Some(shape);
-                    }
+    crate::icons::menu(slice, 0, width, height as u16);
+    crate::icons::zoom_out(slice, 1, width, height as u16);
+    crate::icons::zoom_in(slice, 3, width, height as u16);
+    crate::icons::view(slice, 5, width, height as u16);
+    crate::icons::search(slice, 7, width, height as u16);
+    crate::icons::fullscreen(slice, 9, width, height as u16);
+    crate::icons::grid(slice, 11, width, height as u16);
+    crate::icons::next(slice, 13, width, height as u16);
+    crate::icons::text(slice, width, height as u16, "Plop Grizzlyhna2");
+}
 
-            index
-        };
+// Initialize graphic shader.
+pub(crate) fn init_toolbar(window: &mut window::Window) -> (window::Shader, Group) {
+    let mut gui = window.shader_new(window::shader!("gui"));
 
-        Shape(index)
-    }
+    // Define vertices.
+    #[rustfmt::skip]
+    let vertices = [
+        -1.0, -1.0,  0.0, 1.0,
+         1.0, -1.0,  1.0, 1.0,
+         1.0,  1.0,  1.0, 0.0,
 
-    /// Make instances.
-    pub fn instances(&mut self, transforms: &[Transform]) {
-        let video_io = unsafe { &mut VIDEO_IO as *mut _ as *mut VideoIO };
+        -1.0,  1.0,  0.0, 0.0,
+        -1.0, -1.0,  0.0, 1.0,
+         1.0,  1.0,  1.0, 0.0,
+    ];
 
-        unsafe {
-            (*video_io).window.instances((*video_io).shapes[self.0].as_mut().unwrap(), transforms);
-        }
-    }
+    // Build cube Shape
+    let rect = ShapeBuilder::new(&mut gui).vert(&vertices).face(Transform::new()).finish();
 
-    /// Set transformation for an instance.
-    pub fn transform(&mut self, index: u16, transform: Transform) {
-        let video_io = unsafe { &mut VIDEO_IO as *mut _ as *mut VideoIO };
-
-        unsafe {
-            (*video_io).window.transform((*video_io).shapes[self.0].as_mut().unwrap(), index, transform);
-        }
-    }
+    let mut group = window.group_new();
+    group.push(&rect, &Transform::new());
+    (gui, group)
 }
 
 pub(crate) fn initialize_video_io(name: &str, run: fn(nanos: u64) -> ()) {
-    use barg::*;
+    use window::*;
 
     unsafe {
         let video_io = &mut VIDEO_IO as *mut _ as *mut VideoIO;
         let shader = vec![];
         let shadet = vec![];
-        let shapes = vec![];
-        let shapet = vec![];
+
+        let mut window = Window::new(name, run, init_toolbar);
+        window.toolbar(toolbar);
 
         std::ptr::write(video_io, VideoIO {
-            window: Window::new(name, run, init_toolbar),
-            shader, shadet, shapes, shapet,
+            window, shader, shadet,
         });
     }
 }
@@ -173,12 +171,12 @@ pub fn shape(shader: &Shader) -> ShapeBuilder {
     ShapeBuilder::new(shader)
 }
 
-/// Draw multiple instances of shapes on the screen.
-pub fn draw(shader: &Shader, shape: &Shape) {
+/// Draw a group on the screen.
+pub fn draw(shader: &Shader, group: &mut Group) {
     let video_io = unsafe { &mut VIDEO_IO as *mut _ as *mut VideoIO };
 
     unsafe {
-        (*video_io).window.draw((*video_io).shader[shader.0].as_ref().unwrap(), (*video_io).shapes[shape.0].as_ref().unwrap());
+        (*video_io).window.draw((*video_io).shader[shader.0].as_ref().unwrap(), group);
     }
 }
 
@@ -190,22 +188,21 @@ pub fn set_camera(shader: &Shader, camera: Transform) {
         (*video_io).window.camera((*video_io).shader[shader.0].as_ref().unwrap(), camera);
     }
 }
-
-/// Set texture coordinates for shader.
-pub fn texture_coords(shader: &Shader, coords: ([f32; 2], [f32; 2])) {
+/// Set tint for shader.
+pub fn set_tint(shader: &Shader, tint: [f32; 4]) {
     let video_io = unsafe { &mut VIDEO_IO as *mut _ as *mut VideoIO };
 
     unsafe {
-        (*video_io).window.texture_coords((*video_io).shader[shader.0].as_ref().unwrap(), coords);
+        (*video_io).window.tint((*video_io).shader[shader.0].as_ref().unwrap(), tint);
     }
 }
 
-/// Draw multiple instances of shapes on the screen.
-pub fn draw_graphic(shader: &Shader, shape: &Shape, graphic: &Graphic) {
+/// Draw a group with a texture on the screen.
+pub fn draw_graphic(shader: &Shader, group: &mut Group, graphic: &Graphic) {
     let video_io = unsafe { &mut VIDEO_IO as *mut _ as *mut VideoIO };
 
     unsafe {
-        (*video_io).window.draw_graphic((*video_io).shader[shader.0].as_ref().unwrap(), (*video_io).shapes[shape.0].as_ref().unwrap(), graphic);
+        (*video_io).window.draw_graphic((*video_io).shader[shader.0].as_ref().unwrap(), group, graphic);
     }
 }
 
@@ -218,12 +215,12 @@ pub fn graphic(pixels: &[u8], width: usize, height: usize) -> Graphic {
     }
 }
 
-/// Finish building shader.
-pub fn build(shader: &Shader) {
+/// Create a new group.
+pub fn group_new() -> Group {
     let video_io = unsafe { &mut VIDEO_IO as *mut _ as *mut VideoIO };
 
     unsafe {
-        (*video_io).window.build((*video_io).shader[shader.0].as_mut().unwrap());
+        (*video_io).window.group_new()
     }
 }
 
@@ -233,5 +230,14 @@ pub fn key(key: Key) -> bool {
 
     unsafe {
         (*video_io).window.key(key)
+    }
+}
+
+/// Get the window aspect ratio.
+pub fn aspect() -> f32 {
+    let video_io = unsafe { &mut VIDEO_IO as *mut _ as *mut VideoIO };
+
+    unsafe {
+        (*video_io).window.aspect()
     }
 }

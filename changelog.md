@@ -8,6 +8,16 @@ and this project adheres to [Semantic Versioning](https://code.plopgrizzly.com/s
 ### TODO
 - Possibly redesign the controller API to be event based using a message queue.
 
+## [0.6.0] - 2019-10-24
+### Added
+- `aspect()` for getting aspect ratio
+
+### Fixed
+- Some warnings
+
+### Changed
+- Replaced instances with groups.
+
 ## [0.5.0] - 2019-08-02
 ### Added
 - Toolbar
