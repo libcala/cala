@@ -44,6 +44,9 @@ impl Duration {
 impl Div<i32> for Duration {
     type Output = Duration;
 
+    // This is a fraction, so multiplication is in fact the machine operation to
+    // use, even though it's the division operator.
+    #[allow(clippy::suspicious_arithmetic_impl)]
     fn div(mut self, mut other: i32) -> Self::Output {
         if other.is_negative() {
             self.seconds = -self.seconds;
@@ -171,8 +174,8 @@ impl Clock {
         sec: u8,
     ) -> Option<Self> {
         let date = chrono::offset::Utc
-            .ymd(year, month as u32, day as u32)
-            .and_hms(hour as u32, min as u32, sec as u32);
+            .ymd(year, u32::from(month), u32::from(day))
+            .and_hms(u32::from(hour), u32::from(min), u32::from(sec));
 
         Some(Clock(date.naive_utc()))
     }
@@ -191,8 +194,8 @@ impl Clock {
         sec: u8,
     ) -> Option<Self> {
         let date = chrono::offset::Local
-            .ymd(year, month as u32, day as u32)
-            .and_hms(hour as u32, min as u32, sec as u32)
+            .ymd(year, u32::from(month), u32::from(day))
+            .and_hms(u32::from(hour), u32::from(min), u32::from(sec))
             .with_timezone(&chrono::Utc);
 
         Some(Clock(date.naive_utc()))
@@ -256,10 +259,10 @@ impl Clock {
         .unwrap();
 
         // Multiply time by reciprocal fraction (numerator).
-        let frac_den = frac.denominator as i128;
-        let frac_num = frac.seconds as i128;
-        let seconds = seconds as i128 * frac_num;
-        let nanos = nanos as i128 * frac_num;
+        let frac_den = i128::from(frac.denominator);
+        let frac_num = i128::from(frac.seconds);
+        let seconds = i128::from(seconds) * frac_num;
+        let nanos = i128::from(nanos) * frac_num;
 
         // Denominator
         let seconds_remaining = seconds % frac_den; // what couldn't be divided
@@ -269,6 +272,12 @@ impl Clock {
 
         // Add together
         seconds + (nanos / 1_000_000_000)
+    }
+}
+
+impl Default for Clock {
+    fn default() -> Self {
+        Self::new()
     }
 }
 

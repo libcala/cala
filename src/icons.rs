@@ -3,19 +3,19 @@
 use fonterator::footile;
 use rvg::*;
 
-const BACK: &'static [u8] = include_bytes!("../rvg/back.svg.rvg");
-const EXIT: &'static [u8] = include_bytes!("../rvg/exit.svg.rvg");
-const FULLSCREEN: &'static [u8] = include_bytes!("../rvg/fullscreen.svg.rvg");
-const GRID: &'static [u8] = include_bytes!("../rvg/grid.svg.rvg");
-const HIDE: &'static [u8] = include_bytes!("../rvg/hide.svg.rvg");
-const MENU: &'static [u8] = include_bytes!("../rvg/menu.svg.rvg");
-const MORE: &'static [u8] = include_bytes!("../rvg/more.svg.rvg");
-const NEW: &'static [u8] = include_bytes!("../rvg/new.svg.rvg");
-const NEXT: &'static [u8] = include_bytes!("../rvg/next.svg.rvg");
-const SEARCH: &'static [u8] = include_bytes!("../rvg/search.svg.rvg");
-const VIEW: &'static [u8] = include_bytes!("../rvg/view.svg.rvg");
-const ZOOM_IN: &'static [u8] = include_bytes!("../rvg/zoom_in.svg.rvg");
-const ZOOM_OUT: &'static [u8] = include_bytes!("../rvg/zoom_out.svg.rvg");
+const BACK: &[u8] = include_bytes!("../rvg/back.svg.rvg");
+const EXIT: &[u8] = include_bytes!("../rvg/exit.svg.rvg");
+const FULLSCREEN: &[u8] = include_bytes!("../rvg/fullscreen.svg.rvg");
+const GRID: &[u8] = include_bytes!("../rvg/grid.svg.rvg");
+const HIDE: &[u8] = include_bytes!("../rvg/hide.svg.rvg");
+const MENU: &[u8] = include_bytes!("../rvg/menu.svg.rvg");
+const MORE: &[u8] = include_bytes!("../rvg/more.svg.rvg");
+const NEW: &[u8] = include_bytes!("../rvg/new.svg.rvg");
+const NEXT: &[u8] = include_bytes!("../rvg/next.svg.rvg");
+const SEARCH: &[u8] = include_bytes!("../rvg/search.svg.rvg");
+const VIEW: &[u8] = include_bytes!("../rvg/view.svg.rvg");
+const ZOOM_IN: &[u8] = include_bytes!("../rvg/zoom_in.svg.rvg");
+const ZOOM_OUT: &[u8] = include_bytes!("../rvg/zoom_out.svg.rvg");
 
 pub fn text(
     pixels: &mut [footile::Rgba8],
@@ -27,13 +27,14 @@ pub fn text(
     let graphic_h = graphic_h / 2;
 
     // Render
-    let mut p = footile::Plotter::new(width as u32, graphic_h as u32 * 2);
+    let mut p =
+        footile::Plotter::new(u32::from(width), u32::from(graphic_h) * 2);
     let r = footile::RasterB::new(p.width(), p.height());
     let path: Vec<_> = font
         .render(
-            text,                                       /*text*/
-            (0.0, 0.0, width as f32, graphic_h as f32), /*bbox*/
-            (graphic_h as f32, graphic_h as f32),       /*size*/
+            text,                                               /*text*/
+            (0.0, 0.0, f32::from(width), f32::from(graphic_h)), /*bbox*/
+            (f32::from(graphic_h), f32::from(graphic_h)),       /*size*/
             fonterator::TextAlign::Center,
         )
         .0
@@ -44,7 +45,7 @@ pub fn text(
         unsafe {
             std::slice::from_raw_parts_mut(
                 pixels.as_mut_ptr(),
-                width as usize * graphic_h as usize * 2,
+                usize::from(width) * usize::from(graphic_h) * 2,
             )
         },
     );
@@ -62,7 +63,7 @@ fn half(
     let ad = (graphic_h / 2) - (margin);
 
     let offs = if x > 6 {
-        x = x - 6;
+        x -= 6;
         width - (8 * ad)
     } else {
         0
@@ -82,7 +83,7 @@ fn full(
     let ad = (graphic_h / 2) - (margin);
 
     let offs = if x > 6 {
-        x = x - 6;
+        x -= 6;
         width - (8 * ad)
     } else {
         0

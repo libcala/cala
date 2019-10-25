@@ -71,7 +71,7 @@ impl Shader {
 fn toolbar(buffer: &mut [u8], width: u16) {
     let height = buffer.len() / (4 * width as usize);
     let size = (width, height as u16);
-    let mut p = fonterator::footile::Plotter::new(size.0 as u32, size.1 as u32);
+    let mut p = fonterator::footile::Plotter::new(u32::from(size.0), u32::from(size.1));
     let image = fonterator::footile::RasterB::new(p.width(), p.height());
 
     use fonterator::PathOp::*;

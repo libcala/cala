@@ -9,6 +9,7 @@ pub struct TimedLoop {
 
 impl TimedLoop {
     /// Seconds and nanoseconds (1 / 1_000_000_000 of a second).
+    #[allow(clippy::cast_lossless)] // const fn doesn't support u64::from() yet
     pub const fn new(secs: u32, nanos: u32) -> TimedLoop {
         let whol = secs as u64 * 1_000_000_000u64;
         let frac = nanos as u64;
