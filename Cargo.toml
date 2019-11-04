@@ -8,7 +8,7 @@
 
 [package]
 name = "cala"
-version = "0.6.0"
+version = "0.7.0"
 authors = ["Jeron Aldaron Lau <jeronlau@plopgrizzly.com>"]
 edition = "2018"
 

@@ -23,10 +23,10 @@
 //! <li><b>Linux</b></li>
 //! <li><b>MacOS</b> - missing <a href="https://github.com/libcala/cala/issues/5"><i>audio</i></a>, <a href="https://github.com/libcala/cala/issues/7"><i>controller</i></a>, <a href="https://github.com/libcala/cala/issues/9"><i>graphics</i></a></li>
 //! <li><b>Windows</b> - missing <a href="https://github.com/libcala/cala/issues/4"><i>audio</i></a>, <a href="https://github.com/libcala/cala/issues/6"><i>controller</i></a>, <a href="https://github.com/libcala/cala/issues/8"><i>graphics</i></a></li>
+//! <li><b>Web (WASM)</b> - missing audio, controller, graphics, files</li>
 //! <li>Redox</li>
 //! <li>Android</li>
 //! <li>iOS</li>
-//! <li>Web (WASM)</li>
 //! <li>Nintendo Switch</li>
 //! <li>XBox</li>
 //! <li>PlayStation</li>
@@ -311,7 +311,7 @@ macro_rules! init {
     };
 }
 
-/// Log an informative (stdout) message in only debug mode.
+/// Log an informative (stdout) message only in debug mode.
 ///
 /// This is designed to be used for debugging.
 #[macro_export]

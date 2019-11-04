@@ -15,10 +15,10 @@ Cala is a platform-agnostic system interface for hardware IO.  This means that e
 - **Linux**
 - **MacOS** - missing [*audio*](https://github.com/libcala/cala/issues/5), [*controller*](https://github.com/libcala/cala/issues/7), [*graphics*](https://github.com/libcala/cala/issues/9)
 - **Windows** - missing [*audio*](https://github.com/libcala/cala/issues/4), [*controller*](https://github.com/libcala/cala/issues/6), [*graphics*](https://github.com/libcala/cala/issues/8)
+- **Web (WASM)** - missing audio, controller, graphics, files
 - Redox
 - Android
 - iOS
-- Web (WASM)
 - Nintendo Switch
 - XBox
 - PlayStation
