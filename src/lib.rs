@@ -23,10 +23,10 @@
 //! <li><b>Linux</b></li>
 //! <li><b>MacOS</b> - missing <a href="https://github.com/libcala/cala/issues/5"><i>audio</i></a>, <a href="https://github.com/libcala/cala/issues/7"><i>controller</i></a>, <a href="https://github.com/libcala/cala/issues/9"><i>graphics</i></a></li>
 //! <li><b>Windows</b> - missing <a href="https://github.com/libcala/cala/issues/4"><i>audio</i></a>, <a href="https://github.com/libcala/cala/issues/6"><i>controller</i></a>, <a href="https://github.com/libcala/cala/issues/8"><i>graphics</i></a></li>
+//! <li><b>Web (WASM)</b> - missing audio, controller, graphics, files</li>
 //! <li>Redox</li>
 //! <li>Android</li>
 //! <li>iOS</li>
-//! <li>Web (WASM)</li>
 //! <li>Nintendo Switch</li>
 //! <li>XBox</li>
 //! <li>PlayStation</li>
@@ -238,6 +238,12 @@ pub use clock::*;
 #[doc(hidden)]
 pub use internal::start;
 #[doc(hidden)]
+pub use internal::info as __cala_internal_info__;
+#[doc(hidden)]
+pub use internal::warn as __cala_internal_warn__;
+#[doc(hidden)]
+pub use internal::note as __cala_internal_note__;
+#[doc(hidden)]
 pub use run::Loop::*;
 
 pub use internal::delta;
@@ -302,5 +308,44 @@ macro_rules! init {
 
             cala::start(window_title.as_str(), $home_loop, &|| $init_data);
         }
+    };
+}
+
+/// Log an informative (stdout) message only in debug mode.
+///
+/// This is designed to be used for debugging.
+#[macro_export]
+macro_rules! note {
+    () => {
+        $crate::__cala_internal_note__("")
+    };
+    ($($arg:tt)*) => {
+        $crate::__cala_internal_note__(&format!("{}", format_args!($($arg)*)))
+    };
+}
+
+/// Log an informative (stdout) message in both release and debug mode.
+///
+/// Do not overuse this function.  Release builds should have few logs.
+#[macro_export]
+macro_rules! info {
+    () => {
+        $crate::__cala_internal_info__("")
+    };
+    ($($arg:tt)*) => {
+        $crate::__cala_internal_info__(&format!("{}", format_args!($($arg)*)))
+    };
+}
+
+/// Log a warning (stderr) message in both release and debug mode.
+///
+/// Do not overuse this function.  Release builds should have few logs.
+#[macro_export]
+macro_rules! warn {
+    () => {
+        $crate::__cala_internal_warn__("")
+    };
+    ($($arg:tt)*) => {
+        $crate::__cala_internal_warn__(&format!("{}", format_args!($($arg)*)))
     };
 }
