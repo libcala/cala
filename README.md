@@ -1,8 +1,15 @@
 ![Cala](https://libcala.github.io/logo.svg)
 
-[![docs.rs](https://docs.rs/cala/badge.svg)](https://docs.rs/cala) [![build status](https://api.travis-ci.com/libcala/cala.svg?branch=master)](https://travis-ci.com/libcala/cala) [![crates.io](https://img.shields.io/crates/v/cala.svg)](https://crates.io/crates/cala) [![discord](https://img.shields.io/badge/discord-Cala%20Project-green.svg)](https://discord.gg/nXwF59K)
+[![docs.rs](https://docs.rs/cala/badge.svg)](https://docs.rs/cala)
+[![build status](https://api.travis-ci.com/libcala/cala.svg?branch=master)](https://travis-ci.com/libcala/cala)
+[![crates.io](https://img.shields.io/crates/v/cala.svg)](https://crates.io/crates/cala)
+[![discord](https://img.shields.io/badge/discord-Cala%20Project-green.svg)](https://discord.gg/nXwF59K)
 
-[About](https://libcala.github.io/cala) | [Source](https://github.com/libcala/cala) | [Changelog](https://libcala.github.io/cala/changelog) | [Tutorials](https://libcala.github.io/tutorials) | [Blog](https://libcala.github.io)
+[About](https://libcala.github.io/cala) |
+[Source](https://github.com/libcala/cala) |
+[Changelog](https://libcala.github.io/cala/changelog) |
+[Tutorials](https://libcala.github.io/tutorials) |
+[Blog](https://libcala.github.io)
 
 ### Note
 Cala is a complete redesign of previous library [ADI]("https://crates.io/crates/adi").  It is still in it's early stages.
@@ -63,17 +70,31 @@ Here's a list of the features, with links to documentation.
 - Hardware acceleration - SIMD, GPU [unimplemented](https://github.com/libcala/cala/issues/11)
 
 # Contributing
-Contributors are always welcome!  Whether it is a bug report, bug fix, feature request, feature implementation or whatever.  Don't be shy about getting involved.  I always make time to fix bugs, so usually a patched version of the library will be out soon after a report.  Features take me longer, though.  I'll also always listen to any design critiques you have.  If you have any questions you can email me at jeronlau@plopgrizzly.com.  Otherwise, [here's a link to the issues on GitHub](https://github.com/libcala/cala/issues).
+Contributors are always welcome!  Whether it is a bug report, bug fix, feature
+request, feature implementation or whatever.  Don't be shy about getting
+involved.  I always make time to fix bugs, so usually a patched version of the
+library will be out soon after a report.  Features take me longer, though.  I'll
+also always listen to any design critiques you have.  If you have any questions
+you can email me at jeronlau@plopgrizzly.com.  Otherwise, here's a link to the
+[issues on GitHub](https://github.com/libcala/cala/issues).
 
-And, as always, make sure to always follow the [code of conduct](https://github.com/libcala/cala/blob/master/CODEOFCONDUCT.md).  Happy coding!
+And, as always, make sure to always follow the
+[code of conduct](https://github.com/libcala/cala/blob/master/CODEOFCONDUCT.md).
+Happy coding!
 
 # License
 This repository is licensed under either of the following:
 
-- MIT License (MIT) - See accompanying file [LICENSE_MIT.txt](https://github.com/libcala/cala/blob/master/LICENSE_MIT.txt) or copy at https://opensource.org/licenses/MIT
-- Boost Software License (BSL-1.0) - See accompanying file [LICENSE_BSL.txt](https://github.com/libcala/cala/blob/master/LICENSE_BSL.txt) or copy at https://www.boost.org/LICENSE_1_0.txt
+- MIT License (MIT) - See accompanying file
+  [LICENSE_MIT.txt](https://github.com/libcala/cala/blob/master/LICENSE_MIT.txt)
+  or copy at https://opensource.org/licenses/MIT
+- Boost Software License (BSL-1.0) - See accompanying file
+  [LICENSE_BSL.txt](https://github.com/libcala/cala/blob/master/LICENSE_BSL.txt)
+  or copy at https://www.boost.org/LICENSE_1_0.txt
 
 at your option.
 
 ## Contribution Licensing
-Unless you explicitly state otherwise, any contribution intentionally submitted for inclusion in the work by you shall be dual licensed as above without any additional terms or conditions.
+Unless you explicitly state otherwise, any contribution intentionally submitted
+for inclusion in the work by you shall be dual licensed as above without any
+additional terms or conditions.
