@@ -3,7 +3,7 @@
 [![docs.rs](https://docs.rs/cala/badge.svg)](https://docs.rs/cala)
 [![build status](https://api.travis-ci.com/libcala/cala.svg?branch=master)](https://travis-ci.com/libcala/cala)
 [![crates.io](https://img.shields.io/crates/v/cala.svg)](https://crates.io/crates/cala)
-[![discord](https://img.shields.io/badge/discord-Cala%20Project-green.svg)](https://discord.gg/nXwF59K)
+[![Zulip Chat](https://img.shields.io/badge/zulip-join_chat-darkgreen.svg)](https://cala.zulipchat.com/join/wkdkw53xb5htnchg8kqz0du0/)
 
 [About](https://libcala.github.io/cala) |
 [Source](https://github.com/libcala/cala) |
