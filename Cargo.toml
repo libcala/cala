@@ -32,7 +32,7 @@ whoami = {version = "0.8", optional = true} # user
 wavy = {version = "0.2", optional = true} # audio
 stronghold = {version = "0.2", optional = true} # file
 serde = {version = "1.0", optional = true}
-stick = {version = "0.7", optional = true} # joystick / controller
+stick = {version = "0.8", optional = true} # joystick / controller
 # barg = {version = "0.2", optional = true} # video
 window = {version = "0.3", optional = true}
 fonterator = {version = "0.7", optional = true, default-features = false, features = ["normal-font"]}
