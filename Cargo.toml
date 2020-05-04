@@ -29,7 +29,7 @@ maintenance = { status = "actively-developed" }
 
 [dependencies]
 whoami = {version = "0.8", optional = true} # user
-wavy = {version = "0.1", optional = true} # audio
+wavy = {version = "0.2", optional = true} # audio
 stronghold = {version = "0.2", optional = true} # file
 serde = {version = "1.0", optional = true}
 stick = {version = "0.7", optional = true} # joystick / controller
