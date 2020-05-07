@@ -1,6 +1,6 @@
 # Cala
 #
-# Copyright © 2017-2019 Jeron Aldaron Lau.
+# Copyright © 2017-2020 Jeron Aldaron Lau.
 # Dual-licensed under either the MIT License or the Boost Software License,
 # Version 1.0.  (See accompanying file LICENSE_BSL.txt or copy at
 # https://www.boost.org/LICENSE_1_0.txt and accompanying file LICENSE_MIT.txt or
@@ -37,6 +37,7 @@ stick = {version = "0.8", optional = true} # joystick / controller
 window = {version = "0.3", optional = true}
 fonterator = {version = "0.7", optional = true, default-features = false, features = ["normal-font"]}
 rvg = {version = "0.0.3", optional = true, features = ["footile"]}
+footile = {version = "0.4", optional = true}
 chrono = {version = "0.4", optional = true} # clock
 
 [target.'cfg(target_arch = "wasm32")'.dependencies]
@@ -54,7 +55,7 @@ user = ["whoami"]
 audio = ["wavy"]
 files = ["stronghold", "serde"]
 controller = ["stick"]
-graphics = ["window", "fonterator", "timer", "res", "rvg"]
+graphics = ["window", "fonterator", "timer", "res", "rvg", "footile"]
 camera = []
 clock = ["chrono", "timer"]
 timer = []

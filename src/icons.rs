@@ -1,6 +1,5 @@
 #![allow(unused)] // FIXME: remove this
 
-use fonterator::footile;
 use rvg::*;
 
 const BACK: &[u8] = include_bytes!("../rvg/back.svg.rvg");
