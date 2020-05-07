@@ -85,10 +85,10 @@ pub mod user {
     include!("internal/whoami.rs");
 }
 
-#[cfg(feature = "controller")]
-pub mod controller {
+#[cfg(feature = "gamepad")]
+pub mod gamepad {
     //! API for getting joystick / controller / gamepad input.  Enable with the
-    //! `controller` feature.
+    //! `gamepad` feature.
     //!
     //! # Usage
     //! ```rust
@@ -219,9 +219,9 @@ pub use run::Loop;
 #[doc(hidden)]
 pub use user::*;
 
-#[cfg(feature = "controller")]
+#[cfg(feature = "gamepad")]
 #[doc(hidden)]
-pub use controller::*;
+pub use gamepad::*;
 
 #[cfg(feature = "audio")]
 #[doc(hidden)]

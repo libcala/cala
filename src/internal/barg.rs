@@ -69,13 +69,12 @@ impl Shader {
 }
 
 fn toolbar(buffer: &mut [u8], width: u16) {
-    let height = buffer.len() / (4 * width as usize);
+/*    let height = buffer.len() / (4 * width as usize);
     let size = (width, height as u16);
-    let mut p = fonterator::footile::Plotter::new(u32::from(size.0), u32::from(size.1));
-    let image = fonterator::footile::RasterB::new(p.width(), p.height());
+    let mut p = footile::Plotter::new(u32::from(size.0), u32::from(size.1));
 
-    use fonterator::PathOp::*;
-    use fonterator::footile::PixFmt;
+    use footile::PathOp::*;
+    use pix::el::Pixel;
 
     // Render Background.
     let shape = [
@@ -84,8 +83,11 @@ fn toolbar(buffer: &mut [u8], width: u16) {
         Line(width.into(), height as f32),
         Line(0.0, height as f32),
     ];
-    let pix = fonterator::footile::Rgba8::as_slice_mut(buffer);
-    image.over(p.fill(&shape, fonterator::footile::FillRule::EvenOdd), fonterator::footile::Rgba8::rgb(52, 32, 64), pix /**/);
+
+    let mut raster = Raster::<SRgba8>::with_u8_buffer(p.width(), p.height(), buffer);
+
+    let pix = pix::Raster::<Sfootile::Rgba8::as_slice_mut(buffer);
+    raster.composite_matte(p.fill(&shape, footile::FillRule::EvenOdd), pix::rgb::SRgba8::new(52, 32, 64, 255).convert(), pix /**/, pix::SrcOver);
     // 
     let length = buffer.len() / 4;
     let pointer = buffer as *mut _ as *mut _;
@@ -99,7 +101,7 @@ fn toolbar(buffer: &mut [u8], width: u16) {
     crate::icons::fullscreen(slice, 9, width, height as u16);
     crate::icons::grid(slice, 11, width, height as u16);
     crate::icons::next(slice, 13, width, height as u16);
-    crate::icons::text(slice, width, height as u16, "Plop Grizzlyhna2");
+    crate::icons::text(slice, width, height as u16, "Plop Grizzlyhna2");*/
 }
 
 // Initialize graphic shader.

@@ -36,7 +36,8 @@ stick = {version = "0.8", optional = true} # joystick / controller
 # barg = {version = "0.2", optional = true} # video
 window = {version = "0.3", optional = true}
 fonterator = {version = "0.7", optional = true, default-features = false, features = ["normal-font"]}
-rvg = {version = "0.0.3", optional = true, features = ["footile"]}
+pix = {version = "0.12", optional = true}
+rvg = {path = "../rvg", optional = true, features = ["render"]}
 footile = {version = "0.4", optional = true}
 chrono = {version = "0.4", optional = true} # clock
 
@@ -54,8 +55,8 @@ default-target = "x86_64-unknown-linux-gnu"
 user = ["whoami"]
 audio = ["wavy"]
 files = ["stronghold", "serde"]
-controller = ["stick"]
-graphics = ["window", "fonterator", "timer", "res", "rvg", "footile"]
+gamepad = ["stick"]
+graphics = ["window", "fonterator", "timer", "res", "rvg", "footile", "pix"]
 camera = []
 clock = ["chrono", "timer"]
 timer = []

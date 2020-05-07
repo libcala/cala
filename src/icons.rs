@@ -1,6 +1,11 @@
 #![allow(unused)] // FIXME: remove this
 
+use footile::Plotter;
+use pix::{Raster, rgb::SRgba8, ops::SrcOver, el::Pixel};
 use rvg::*;
+use pix::chan::Ch8;
+use pix::chan::Linear;
+use pix::chan::Premultiplied;
 
 const BACK: &[u8] = include_bytes!("../rvg/back.svg.rvg");
 const EXIT: &[u8] = include_bytes!("../rvg/exit.svg.rvg");
@@ -16,148 +21,168 @@ const VIEW: &[u8] = include_bytes!("../rvg/view.svg.rvg");
 const ZOOM_IN: &[u8] = include_bytes!("../rvg/zoom_in.svg.rvg");
 const ZOOM_OUT: &[u8] = include_bytes!("../rvg/zoom_out.svg.rvg");
 
-pub fn text(
-    pixels: &mut [footile::Rgba8],
-    width: u16,
-    graphic_h: u16,
+pub fn text<P>(
+    raster: &mut Raster<P>,
+    plotter: &mut Plotter,
+    size: f32,
     text: &str,
-) {
+)
+    where P::Chan: From<Ch8>, P: Pixel<Gamma = Linear, Alpha = Premultiplied>
+{
     let font = fonterator::normal_font();
-    let graphic_h = graphic_h / 2;
 
     // Render
-    let mut p =
-        footile::Plotter::new(u32::from(width), u32::from(graphic_h) * 2);
-    let r = footile::RasterB::new(p.width(), p.height());
     let path: Vec<_> = font
         .render(
             text,                                               /*text*/
-            (0.0, 0.0, f32::from(width), f32::from(graphic_h)), /*bbox*/
-            (f32::from(graphic_h), f32::from(graphic_h)),       /*size*/
+            (0.0, 0.0, raster.width() as f32, raster.height() as f32), /*bbox*/
+            (size, size),       /*size*/
             fonterator::TextAlign::Center,
         )
         .0
         .collect();
-    r.over(
-        p.fill(&path, footile::FillRule::NonZero),
-        footile::Rgba8::rgb(200, 200, 200), /*color*/
-        unsafe {
-            std::slice::from_raw_parts_mut(
-                pixels.as_mut_ptr(),
-                usize::from(width) * usize::from(graphic_h) * 2,
-            )
-        },
+        
+    let temp_raster: Raster<pix::el::Pix1<P::Chan, pix::matte::Matte, pix::chan::Premultiplied, pix::chan::Linear>> = Raster::with_raster(plotter.fill(&path, footile::FillRule::NonZero));
+        
+    raster.composite_matte(
+        (),
+        &temp_raster,
+        (),
+        SRgba8::new(200, 200, 200, 255).convert(), /*color*/
+        SrcOver,
     );
 }
 
-fn half(
-    pixels: &mut [footile::Rgba8],
-    mut x: u16,
-    width: u16,
-    graphic_h: u16,
-    slice: &[u8],
-) {
-    let margin = graphic_h / 8;
-    let graphic_width = (graphic_h / 2) - (margin);
-    let ad = (graphic_h / 2) - (margin);
-
-    let offs = if x > 6 {
-        x -= 6;
-        width - (8 * ad)
-    } else {
-        0
-    };
-    render_from_rvg(slice, pixels, width, offs + x * ad, margin, graphic_width)
+pub struct Icons {
+    back: Graphic,
+    exit: Graphic,
+    fullscreen: Graphic,
+    grid: Graphic,
+    hide: Graphic,
+    menu: Graphic,
+    more: Graphic,
+    new: Graphic,
+    next: Graphic,
+    search: Graphic,
+    view: Graphic,
+    zoom_in: Graphic,
+    zoom_out: Graphic,
 }
 
-fn full(
-    pixels: &mut [footile::Rgba8],
-    mut x: u16,
-    width: u16,
-    graphic_h: u16,
-    slice: &[u8],
-) {
-    let margin = graphic_h / 8;
-    let graphic_width = (graphic_h) - (margin * 2);
-    let ad = (graphic_h / 2) - (margin);
+impl Icons {
+    fn new() -> Self {
+        Icons {
+            back: Graphic::load(BACK).unwrap(),
+            exit: Graphic::load(EXIT).unwrap(),
+            fullscreen: Graphic::load(FULLSCREEN).unwrap(),
+            grid: Graphic::load(GRID).unwrap(),
+            hide: Graphic::load(HIDE).unwrap(),
+            menu: Graphic::load(MENU).unwrap(),
+            more: Graphic::load(MORE).unwrap(),
+            new: Graphic::load(NEW).unwrap(),
+            next: Graphic::load(NEXT).unwrap(),
+            search: Graphic::load(SEARCH).unwrap(),
+            view: Graphic::load(VIEW).unwrap(),
+            zoom_in: Graphic::load(ZOOM_IN).unwrap(),
+            zoom_out: Graphic::load(ZOOM_OUT).unwrap(),
+        }
+    }
+    
+    pub fn back<P>(&self, r: &mut Raster<P>, x: u16)
+        where P::Chan: From<Ch8>, P: Pixel<Gamma = Linear, Alpha = Premultiplied>
+    {
+        half(r, &self.back, x);
+    }
 
-    let offs = if x > 6 {
-        x -= 6;
-        width - (8 * ad)
-    } else {
-        0
-    };
-    render_from_rvg(slice, pixels, width, offs + x * ad, margin, graphic_width)
+    pub fn next<P>(&self, r: &mut Raster<P>, x: u16)
+        where P::Chan: From<Ch8>, P: Pixel<Gamma = Linear, Alpha = Premultiplied>
+    {
+        half(r, &self.next, x);
+    }
+
+    pub fn menu<P>(&self, r: &mut Raster<P>, x: u16)
+        where P::Chan: From<Ch8>, P: Pixel<Gamma = Linear, Alpha = Premultiplied>
+    {
+        half(r, &self.menu, x);
+    }
+
+    pub fn exit<P>(&self, r: &mut Raster<P>, x: u16)
+        where P::Chan: From<Ch8>, P: Pixel<Gamma = Linear, Alpha = Premultiplied>
+    {
+        half(r, &self.exit, x);
+    }
+
+    pub fn create<P>(&self, r: &mut Raster<P>, x: u16)
+        where P::Chan: From<Ch8>, P: Pixel<Gamma = Linear, Alpha = Premultiplied>
+    {
+        full(r, &self.new, x);
+    }
+
+    pub fn more<P>(&self, r: &mut Raster<P>, x: u16)
+        where P::Chan: From<Ch8>, P: Pixel<Gamma = Linear, Alpha = Premultiplied>
+    {
+        full(r, &self.more, x);
+    }
+
+    pub fn search<P>(&self, r: &mut Raster<P>, x: u16)
+        where P::Chan: From<Ch8>, P: Pixel<Gamma = Linear, Alpha = Premultiplied>
+    {
+        full(r, &self.search, x);
+    }
+
+    pub fn grid<P>(&self, r: &mut Raster<P>, x: u16)
+        where P::Chan: From<Ch8>, P: Pixel<Gamma = Linear, Alpha = Premultiplied>
+    {
+        full(r, &self.grid, x);
+    }
+
+    pub fn hide<P>(&self, r: &mut Raster<P>, x: u16)
+        where P::Chan: From<Ch8>, P: Pixel<Gamma = Linear, Alpha = Premultiplied>
+    {
+        full(r, &self.hide, x);
+    }
+
+    pub fn fullscreen<P>(&self, r: &mut Raster<P>, x: u16)
+        where P::Chan: From<Ch8>, P: Pixel<Gamma = Linear, Alpha = Premultiplied>
+    {
+        full(r, &self.fullscreen, x);
+    }
+
+    pub fn zoom_out<P>(&self, r: &mut Raster<P>, x: u16)
+        where P::Chan: From<Ch8>, P: Pixel<Gamma = Linear, Alpha = Premultiplied>
+    {
+        full(r, &self.zoom_out, x);
+    }
+
+    pub fn zoom_in<P>(&self, r: &mut Raster<P>, x: u16)
+        where P::Chan: From<Ch8>, P: Pixel<Gamma = Linear, Alpha = Premultiplied>
+    {
+        full(r, &self.zoom_in, x);
+    }
+
+    pub fn view<P>(&self, r: &mut Raster<P>, x: u16)
+        where P::Chan: From<Ch8>, P: Pixel<Gamma = Linear, Alpha = Premultiplied>
+    {
+        full(r, &self.view, x);
+    }
 }
 
-pub fn back(pixels: &mut [footile::Rgba8], x: u16, width: u16, graphic_h: u16) {
-    half(pixels, x, width, graphic_h, BACK);
-}
-
-pub fn next(pixels: &mut [footile::Rgba8], x: u16, width: u16, graphic_h: u16) {
-    half(pixels, x, width, graphic_h, NEXT);
-}
-
-pub fn menu(pixels: &mut [footile::Rgba8], x: u16, width: u16, graphic_h: u16) {
-    half(pixels, x, width, graphic_h, MENU);
-}
-
-pub fn exit(pixels: &mut [footile::Rgba8], x: u16, width: u16, graphic_h: u16) {
-    half(pixels, x, width, graphic_h, EXIT);
-}
-
-pub fn new(pixels: &mut [footile::Rgba8], x: u16, width: u16, graphic_h: u16) {
-    full(pixels, x, width, graphic_h, NEW);
-}
-
-pub fn more(pixels: &mut [footile::Rgba8], x: u16, width: u16, graphic_h: u16) {
-    full(pixels, x, width, graphic_h, MORE);
-}
-
-pub fn search(
-    pixels: &mut [footile::Rgba8],
+fn half<P>(
+    raster: &mut Raster<P>,
+    graphic: &Graphic,
     x: u16,
-    width: u16,
-    graphic_h: u16,
-) {
-    full(pixels, x, width, graphic_h, SEARCH);
+)
+    where P::Chan: From<Ch8>, P: Pixel<Gamma = Linear, Alpha = Premultiplied>
+{
+    rvg::render(raster, graphic, (32.0 * x as f32, 0.0, 32.0, 64.0))
 }
 
-pub fn grid(pixels: &mut [footile::Rgba8], x: u16, width: u16, graphic_h: u16) {
-    full(pixels, x, width, graphic_h, GRID);
-}
-
-pub fn hide(pixels: &mut [footile::Rgba8], x: u16, width: u16, graphic_h: u16) {
-    full(pixels, x, width, graphic_h, HIDE);
-}
-
-pub fn fullscreen(
-    pixels: &mut [footile::Rgba8],
+fn full<P>(
+    raster: &mut Raster<P>,
+    graphic: &Graphic,
     x: u16,
-    width: u16,
-    graphic_h: u16,
-) {
-    full(pixels, x, width, graphic_h, FULLSCREEN);
-}
-
-pub fn zoom_out(
-    pixels: &mut [footile::Rgba8],
-    x: u16,
-    width: u16,
-    graphic_h: u16,
-) {
-    full(pixels, x, width, graphic_h, ZOOM_OUT);
-}
-
-pub fn zoom_in(
-    pixels: &mut [footile::Rgba8],
-    x: u16,
-    width: u16,
-    graphic_h: u16,
-) {
-    full(pixels, x, width, graphic_h, ZOOM_IN);
-}
-
-pub fn view(pixels: &mut [footile::Rgba8], x: u16, width: u16, graphic_h: u16) {
-    full(pixels, x, width, graphic_h, VIEW);
+)
+    where P::Chan: From<Ch8>, P: Pixel<Gamma = Linear, Alpha = Premultiplied>
+{
+    rvg::render(raster, graphic, (32.0 * x as f32, 0.0, 64.0, 64.0))
 }

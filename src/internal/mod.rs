@@ -15,15 +15,15 @@ fn init(_name: &str, _run: fn(nanos: u64)) {
             // Initialize user data.
             crate::user::initialize_user_io();
         }
-        #[cfg(feature = "controller")]
+        #[cfg(feature = "gamepad")]
         {
             // Initialize controller port data.
-            crate::controller::initialize_controller_io();
+            // crate::gamepad::initialize_controller_io();
         }
         #[cfg(feature = "audio")]
         {
             // Intialize audio interface.
-            crate::audio::initialize_audio_io();
+            // crate::audio::initialize_audio_io();
         }
         #[cfg(feature = "graphics")]
         {
