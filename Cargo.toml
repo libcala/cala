@@ -37,9 +37,9 @@ stick = {version = "0.8", optional = true} # joystick / controller
 window = {version = "0.3", optional = true}
 fonterator = {version = "0.7", optional = true, default-features = false, features = ["normal-font"]}
 pix = {version = "0.12", optional = true}
-rvg = {path = "../rvg", optional = true, features = ["render"]}
+rvg = {path = "../rvg", optional = true, default-features = false, features = ["render"]}
 footile = {version = "0.4", optional = true}
-chrono = {version = "0.4", optional = true} # clock
+chrono = {version = "0.4", optional = true, default-features = false, features = ["clock"]} # clock
 
 [target.'cfg(target_arch = "wasm32")'.dependencies]
 stdweb = "0.4"
