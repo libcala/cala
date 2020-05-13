@@ -13,7 +13,7 @@ authors = ["Jeron Aldaron Lau <jeronlau@plopgrizzly.com>"]
 edition = "2018"
 
 license = "MIT / BSL-1.0"
-description = "Cross-platform system interface for hardware IO."
+description = "Make portable apps and video games in Rust!"
 documentation = "https://docs.rs/cala"
 homepage = "https://libcala.github.io/cala"
 repository = "https://github.com/libcala/cala"

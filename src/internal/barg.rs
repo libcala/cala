@@ -17,7 +17,7 @@ pub use window::{ShapeBuilder, Shape, Group, Transform, Graphic, Key};
 pub struct Shader(usize);
 
 struct VideoIO {
-    window: Box<window::Window>,
+    window: window::Window,
     shader: Vec<Option<window::Shader>>,
     shadet: Vec<usize>,
 }
@@ -136,7 +136,7 @@ pub(crate) fn initialize_video_io(name: &str, run: fn(nanos: u64) -> ()) {
         let shader = vec![];
         let shadet = vec![];
 
-        let mut window = Window::new(name, run, init_toolbar);
+        let mut window = Window::new(name, run);
         window.toolbar(toolbar);
 
         std::ptr::write(video_io, VideoIO {
