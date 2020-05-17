@@ -8,7 +8,7 @@
 
 [package]
 name = "cala"
-version = "0.7.0"
+version = "0.8.0"
 authors = ["Jeron Aldaron Lau <jeronlau@plopgrizzly.com>"]
 edition = "2018"
 
@@ -28,18 +28,21 @@ is-it-maintained-open-issues = { repository = "libcala/cala" }
 maintenance = { status = "actively-developed" }
 
 [dependencies]
+pasts = {version = "0.3", optional = true} # async main
 whoami = {version = "0.8", optional = true} # user
 wavy = {version = "0.2", optional = true} # audio
 stronghold = {version = "0.2", optional = true} # file
 serde = {version = "1.0", optional = true}
 stick = {version = "0.8", optional = true} # joystick / controller
 # barg = {version = "0.2", optional = true} # video
-window = {version = "0.3", optional = true}
+window = {path = "../window", optional = true} # {version = "0.3", optional = true}
 fonterator = {version = "0.7", optional = true, default-features = false, features = ["normal-font"]}
 pix = {version = "0.12", optional = true}
 rvg = {path = "../rvg", optional = true, default-features = false, features = ["render"]}
 footile = {version = "0.4", optional = true}
-chrono = {version = "0.4", optional = true, default-features = false, features = ["clock"]} # clock
+chrono = {version = "0.4", optional = true, default-features = false, features = ["clock"]}
+smelling_salts = {version = "0.1", optional = true}
+num_cpus = {version = "1.0", optional = true}
 
 [target.'cfg(target_arch = "wasm32")'.dependencies]
 stdweb = "0.4"
@@ -52,11 +55,14 @@ all-features = true
 default-target = "x86_64-unknown-linux-gnu"
 
 [features]
+default = ["pasts", "num_cpus"]
 user = ["whoami"]
 audio = ["wavy"]
 files = ["stronghold", "serde"]
 gamepad = ["stick"]
 graphics = ["window", "fonterator", "timer", "res", "rvg", "footile", "pix"]
 camera = []
-clock = ["chrono", "timer"]
+time = ["chrono", "timer"]
 timer = []
+net = ["smelling_salts"]
+bluetooth = []

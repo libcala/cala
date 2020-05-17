@@ -137,7 +137,7 @@ pub(crate) fn initialize_video_io(name: &str, run: fn(nanos: u64) -> ()) {
         let shadet = vec![];
 
         let mut window = Window::new(name, run);
-        window.toolbar(toolbar);
+        // window.toolbar(toolbar);
 
         std::ptr::write(video_io, VideoIO {
             window, shader, shadet,

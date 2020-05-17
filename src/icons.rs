@@ -1,11 +1,11 @@
 #![allow(unused)] // FIXME: remove this
 
 use footile::Plotter;
-use pix::{Raster, rgb::SRgba8, ops::SrcOver, el::Pixel};
-use rvg::*;
 use pix::chan::Ch8;
 use pix::chan::Linear;
 use pix::chan::Premultiplied;
+use pix::{el::Pixel, ops::SrcOver, rgb::SRgba8, Raster};
+use rvg::*;
 
 const BACK: &[u8] = include_bytes!("../rvg/back.svg.rvg");
 const EXIT: &[u8] = include_bytes!("../rvg/exit.svg.rvg");
@@ -26,24 +26,32 @@ pub fn text<P>(
     plotter: &mut Plotter,
     size: f32,
     text: &str,
-)
-    where P::Chan: From<Ch8>, P: Pixel<Gamma = Linear, Alpha = Premultiplied>
+) where
+    P::Chan: From<Ch8>,
+    P: Pixel<Gamma = Linear, Alpha = Premultiplied>,
 {
     let font = fonterator::normal_font();
 
     // Render
     let path: Vec<_> = font
         .render(
-            text,                                               /*text*/
+            text,                                                      /*text*/
             (0.0, 0.0, raster.width() as f32, raster.height() as f32), /*bbox*/
-            (size, size),       /*size*/
+            (size, size),                                              /*size*/
             fonterator::TextAlign::Center,
         )
         .0
         .collect();
-        
-    let temp_raster: Raster<pix::el::Pix1<P::Chan, pix::matte::Matte, pix::chan::Premultiplied, pix::chan::Linear>> = Raster::with_raster(plotter.fill(&path, footile::FillRule::NonZero));
-        
+
+    let temp_raster: Raster<
+        pix::el::Pix1<
+            P::Chan,
+            pix::matte::Matte,
+            pix::chan::Premultiplied,
+            pix::chan::Linear,
+        >,
+    > = Raster::with_raster(plotter.fill(&path, footile::FillRule::NonZero));
+
     raster.composite_matte(
         (),
         &temp_raster,
@@ -87,102 +95,124 @@ impl Icons {
             zoom_out: Graphic::load(ZOOM_OUT).unwrap(),
         }
     }
-    
+
     pub fn back<P>(&self, r: &mut Raster<P>, x: u16)
-        where P::Chan: From<Ch8>, P: Pixel<Gamma = Linear, Alpha = Premultiplied>
+    where
+        P::Chan: From<Ch8>,
+        P: Pixel<Gamma = Linear, Alpha = Premultiplied>,
     {
         half(r, &self.back, x);
     }
 
     pub fn next<P>(&self, r: &mut Raster<P>, x: u16)
-        where P::Chan: From<Ch8>, P: Pixel<Gamma = Linear, Alpha = Premultiplied>
+    where
+        P::Chan: From<Ch8>,
+        P: Pixel<Gamma = Linear, Alpha = Premultiplied>,
     {
         half(r, &self.next, x);
     }
 
     pub fn menu<P>(&self, r: &mut Raster<P>, x: u16)
-        where P::Chan: From<Ch8>, P: Pixel<Gamma = Linear, Alpha = Premultiplied>
+    where
+        P::Chan: From<Ch8>,
+        P: Pixel<Gamma = Linear, Alpha = Premultiplied>,
     {
         half(r, &self.menu, x);
     }
 
     pub fn exit<P>(&self, r: &mut Raster<P>, x: u16)
-        where P::Chan: From<Ch8>, P: Pixel<Gamma = Linear, Alpha = Premultiplied>
+    where
+        P::Chan: From<Ch8>,
+        P: Pixel<Gamma = Linear, Alpha = Premultiplied>,
     {
         half(r, &self.exit, x);
     }
 
     pub fn create<P>(&self, r: &mut Raster<P>, x: u16)
-        where P::Chan: From<Ch8>, P: Pixel<Gamma = Linear, Alpha = Premultiplied>
+    where
+        P::Chan: From<Ch8>,
+        P: Pixel<Gamma = Linear, Alpha = Premultiplied>,
     {
         full(r, &self.new, x);
     }
 
     pub fn more<P>(&self, r: &mut Raster<P>, x: u16)
-        where P::Chan: From<Ch8>, P: Pixel<Gamma = Linear, Alpha = Premultiplied>
+    where
+        P::Chan: From<Ch8>,
+        P: Pixel<Gamma = Linear, Alpha = Premultiplied>,
     {
         full(r, &self.more, x);
     }
 
     pub fn search<P>(&self, r: &mut Raster<P>, x: u16)
-        where P::Chan: From<Ch8>, P: Pixel<Gamma = Linear, Alpha = Premultiplied>
+    where
+        P::Chan: From<Ch8>,
+        P: Pixel<Gamma = Linear, Alpha = Premultiplied>,
     {
         full(r, &self.search, x);
     }
 
     pub fn grid<P>(&self, r: &mut Raster<P>, x: u16)
-        where P::Chan: From<Ch8>, P: Pixel<Gamma = Linear, Alpha = Premultiplied>
+    where
+        P::Chan: From<Ch8>,
+        P: Pixel<Gamma = Linear, Alpha = Premultiplied>,
     {
         full(r, &self.grid, x);
     }
 
     pub fn hide<P>(&self, r: &mut Raster<P>, x: u16)
-        where P::Chan: From<Ch8>, P: Pixel<Gamma = Linear, Alpha = Premultiplied>
+    where
+        P::Chan: From<Ch8>,
+        P: Pixel<Gamma = Linear, Alpha = Premultiplied>,
     {
         full(r, &self.hide, x);
     }
 
     pub fn fullscreen<P>(&self, r: &mut Raster<P>, x: u16)
-        where P::Chan: From<Ch8>, P: Pixel<Gamma = Linear, Alpha = Premultiplied>
+    where
+        P::Chan: From<Ch8>,
+        P: Pixel<Gamma = Linear, Alpha = Premultiplied>,
     {
         full(r, &self.fullscreen, x);
     }
 
     pub fn zoom_out<P>(&self, r: &mut Raster<P>, x: u16)
-        where P::Chan: From<Ch8>, P: Pixel<Gamma = Linear, Alpha = Premultiplied>
+    where
+        P::Chan: From<Ch8>,
+        P: Pixel<Gamma = Linear, Alpha = Premultiplied>,
     {
         full(r, &self.zoom_out, x);
     }
 
     pub fn zoom_in<P>(&self, r: &mut Raster<P>, x: u16)
-        where P::Chan: From<Ch8>, P: Pixel<Gamma = Linear, Alpha = Premultiplied>
+    where
+        P::Chan: From<Ch8>,
+        P: Pixel<Gamma = Linear, Alpha = Premultiplied>,
     {
         full(r, &self.zoom_in, x);
     }
 
     pub fn view<P>(&self, r: &mut Raster<P>, x: u16)
-        where P::Chan: From<Ch8>, P: Pixel<Gamma = Linear, Alpha = Premultiplied>
+    where
+        P::Chan: From<Ch8>,
+        P: Pixel<Gamma = Linear, Alpha = Premultiplied>,
     {
         full(r, &self.view, x);
     }
 }
 
-fn half<P>(
-    raster: &mut Raster<P>,
-    graphic: &Graphic,
-    x: u16,
-)
-    where P::Chan: From<Ch8>, P: Pixel<Gamma = Linear, Alpha = Premultiplied>
+fn half<P>(raster: &mut Raster<P>, graphic: &Graphic, x: u16)
+where
+    P::Chan: From<Ch8>,
+    P: Pixel<Gamma = Linear, Alpha = Premultiplied>,
 {
     rvg::render(raster, graphic, (32.0 * x as f32, 0.0, 32.0, 64.0))
 }
 
-fn full<P>(
-    raster: &mut Raster<P>,
-    graphic: &Graphic,
-    x: u16,
-)
-    where P::Chan: From<Ch8>, P: Pixel<Gamma = Linear, Alpha = Premultiplied>
+fn full<P>(raster: &mut Raster<P>, graphic: &Graphic, x: u16)
+where
+    P::Chan: From<Ch8>,
+    P: Pixel<Gamma = Linear, Alpha = Premultiplied>,
 {
     rvg::render(raster, graphic, (32.0 * x as f32, 0.0, 64.0, 64.0))
 }

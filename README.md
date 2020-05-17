@@ -61,7 +61,7 @@ feature, you might put this in your `Cargo.toml`:
 
 ```toml
 [dependencies.cala]
-version = "0.7"
+version = "0.8"
 features = ["audio", "clock"]
 ```
 

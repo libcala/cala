@@ -42,11 +42,11 @@
 //!
 //! <h1>Getting Started</h1>
 //! <p>Each hardware interface can be enabled with a feature.  For example, If you
-//! want to depend on the <code>audio</code> feature and the <code>clock</code>
+//! want to depend on the <code>audio</code> feature and the <code>time</code>
 //! feature, you might put this in your <code>Cargo.toml</code>:</p>
 //! <p style="width:100%"><pre style="width:100%"><code style="width:100%"><span style="font-weight:bold;">[dependencies.cala]</span>
-//! <span style="color:#0A0;font-weight:bold;">version</span> = <span style="color:#0A0">"0.5"</span>
-//! <span style="color:#0A0;font-weight:bold;">features</span> = [<span style="color:#0A0">"audio"</span>, <span style="color:#0A0">"clock"</span>]</code></pre></p>
+//! <span style="color:#0A0;font-weight:bold;">version</span> = <span style="color:#0A0">"0.8"</span>
+//! <span style="color:#0A0;font-weight:bold;">features</span> = [<span style="color:#0A0">"audio"</span>, <span style="color:#0A0">"time"</span>]</code></pre></p>
 //!
 //! <p>
 //! There is a module for each feature (feature and module names match).  Module documentation may include simple tutorials.  More in depth tutorials may be
@@ -59,6 +59,42 @@
     html_favicon_url = "https://libcala.github.io/icon.svg"
 )]
 
+#[cfg(feature = "pasts")]
+mod page;
+#[cfg(feature = "pasts")]
+pub use page::Page;
+#[cfg(feature = "pasts")]
+pub use pasts::{Select, Join, DynFut as IntoDynFuture};
+
+mod hardware;
+
+pub use hardware::*;
+
+/// Set the initial page of the app.  Note that "page" does not mean it your
+/// program has to have a GUI.
+///
+/// # Example
+/// ```rust
+/// use cala::{Shared, Loop};
+///
+/// cala::start![home];
+///
+/// async fn home(shared: &Shared) -> Loop {
+///     // Quit right away
+///     Loop::Exit
+/// }
+/// ```
+#[macro_export]
+macro_rules! start {
+    ($func:ident) => { // FIXME: Change based on cfg(target_os)
+        fn main() {
+            $func();
+        }
+    }
+}
+
+/* **** */
+
 mod run;
 
 #[cfg(feature = "timer")]
@@ -66,7 +102,7 @@ mod timer;
 
 #[cfg(feature = "user")]
 pub mod user {
-    //! API for getting user information.  Enable with the `user` feature.
+    //! Retrieve user information.  Enable with the `user` feature.
     //!
     //! # Usage
     //! ```rust
@@ -87,7 +123,7 @@ pub mod user {
 
 #[cfg(feature = "gamepad")]
 pub mod gamepad {
-    //! API for getting joystick / controller / gamepad input.  Enable with the
+    //! Get joystick / controller / gamepad input.  Enable with the
     //! `gamepad` feature.
     //!
     //! # Usage
@@ -114,7 +150,7 @@ pub mod gamepad {
 
 #[cfg(feature = "audio")]
 pub mod audio {
-    //! API for recording / playing audio.  Enable with the `audio` feature.
+    //! Record and/or play audio.  Enable with the `audio` feature.
     //!
     //! # Usage
     //! The following example shows how to play audio as it's being recorded.  Headphones
@@ -158,7 +194,7 @@ pub mod audio {
 
 #[cfg(feature = "files")]
 pub mod files {
-    //! API for loading & saving files.  Enable with the `files` feature.
+    //! Load & save files.  Enable with the `files` feature.
     //!
     //! # Usage
     //! ```rust
@@ -174,7 +210,7 @@ mod icons;
 #[cfg(feature = "graphics")]
 #[macro_use]
 pub mod graphics {
-    //! API for rendering graphics.  Enable with the `graphics` feature.
+    //! Render graphics.  Enable with the `graphics` feature.
     //!
     //! # Getting Started
     //! This API is designed to be high-level without sacrificing optimization.
@@ -209,8 +245,8 @@ pub mod graphics {
     pub use crate::timer::*;
 }
 
-#[cfg(feature = "clock")]
-pub mod clock;
+#[cfg(feature = "time")]
+pub mod time;
 
 // Export all types to root.
 pub use run::Loop;
@@ -231,18 +267,18 @@ pub use audio::*;
 #[doc(hidden)]
 pub use graphics::*;
 
-#[cfg(feature = "clock")]
+#[cfg(feature = "time")]
 #[doc(hidden)]
-pub use clock::*;
+pub use time::*;
 
-#[doc(hidden)]
-pub use internal::start;
 #[doc(hidden)]
 pub use internal::info as __cala_internal_info__;
 #[doc(hidden)]
-pub use internal::warn as __cala_internal_warn__;
-#[doc(hidden)]
 pub use internal::note as __cala_internal_note__;
+#[doc(hidden)]
+pub use internal::start;
+#[doc(hidden)]
+pub use internal::warn as __cala_internal_warn__;
 #[doc(hidden)]
 pub use run::Loop::*;
 

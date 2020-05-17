@@ -84,8 +84,7 @@ pub fn warn(string: &str) {
 /// This is designed to be used for debugging.
 #[cfg(not(debug_assertions))]
 #[inline(always)]
-pub fn note(string: &str) {
-}
+pub fn note(string: &str) {}
 
 /// Log an informative (stdout) message in only debug mode.
 ///

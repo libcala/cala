@@ -1,4 +1,4 @@
-//! API for getting the date and time of day.  Enable with the `clock` feature.
+//! API for getting the date and time of day.  Enable with the `time` feature.
 //!
 //! # Getting Started
 //! ```rust,no_run
