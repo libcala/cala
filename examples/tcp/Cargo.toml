@@ -9,6 +9,3 @@ edition = "2018"
 [dependencies.cala]
 path = "../../"
 features = ["net"]
-
-[replace]
-"pasts:0.3.0" = { path = "/home/aldaronlau/devel/pasts" }

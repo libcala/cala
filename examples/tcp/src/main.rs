@@ -11,8 +11,8 @@ fn init() {
     let pair = Arc::new((Mutex::new(false), Condvar::new()));
     let pair2 = pair.clone();
 
-    let s = move || { async move { server(pair).await } };
-    let c = move || { async move { client(pair2).await } };
+    let s = move || Box::pin(server(pair)) as _;
+    let c = move || Box::pin(client(pair2)) as _;
 
     Page::new()
         .spawn(s)
