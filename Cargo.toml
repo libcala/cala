@@ -28,7 +28,7 @@ is-it-maintained-open-issues = { repository = "libcala/cala" }
 maintenance = { status = "actively-developed" }
 
 [dependencies]
-pasts = {path="../pasts", optional = true} # async main
+pasts = {version = "0.4", optional = true} # async main
 whoami = {version = "0.8", optional = true} # user
 wavy = {version = "0.2", optional = true} # audio
 stronghold = {version = "0.2", optional = true} # file
