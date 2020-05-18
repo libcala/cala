@@ -72,12 +72,12 @@ impl Page {
     /// thread, use `[task1, task2].select().await`.  Specify tasks in order of
     /// priority (spawn the highest priority task first) for best performance.
     #[allow(unsafe_code)]
-    pub fn spawn<A>(mut self, future: A) -> Self
-        where A: Send + 'static + FnOnce() -> Pin<Box<dyn Future<Output=()> + 'static>>
+    pub fn spawn<A, F>(mut self, future: A) -> Self
+        where A: Send + 'static + FnOnce() -> F, F: Future<Output=()> + 'static
     {
         self.count += 1;
         // Add task to core
-        self.cores[self.index].task_list.push(Box::new(future));
+        self.cores[self.index].task_list.push(Box::new(|| Box::pin(future())));
         // Cycle through cores
         self.index += 1;
         if self.index == self.cores.len() {

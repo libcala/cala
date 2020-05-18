@@ -1,38 +1,33 @@
 // Networking example
 
-use std::sync::{Mutex, Condvar, Arc};
+use std::sync::{Arc, Condvar, Mutex};
 
 use cala::*;
-use net::{TcpServer, TcpConnection, ServerEvent};
+use net::{ServerEvent, TcpConnection, TcpServer};
 
 cala::start!(init);
 
 fn init() {
     let pair = Arc::new((Mutex::new(false), Condvar::new()));
     let pair2 = pair.clone();
-
-    let s = move || Box::pin(server(pair)) as _;
-    let c = move || Box::pin(client(pair2)) as _;
-
     Page::new()
-        .spawn(s)
-        .spawn(c)
+        .spawn(|| server(pair))
+        .spawn(|| client(pair2))
         .join()
 }
 
 async fn server(pair: Arc<(Mutex<bool>, Condvar)>) {
     println!("Starting Server…");
     let mut server = TcpServer::new("127.0.0.1:21135").unwrap();
-    
+    // Notify client thread that server is up and running.
     let (lock, cvar) = &*pair;
     {
         let mut started = lock.lock().unwrap();
         *started = true;
         cvar.notify_one();
     }
-
+    // Handle connections.
     let mut connections = Vec::new();
-    
     loop {
         match [server.fut(), connections.select().fut()].select().await.1 {
             (_, ServerEvent::Connect(connection)) => {
@@ -50,21 +45,17 @@ async fn server(pair: Arc<(Mutex<bool>, Condvar)>) {
 }
 
 async fn client(pair: Arc<(Mutex<bool>, Condvar)>) {
-    println!("Waiting for server…");
-
+    println!("Waiting for server to start…");
     let (lock, cvar) = &*pair;
     let mut started = lock.lock().unwrap();
     while !*started {
         started = cvar.wait(started).unwrap();
     }
-
     println!("Starting Client…");
     let mut client = TcpConnection::new("127.0.0.1:21135").unwrap();
-
+    println!("Sending Data…");
     client.send(true, &[42]).await;
-
     let mut buffer = Vec::new();
     client.recv(&mut buffer).await;
-
     println!("Received {:?}, exiting…", buffer);
 }
