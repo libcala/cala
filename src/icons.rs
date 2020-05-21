@@ -1,10 +1,10 @@
 #![allow(unused)] // FIXME: remove this
 
-use footile::Plotter;
+use footile::{Transform, Plotter};
 use pix::chan::Ch8;
 use pix::chan::Linear;
 use pix::chan::Premultiplied;
-use pix::{el::Pixel, ops::SrcOver, rgb::SRgba8, Raster};
+use pix::{el::{Pix1, Pixel}, ops::SrcOver, rgb::SRgba8, matte::Matte8, Raster};
 use rvg::*;
 
 const BACK: &[u8] = include_bytes!("../rvg/back.svg.rvg");
@@ -23,34 +23,27 @@ const ZOOM_OUT: &[u8] = include_bytes!("../rvg/zoom_out.svg.rvg");
 
 pub fn text<P>(
     raster: &mut Raster<P>,
-    plotter: &mut Plotter,
+    plotter: &mut Plotter<Matte8>,
     size: f32,
     text: &str,
 ) where
     P::Chan: From<Ch8>,
     P: Pixel<Gamma = Linear, Alpha = Premultiplied>,
 {
+    plotter.set_transform(Transform::with_scale(size, size));
     let font = fonterator::normal_font();
 
     // Render
     let path: Vec<_> = font
         .render(
             text,                                                      /*text*/
-            (0.0, 0.0, raster.width() as f32, raster.height() as f32), /*bbox*/
-            (size, size),                                              /*size*/
+            raster.width() as f32 / size,                               /*bbox*/
             fonterator::TextAlign::Center,
         )
         .0
         .collect();
 
-    let temp_raster: Raster<
-        pix::el::Pix1<
-            P::Chan,
-            pix::matte::Matte,
-            pix::chan::Premultiplied,
-            pix::chan::Linear,
-        >,
-    > = Raster::with_raster(plotter.fill(&path, footile::FillRule::NonZero));
+    let temp_raster = Raster::<Pix1<P::Chan, _, pix::chan::Premultiplied, _>>::with_raster(plotter.fill(footile::FillRule::NonZero, &path, Matte8::new(255)));
 
     raster.composite_matte(
         (),

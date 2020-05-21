@@ -33,13 +33,13 @@ whoami = {version = "0.8", optional = true} # user
 wavy = {version = "0.2", optional = true} # audio
 stronghold = {version = "0.2", optional = true} # file
 serde = {version = "1.0", optional = true}
-stick = {version = "0.8", optional = true} # joystick / controller
+stick = {version = "0.9", optional = true} # joystick / controller
 # barg = {version = "0.2", optional = true} # video
 window = {path = "../window", optional = true} # {version = "0.3", optional = true}
-fonterator = {version = "0.7", optional = true, default-features = false, features = ["normal-font"]}
-pix = {version = "0.12", optional = true}
+fonterator = {version = "0.8", optional = true, default-features = false, features = ["normal-font"]}
+pix = {version = "0.13", optional = true}
 rvg = {path = "../rvg", optional = true, default-features = false, features = ["render"]}
-footile = {version = "0.4", optional = true}
+footile = {version = "0.5", optional = true}
 chrono = {version = "0.4", optional = true, default-features = false, features = ["clock"]}
 smelling_salts = {version = "0.1", optional = true}
 num_cpus = {version = "1.0", optional = true}
