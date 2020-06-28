@@ -127,6 +127,7 @@ pub mod input {
     //!
     //! # Usage
     //! ```rust
+    //! // TODO
     //! ```
 
     #[cfg(feature = "graphics")]
@@ -180,6 +181,13 @@ pub mod audio {
     //! ```
 
     include!("internal/wavy.rs");
+}
+
+#[cfg(feature = "journal")]
+pub mod journal {
+    //! Text output through some medium (stdout, web console, serial, etc.)
+    
+    pub use devout::{dev, out};
 }
 
 #[cfg(feature = "files")]
@@ -249,6 +257,10 @@ pub use user::*;
 #[doc(hidden)]
 pub use input::*;
 
+#[cfg(feature = "journal")]
+#[doc(hidden)]
+pub use journal::*;
+
 #[cfg(feature = "audio")]
 #[doc(hidden)]
 pub use audio::*;
@@ -262,13 +274,7 @@ pub use graphics::*;
 pub use time::*;
 
 #[doc(hidden)]
-pub use internal::info as __cala_internal_info__;
-#[doc(hidden)]
-pub use internal::note as __cala_internal_note__;
-#[doc(hidden)]
 pub use internal::start;
-#[doc(hidden)]
-pub use internal::warn as __cala_internal_warn__;
 #[doc(hidden)]
 pub use run::Loop::*;
 
@@ -334,44 +340,5 @@ macro_rules! init {
 
             cala::start(window_title.as_str(), $home_loop, &|| $init_data);
         }
-    };
-}
-
-/// Log an informative (stdout) message only in debug mode.
-///
-/// This is designed to be used for debugging.
-#[macro_export]
-macro_rules! note {
-    () => {
-        $crate::__cala_internal_note__("")
-    };
-    ($($arg:tt)*) => {
-        $crate::__cala_internal_note__(&format!("{}", format_args!($($arg)*)))
-    };
-}
-
-/// Log an informative (stdout) message in both release and debug mode.
-///
-/// Do not overuse this function.  Release builds should have few logs.
-#[macro_export]
-macro_rules! info {
-    () => {
-        $crate::__cala_internal_info__("")
-    };
-    ($($arg:tt)*) => {
-        $crate::__cala_internal_info__(&format!("{}", format_args!($($arg)*)))
-    };
-}
-
-/// Log a warning (stderr) message in both release and debug mode.
-///
-/// Do not overuse this function.  Release builds should have few logs.
-#[macro_export]
-macro_rules! warn {
-    () => {
-        $crate::__cala_internal_warn__("")
-    };
-    ($($arg:tt)*) => {
-        $crate::__cala_internal_warn__(&format!("{}", format_args!($($arg)*)))
     };
 }

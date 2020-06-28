@@ -35,65 +35,6 @@ fn r#loop(_run: fn(nanos: u64)) -> bool {
     }
 }
 
-/// Log an informative (stdout) message in both release and debug mode.
-///
-/// Do not overuse this function.  Release builds should have few logs.
-#[inline(always)]
-pub fn info(string: &str) {
-    #[cfg(target_arch = "wasm32")]
-    {
-        js! {
-            console.info(@{string})
-        }
-    }
-    #[cfg(not(target_arch = "wasm32"))]
-    {
-        println!("{}", string);
-    }
-}
-
-/// Log a warning (stderr) message in both release and debug mode.
-///
-/// Do not overuse this function.  Release builds should have few logs.
-#[inline(always)]
-pub fn warn(string: &str) {
-    #[cfg(target_arch = "wasm32")]
-    {
-        js! {
-            console.warn(@{string})
-        }
-    }
-    #[cfg(not(target_arch = "wasm32"))]
-    {
-        eprintln!("{}", string);
-    }
-}
-
-/// Log an informative (stdout) message in only debug mode.
-///
-/// This is designed to be used for debugging.
-#[cfg(not(debug_assertions))]
-#[inline(always)]
-pub fn note(string: &str) {}
-
-/// Log an informative (stdout) message in only debug mode.
-///
-/// This is designed to be used for debugging.
-#[cfg(debug_assertions)]
-#[inline(always)]
-pub fn note(string: &str) {
-    #[cfg(target_arch = "wasm32")]
-    {
-        js! {
-            console.debug(@{string})
-        }
-    }
-    #[cfg(not(target_arch = "wasm32"))]
-    {
-        println!("{}", string);
-    }
-}
-
 /// Get nanoseconds passed since previous frame.
 pub fn delta() -> u64 {
     NANOS.load(std::sync::atomic::Ordering::Relaxed)
