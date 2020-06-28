@@ -111,41 +111,31 @@ pub mod user {
     //!
     //! // Function that runs while your app runs.
     //! pub fn run(_: &mut ()) -> cala::Loop<()> {
-    //!     // Print out the user's information.
-    //!     println!("{}", cala::user());
+    //!     // Get the user's username.
+    //!     println!("{}", cala::username());
     //!     // Exit.
     //!     cala::Exit
     //! }
     //! ```
 
-    include!("internal/whoami.rs");
+    pub use whoami::{DesktopEnv, Platform, desktop_env, devicename, distro, hostname, platform, realname, username};
 }
 
-#[cfg(feature = "gamepad")]
-pub mod gamepad {
-    //! Get joystick / controller / gamepad input.  Enable with the
-    //! `gamepad` feature.
+#[cfg(feature = "input")]
+pub mod input {
+    //! Get user input.  Enable with the `input` feature.
     //!
     //! # Usage
     //! ```rust
-    //! // Set the home loop to `run()`.
-    //! cala::init!(run, ());
-    //!
-    //! // Function that runs while your app runs.
-    //! pub fn run(_: &mut ()) -> cala::Loop<()> {
-    //!     let layout = cala::ControllerLayout::new().joy(false).lrt(false).abxy(false);
-    //!
-    //!     // Iterate through all of the controllers.
-    //!     'a: for (id, state) in cala::controllers(&layout) {
-    //!         println!("{}: {:?}", id, state.get());
-    //!     }
-    //!     std::thread::sleep(std::time::Duration::from_millis(16));
-    //!     // Exit.
-    //!     cala::Continue
-    //! }
     //! ```
 
-    include!("internal/stick.rs");
+    #[cfg(feature = "graphics")]
+    use window::input as input_source;
+    
+    #[cfg(not(feature = "graphics"))]
+    use human as input_source;
+    
+    pub use self::input_source::{GameInput, Input, Mode, TextInput, UiInput, input, renumber, rumble};
 }
 
 #[cfg(feature = "audio")]
@@ -255,9 +245,9 @@ pub use run::Loop;
 #[doc(hidden)]
 pub use user::*;
 
-#[cfg(feature = "gamepad")]
+#[cfg(feature = "input")]
 #[doc(hidden)]
-pub use gamepad::*;
+pub use input::*;
 
 #[cfg(feature = "audio")]
 #[doc(hidden)]

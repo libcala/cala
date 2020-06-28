@@ -10,16 +10,6 @@ use stdweb::js;
 /// Initialize Cala.
 fn init(_name: &str, _run: fn(nanos: u64)) {
     START.call_once(|| {
-        #[cfg(feature = "user")]
-        {
-            // Initialize user data.
-            crate::user::initialize_user_io();
-        }
-        #[cfg(feature = "gamepad")]
-        {
-            // Initialize controller port data.
-            // crate::gamepad::initialize_controller_io();
-        }
         #[cfg(feature = "audio")]
         {
             // Intialize audio interface.

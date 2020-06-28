@@ -28,13 +28,12 @@ is-it-maintained-open-issues = { repository = "libcala/cala" }
 maintenance = { status = "actively-developed" }
 
 [dependencies]
+human = {path = "../human", optional = true} # input
 pasts = {version = "0.4", optional = true} # async main
-whoami = {version = "0.8", optional = true} # user
-wavy = {version = "0.2", optional = true} # audio
+whoami = {version = "0.9", optional = true} # user
+wavy = {version = "0.3", optional = true} # audio
 stronghold = {version = "0.2", optional = true} # file
 serde = {version = "1.0", optional = true}
-stick = {version = "0.9", optional = true} # joystick / controller
-# barg = {version = "0.2", optional = true} # video
 window = {path = "../window", optional = true} # {version = "0.3", optional = true}
 fonterator = {version = "0.8", optional = true, default-features = false, features = ["normal-font"]}
 pix = {version = "0.13", optional = true}
@@ -59,7 +58,7 @@ default = ["pasts", "num_cpus"]
 user = ["whoami"]
 audio = ["wavy"]
 files = ["stronghold", "serde"]
-gamepad = ["stick"]
+input = ["human"]
 graphics = ["window", "fonterator", "timer", "res", "rvg", "footile", "pix"]
 camera = []
 time = ["chrono", "timer"]

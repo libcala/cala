@@ -43,7 +43,7 @@ Here's a list of all of the targeted platforms (**bold** means a port has been m
 - **Linux**
 - **MacOS** - WIP [*audio*](https://github.com/libcala/cala/issues/5), [*controller*](https://github.com/libcala/cala/issues/7), [*graphics*](https://github.com/libcala/cala/issues/9)
 - **Windows** - WIP [*audio*](https://github.com/libcala/cala/issues/4), [*controller*](https://github.com/libcala/cala/issues/6), [*graphics*](https://github.com/libcala/cala/issues/8)
-- **Web (WASM)** - WIP audio, controller, graphics, files
+- **Web (WASM)** - WIP controller, graphics, files
 - Android
 - iOS
 - Fuchsia
