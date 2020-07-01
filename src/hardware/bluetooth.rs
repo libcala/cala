@@ -1,5 +1,5 @@
-//! Bluetooth(**WIP**) and Bluetooth Low Energy(**WIP**) communication.  Enable
-//! with the `bluetooth` feature.
+//! **feature:bluetooth** - Bluetooth(*WIP*) and Bluetooth Low Energy(*WIP*)
+//! communication.
 //!
 //! # Getting Started
 //!

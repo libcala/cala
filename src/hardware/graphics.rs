@@ -1,11 +1,45 @@
-// use std::sync::mpsc::{channel, Sender, Receiver};
+//! **feature:graphics** - Render graphics.
+//!
+//! # Getting Started
+//! This API is designed to be high-level without sacrificing optimization.
+//! Graphics are complicated though, so before you start, a few things need
+//! to be defined.
+//!
+//! ## Shader
+//! A Shader is a program that runs on the GPU for the purpose of drawing
+//! Shapes.  When you make your program, start by creating a shader.
+//! Shaders are built at compile time, so you'll need to make a build.rs and
+//! depend on the [`res`](https://crates.io/crates/res) crate.  Calling
+//! `generate()` in your build.rs will generate your shaders.
+//!
+//! ## Shape
+//! A shape is a collection of vertices that when connected make a 2D or 3D
+//! shape.  Shapes can only be used with one Shader because they may have
+//! shader-specific additional information attached to them like color or
+//! graphic coordinates.
+//!
+//! ## Instance
+//! Shapes themselves can't be drawn, first you must make an Instance of the
+//! Shape.  Instances can have position attached to them, and/or rotation
+//! and size.
+//!
+//! # Example
+//! ```rust
+//! // TODO
+//! ```
+
+pub(crate) mod hidden {
+    pub fn graphics_thread() {
+        
+    }
+}
 
 #[doc(hidden)]
 pub use window::{ShaderBuilder};
 
 pub use window::{ShapeBuilder, Shape, Group, Transform, Graphic, Key};
 
-/// **video** Load a generated shader from `res`.
+/// **feature:graphics** Load a generated shader from `res`.
 #[macro_export(self)] macro_rules! shader {
     ($shadername: literal) => {
         $crate::Shader::new(include!(concat!(env!("OUT_DIR"), "/res/", $shadername, ".rs")));
@@ -226,15 +260,6 @@ pub fn group_new() -> Group {
     }
 }
 
-/// If a key is being held down.
-pub fn key(key: Key) -> bool {
-    let video_io = unsafe { &mut VIDEO_IO as *mut _ as *mut VideoIO };
-
-    unsafe {
-        (*video_io).window.key(key)
-    }
-}
-
 /// Get the window aspect ratio.
 pub fn aspect() -> f32 {
     let video_io = unsafe { &mut VIDEO_IO as *mut _ as *mut VideoIO };
@@ -243,3 +268,5 @@ pub fn aspect() -> f32 {
         (*video_io).window.aspect()
     }
 }
+
+pub use crate::timer::*;

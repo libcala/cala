@@ -59,39 +59,32 @@
     html_favicon_url = "https://libcala.github.io/icon.svg"
 )]
 
-#[cfg(feature = "pasts")]
+#[doc(hidden)]
+pub mod __hidden {
+    #[cfg(feature = "pasts")]
+    pub use pasts::{Executor, CvarExec};
+    pub use crate::hardware::graphics::hidden::graphics_thread;
+}
+
+pub mod prelude {
+    //! Automatically import traits with `use cala::prelude::*;`.
+    
+    #[cfg(feature = "pasts")]
+    pub use pasts::{Select, Join, DynFut as IntoDynFuture};
+}
+
+// FIXME: Probably remove from API.
+/*#[cfg(feature = "pasts")]
 mod page;
 #[cfg(feature = "pasts")]
-pub use page::Page;
+pub use page::Page;*/
 #[cfg(feature = "pasts")]
 pub use pasts::{Select, Join, DynFut as IntoDynFuture};
 
 mod hardware;
+mod exec;
 
 pub use hardware::*;
-
-/// Set the initial page of the app.  Note that "page" does not mean it your
-/// program has to have a GUI.
-///
-/// # Example
-/// ```rust
-/// use cala::{Shared, Loop};
-///
-/// cala::start![home];
-///
-/// async fn home(shared: &Shared) -> Loop {
-///     // Quit right away
-///     Loop::Exit
-/// }
-/// ```
-#[macro_export]
-macro_rules! start {
-    ($func:ident) => { // FIXME: Change based on cfg(target_os)
-        fn main() {
-            $func();
-        }
-    }
-}
 
 /* **** */
 
@@ -102,7 +95,7 @@ mod timer;
 
 #[cfg(feature = "user")]
 pub mod user {
-    //! Retrieve user information.  Enable with the `user` feature.
+    //! **feature:user** - Retrieve user information.
     //!
     //! # Usage
     //! ```rust
@@ -121,27 +114,9 @@ pub mod user {
     pub use whoami::{DesktopEnv, Platform, desktop_env, devicename, distro, hostname, platform, realname, username};
 }
 
-#[cfg(feature = "input")]
-pub mod input {
-    //! Get user input.  Enable with the `input` feature.
-    //!
-    //! # Usage
-    //! ```rust
-    //! // TODO
-    //! ```
-
-    #[cfg(feature = "graphics")]
-    use window::input as input_source;
-    
-    #[cfg(not(feature = "graphics"))]
-    use human as input_source;
-    
-    pub use self::input_source::{GameInput, Input, Mode, TextInput, UiInput, input, renumber, rumble};
-}
-
 #[cfg(feature = "audio")]
 pub mod audio {
-    //! Record and/or play audio.  Enable with the `audio` feature.
+    //! **feature:audio** - Record and/or play audio.
     //!
     //! # Usage
     //! The following example shows how to play audio as it's being recorded.  Headphones
@@ -185,14 +160,20 @@ pub mod audio {
 
 #[cfg(feature = "journal")]
 pub mod journal {
-    //! Text output through some medium (stdout, web console, serial, etc.)
+    //! **feature:journal** - Text output through some medium (stdout, web
+    //! console, serial, etc.)
+    //!
+    //! # Usage
+    //! ```rust
+    //! // TODO
+    //! ```
     
     pub use devout::{dev, out};
 }
 
 #[cfg(feature = "files")]
 pub mod files {
-    //! Load & save files.  Enable with the `files` feature.
+    //! **feature:files** - Load & save files.
     //!
     //! # Usage
     //! ```rust
@@ -205,49 +186,13 @@ pub mod files {
 #[cfg(feature = "graphics")]
 mod icons;
 
-#[cfg(feature = "graphics")]
-#[macro_use]
-pub mod graphics {
-    //! Render graphics.  Enable with the `graphics` feature.
-    //!
-    //! # Getting Started
-    //! This API is designed to be high-level without sacrificing optimization.
-    //! Graphics are complicated though, so before you start, a few things need
-    //! to be defined.
-    //!
-    //! ## Shader
-    //! A Shader is a program that runs on the GPU for the purpose of drawing
-    //! Shapes.  When you make your program, start by creating a shader.
-    //! Shaders are built at compile time, so you'll need to make a build.rs and
-    //! depend on the [`res`](https://crates.io/crates/res) crate.  Calling
-    //! `generate()` in your build.rs will generate your shaders.
-    //!
-    //! ## Shape
-    //! A shape is a collection of vertices that when connected make a 2D or 3D
-    //! shape.  Shapes can only be used with one Shader because they may have
-    //! shader-specific additional information attached to them like color or
-    //! graphic coordinates.
-    //!
-    //! ## Instance
-    //! Shapes themselves can't be drawn, first you must make an Instance of the
-    //! Shape.  Instances can have position attached to them, and/or rotation
-    //! and size.
-    //!
-    //! # Example
-    //! ```rust
-    //! // TODO
-    //! ```
-
-    include!("internal/barg.rs");
-
-    pub use crate::timer::*;
-}
-
 #[cfg(feature = "time")]
 pub mod time;
 
 // Export all types to root.
 pub use run::Loop;
+
+pub use exec::*;
 
 #[cfg(feature = "user")]
 #[doc(hidden)]
@@ -284,9 +229,6 @@ pub use internal::delta;
 // mod dive;
 mod internal;
 // mod iolock;
-
-// Others....
-//pub use audio::AudioSample;
 
 /// Define the entry point for your program.
 ///

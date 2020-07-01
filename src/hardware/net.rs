@@ -1,4 +1,4 @@
-//! TCP and UDP(**WIP**) network communication.  Enable with the `net` feature.
+//! **feature:net** - TCP and UDP(*WIP*) network communication.
 //!
 //! "Aren't TCP and UDP in the standard library?", you might ask.  Yeah, but
 //! this is asynchronous.
