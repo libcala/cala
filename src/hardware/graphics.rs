@@ -18,26 +18,69 @@
 //! shader-specific additional information attached to them like color or
 //! graphic coordinates.
 //!
-//! ## Instance
-//! Shapes themselves can't be drawn, first you must make an Instance of the
-//! Shape.  Instances can have position attached to them, and/or rotation
-//! and size.
+//! ## Group
+//! Shapes themselves can't be drawn, first you must make put them into a Group.
+//! When putting a shape into a group you may attach a transform and optionally
+//! texture coordinates to it.
 //!
 //! # Example
 //! ```rust
 //! // TODO
 //! ```
 
-pub(crate) mod hidden {
+use std::{mem::MaybeUninit, sync::{Once, Mutex}};
+
+enum GpuCmd {
+    /// Set the background color on the GPU output raster.
+    Background(f32, f32, f32),
+}
+
+struct Internal {
+    cmds: Mutex<Vec<GpuCmd>>,
+}
+static mut INTERNAL: MaybeUninit<Internal> = MaybeUninit::uninit();
+static INIT: Once = Once::new();
+
+impl Internal {
+    // Get internal graphics data, lazily initializing if not used yet.
+    fn new_lazy() -> &'static Self {
+        unsafe {
+            INIT.call_once(|| {
+                INTERNAL = MaybeUninit::new(Internal {
+                    cmds: Mutex::new(Vec::new()),
+                });
+            });
+            &*INTERNAL.as_ptr()
+        }
+    }
+}
+
+pub(crate) mod __hidden {
+    use window::Window;
+
     pub fn graphics_thread() {
-        
+        fn dummy_runner(nanos: u64) { } // FIXME
+        let fallback_window_title = env!("CARGO_PKG_NAME");
+        let mut window = Window::new(fallback_window_title, dummy_runner);
+        loop {
+            {
+                let mut lock = super::Internal::new_lazy().cmds.lock().unwrap();
+                for cmd in lock.drain(..) {
+                    use super::GpuCmd::*;
+                    match cmd {
+                        Background(r, g, b) => window.background(r, g, b),
+                    }
+                }
+            }
+            window.run();
+        }
     }
 }
 
 #[doc(hidden)]
 pub use window::{ShaderBuilder};
 
-pub use window::{ShapeBuilder, Shape, Group, Transform, Graphic, Key};
+pub use window::{ShapeBuilder, Shape, Group, Transform, RasterId, Key};
 
 /// **feature:graphics** Load a generated shader from `res`.
 #[macro_export(self)] macro_rules! shader {
@@ -162,38 +205,10 @@ pub(crate) fn init_toolbar(window: &mut window::Window) -> (window::Shader, Grou
     (gui, group)
 }
 
-pub(crate) fn initialize_video_io(name: &str, run: fn(nanos: u64) -> ()) {
-    use window::*;
-
-    unsafe {
-        let video_io = &mut VIDEO_IO as *mut _ as *mut VideoIO;
-        let shader = vec![];
-        let shadet = vec![];
-
-        let mut window = Window::new(name, run);
-        // window.toolbar(toolbar);
-
-        std::ptr::write(video_io, VideoIO {
-            window, shader, shadet,
-        });
-    }
-}
-
-pub(crate) fn loop_video_io() -> bool {
-    let video_io = unsafe { &mut VIDEO_IO as *mut _ as *mut VideoIO };
-
-    unsafe {
-        (*video_io).window.run()
-    }
-}
-
 /// Set the display's background color.
 pub fn background(r: f32, g: f32, b: f32) {
-    let video_io = unsafe { &mut VIDEO_IO as *mut _ as *mut VideoIO };
-
-    unsafe {
-        (*video_io).window.background(r, g, b);
-    }
+    let mut lock = Internal::new_lazy().cmds.lock().unwrap();
+    lock.push(GpuCmd::Background(r, g, b));
 }
 
 /// Get a `ShapeBuilder` for a `Shader`.
@@ -234,7 +249,7 @@ pub fn set_tint(shader: &Shader, tint: [f32; 4]) {
 }
 
 /// Draw a group with a texture on the screen.
-pub fn draw_graphic(shader: &Shader, group: &mut Group, graphic: &Graphic) {
+pub fn draw_graphic(shader: &Shader, group: &mut Group, graphic: &RasterId) {
     let video_io = unsafe { &mut VIDEO_IO as *mut _ as *mut VideoIO };
 
     unsafe {
@@ -243,7 +258,7 @@ pub fn draw_graphic(shader: &Shader, group: &mut Group, graphic: &Graphic) {
 }
 
 /// Load a graphic.
-pub fn graphic(pixels: &[u8], width: usize, height: usize) -> Graphic {
+pub fn graphic(pixels: &[u8], width: usize, height: usize) -> RasterId {
     let video_io = unsafe { &mut VIDEO_IO as *mut _ as *mut VideoIO };
 
     unsafe {

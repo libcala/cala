@@ -7,26 +7,11 @@ static NANOS: std::sync::atomic::AtomicU64 =
 #[cfg(target_arch = "wasm32")]
 use stdweb::js;
 
-/// Initialize Cala.
-fn init(_name: &str, _run: fn(nanos: u64)) {
-    START.call_once(|| {
-        #[cfg(feature = "audio")]
-        {
-            // Intialize audio interface.
-            // crate::audio::initialize_audio_io();
-        }
-        #[cfg(feature = "graphics")]
-        {
-            crate::graphics::initialize_video_io(_name, _run);
-        }
-    });
-}
-
 /// Redraw the screen when "video" feature is enabled.
 fn r#loop(_run: fn(nanos: u64)) -> bool {
     #[cfg(feature = "graphics")]
     {
-        crate::graphics::loop_video_io()
+        true
     }
     #[cfg(not(feature = "graphics"))]
     {
@@ -62,8 +47,6 @@ pub fn start<T>(
             NANOS.store(nanos, std::sync::atomic::Ordering::Relaxed);
         }
     }
-
-    init(window_title, run);
 
     let mut current_loops: Vec<fn(&mut T) -> crate::Loop<T>> = vec![home_loop];
 

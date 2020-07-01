@@ -63,7 +63,7 @@
 pub mod __hidden {
     #[cfg(feature = "pasts")]
     pub use pasts::{Executor, CvarExec};
-    pub use crate::hardware::graphics::hidden::graphics_thread;
+    pub use crate::hardware::graphics::__hidden::graphics_thread;
 }
 
 pub mod prelude {
