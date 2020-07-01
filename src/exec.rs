@@ -26,6 +26,7 @@ macro_rules! exec {
                 static EXECUTOR: $crate::__hidden::CvarExec
                     = $crate::__hidden::CvarExec::new();
                 EXECUTOR.block_on($main());
+                std::process::exit(0);
             });
             $crate::__hidden::graphics_thread();
         }
