@@ -58,6 +58,7 @@ impl Internal {
 pub(crate) mod __hidden {
     use window::Window;
 
+    #[doc(hidden)]
     pub fn graphics_thread() {
         fn dummy_runner(nanos: u64) { } // FIXME
         let fallback_window_title = env!("CARGO_PKG_NAME");
