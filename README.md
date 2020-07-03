@@ -41,9 +41,9 @@ The name cala is derived from the fungus known as
 Here's a list of all of the targeted platforms (**bold** means a port has been made, *italic* means the feature doesn't work on the platform):
 
 - **Linux**
-- **MacOS** - WIP [*audio*](https://github.com/libcala/cala/issues/5), [*controller*](https://github.com/libcala/cala/issues/7), [*graphics*](https://github.com/libcala/cala/issues/9)
-- **Windows** - WIP [*audio*](https://github.com/libcala/cala/issues/4), [*controller*](https://github.com/libcala/cala/issues/6), [*graphics*](https://github.com/libcala/cala/issues/8)
-- **Web (WASM)** - WIP controller, graphics, files
+- **MacOS** - WIP [*audio*](https://github.com/libcala/cala/issues/5), [*controller*](https://github.com/libcala/cala/issues/7), [*draw*](https://github.com/libcala/cala/issues/9)
+- **Windows** - WIP [*audio*](https://github.com/libcala/cala/issues/4), [*controller*](https://github.com/libcala/cala/issues/6), [*draw*](https://github.com/libcala/cala/issues/8)
+- **Web (WASM)** - WIP controller, draw, files
 - Android
 - iOS
 - Fuchsia
@@ -76,7 +76,7 @@ Here's a list of the features, with links to documentation.
 - [`clock`](https://docs.rs/cala/0.7.0/cala/clock/index.html) - Date, Time of day, Timer
 - [`gamepad`](https://docs.rs/cala/0.7.0/cala/gamepad/index.html) - Game Controller - JoyStick
 - [`files`](https://docs.rs/cala/0.7.0/cala/files/index.html) - Containerized filesystem loading / saving ZIP files
-- [`graphics`](https://docs.rs/cala/0.7.0/cala/graphics/index.html) - Render and User Interface
+- [`draw`](https://docs.rs/cala/0.7.0/cala/draw/index.html) - Render and User Interface
 - Camera - Webcam [WIP](https://github.com/libcala/cala/issues/1)
 - Network - Bluetooth & Wifi Direct [WIP](https://github.com/libcala/cala/issues/10)
 - Hardware acceleration - SIMD, GPU [WIP](https://github.com/libcala/cala/issues/11)

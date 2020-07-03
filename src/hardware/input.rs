@@ -5,10 +5,10 @@
 //! // TODO
 //! ```
 
-#[cfg(feature = "graphics")]
+#[cfg(feature = "draw")]
 use window::input as input_source;
 
-#[cfg(not(feature = "graphics"))]
+#[cfg(not(feature = "draw"))]
 use human as input_source;
 
 pub use self::input_source::{

@@ -1,4 +1,4 @@
-//! **feature:graphics** - Render graphics.
+//! **feature:draw** - Render (draw) graphics using the GPU and/or SIMD.
 //!
 //! # Getting Started
 //! This API is designed to be high-level without sacrificing optimization.
@@ -28,24 +28,45 @@
 //! // TODO
 //! ```
 
-use pix::{chan::Channel, el::Pixel};
 use std::{
     cell::RefCell,
-    future::Future,
     mem::MaybeUninit,
-    pin::Pin,
     sync::{
         atomic::{AtomicU32, Ordering},
-        Arc, Condvar, Mutex, MutexGuard, Once,
+        Arc, Condvar, Mutex, Once,
     },
-    task::{Context, Poll, Waker},
+    task::{Waker},
 };
 
-enum GpuCmd {
+/// A 2D rectangular image.
+///
+/// ---
+pub use pix::Raster;
+/// Location and dimensions of a rectangular region within a `Raster`.
+///
+/// ---
+pub use pix::Region;
+
+/// Color Models and types.
+///
+/// These are re-exported from the `pix` crate.
+pub mod color {
+    pub use pix::bgr::*;
+    pub use pix::rgb::*;
+    pub use pix::cmy::*;
+    pub use pix::ycc::*;
+    pub use pix::hsl::*;
+    pub use pix::hsv::*;
+    pub use pix::hwb::*;
+    pub use pix::gray::*;
+    pub use pix::matte::*;
+}
+
+pub(super) enum GpuCmd {
     /// Set the background color on the GPU output raster.
     Background(f32, f32, f32),
     Draw(u32, Arc<Group>),
-    DrawGraphic(u32, Arc<Group>, Arc<RasterId>),
+    DrawGraphic(u32, Arc<Group>, u32),
     SetCamera(u32, Transform),
     SetTint(u32, [f32; 4]),
     RasterId(pix::Raster<pix::rgb::SRgba8>, u32),
@@ -53,17 +74,17 @@ enum GpuCmd {
     ShapeId(ShapeBuilder, u32, u32),
 }
 
-struct FrameInternal {
-    waker: Option<Waker>,
-    frame: Option<(f64, f64)>,
+pub(super) struct FrameInternal {
+    pub(super) waker: Option<Waker>,
+    pub(super) frame: Option<(std::time::Duration, f32)>,
 }
 
-struct Internal {
-    cmds: Mutex<Vec<GpuCmd>>,
-    frame: Mutex<FrameInternal>,
-    pair: Arc<(Mutex<bool>, Condvar)>,
+pub(super) struct Internal {
+    pub(super) cmds: Mutex<Vec<GpuCmd>>,
+    pub(super) frame: Mutex<FrameInternal>,
+    pub(super) pair: Arc<(Mutex<bool>, Condvar)>,
     raster_garbage: Mutex<Vec<u32>>,
-    rasters: RefCell<Vec<RasterId>>,
+    rasters: RefCell<Vec<window::RasterId>>,
     shader_garbage: Mutex<Vec<u32>>,
     shaders: RefCell<Vec<window::Shader>>,
     shape_garbage: Mutex<Vec<u32>>,
@@ -77,7 +98,7 @@ static NEXT_SHAPE_ID: AtomicU32 = AtomicU32::new(0);
 
 impl Internal {
     // Get internal graphics data, lazily initializing if not used yet.
-    fn new_lazy() -> &'static Self {
+    pub(super) fn new_lazy() -> &'static Self {
         // It's in the Condvar docs, so this is the recommended way to do it.
         #[allow(clippy::mutex_atomic)]
         unsafe {
@@ -102,37 +123,31 @@ impl Internal {
     }
 }
 
-struct FrameFuture;
+/// `Raster` stored on the GPU.
+pub struct Texture(pub(super) u32);
 
-impl Future for FrameFuture {
-    type Output = (f64, f64);
-
-    fn poll(self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<Self::Output> {
+impl Texture {
+    /// Create a `Texture` by copying a `Raster` to the GPU.
+    pub fn new<P: pix::el::Pixel>(raster: &pix::Raster<P>) -> Self
+    where
+        pix::chan::Ch8: From<<P as pix::el::Pixel>::Chan>,
+    {
         let internal = Internal::new_lazy();
-        let mut lock = internal.frame.lock().unwrap();
-        if let Some(secs) = lock.frame.take() {
-            Poll::Ready(secs)
+        let id = if let Some(id) = internal.raster_garbage.lock().unwrap().pop() {
+            id
         } else {
-            lock.waker = Some(cx.waker().clone());
-            Poll::Pending
-        }
+            NEXT_RASTER_ID.fetch_add(1, Ordering::Relaxed)
+        };
+        let mut lock = internal.cmds.lock().unwrap();
+        lock.push(GpuCmd::RasterId(
+            pix::Raster::<pix::rgb::SRgba8>::with_raster(&raster),
+            id,
+        ));
+        Texture(id)
     }
 }
 
-/// Aquire the GPU for a frame.
-pub async fn frame<'a>() -> (Gpu<'a>, f64, f64) {
-    let secs = FrameFuture.await;
-    let internal = Internal::new_lazy();
-    let cmds = internal.cmds.lock().unwrap();
-    let pair = internal.pair.clone();
-    let gpu = Gpu { cmds, pair };
-    (gpu, secs.0, secs.1)
-}
-
-/// A raster on the GPU.
-pub struct GpuRaster(u32);
-
-impl Drop for GpuRaster {
+impl Drop for Texture {
     fn drop(&mut self) {
         // FIXME: Make GpuCmd
         let internal = Internal::new_lazy();
@@ -141,7 +156,22 @@ impl Drop for GpuRaster {
 }
 
 /// A Shader.
-pub struct Shader(u32);
+pub struct Shader(pub(super) u32);
+
+impl Shader {
+    /// Copy and send a shader program to the GPU.
+    pub fn new(builder: ShaderBuilder) -> Shader {
+        let internal = Internal::new_lazy();
+        let id = if let Some(id) = internal.shader_garbage.lock().unwrap().pop() {
+            id
+        } else {
+            NEXT_SHADER_ID.fetch_add(1, Ordering::Relaxed)
+        };
+        let mut lock = internal.cmds.lock().unwrap();
+        lock.push(GpuCmd::ShaderId(builder, id));
+        Shader(id)
+    }
+}
 
 impl Drop for Shader {
     fn drop(&mut self) {
@@ -162,70 +192,8 @@ impl Drop for Shape {
     }
 }
 
-/// Borrowed access to GPU instructions.
-pub struct Gpu<'a> {
-    // Lock on the Gpu command buffers.
-    cmds: MutexGuard<'a, Vec<GpuCmd>>,
-    // For when drop'd; to notify graphics thread
-    pair: Arc<(Mutex<bool>, Condvar)>,
-}
-
-impl<'a> Gpu<'a> {
-    /// Set the background clear color.
-    pub fn background<C: pix::el::Pixel>(&mut self, color: C)
-    where
-        pix::chan::Ch32: From<<C as pix::el::Pixel>::Chan>,
-    {
-        let c: pix::rgb::SRgb32 = color.convert();
-        self.cmds.push(GpuCmd::Background(
-            c.one().to_f32(),
-            c.two().to_f32(),
-            c.three().to_f32(),
-        ));
-    }
-
-    /// Draw a group on the screen.
-    pub fn draw(&mut self, shader: &Arc<Shader>, group: &Arc<Group>) {
-        self.cmds.push(GpuCmd::Draw(shader.0, group.clone()));
-    }
-
-    /// Set camera for shader.
-    pub fn set_camera(&mut self, shader: &Arc<Shader>, camera: Transform) {
-        self.cmds.push(GpuCmd::SetCamera(shader.0, camera));
-    }
-
-    /// Set tint for shader.
-    pub fn set_tint(&mut self, shader: &Arc<Shader>, tint: [f32; 4]) {
-        self.cmds.push(GpuCmd::SetTint(shader.0, tint));
-    }
-
-    /// Draw a group with a texture on the screen.
-    pub fn draw_graphic(
-        &mut self,
-        shader: &Arc<Shader>,
-        group: &Arc<Group>,
-        graphic: &Arc<RasterId>,
-    ) {
-        self.cmds.push(GpuCmd::DrawGraphic(
-            shader.0,
-            group.clone(),
-            graphic.clone(),
-        ));
-    }
-}
-
-impl<'a> Drop for Gpu<'a> {
-    fn drop(&mut self) {
-        let (lock, cvar) = &*self.pair;
-        let mut started = lock.lock().unwrap();
-        *started = true;
-        // We notify the condvar that the value has changed.
-        cvar.notify_one();
-    }
-}
-
 // A function that is run on the graphics thread whenever
-fn async_runner(window: &mut window::Window, nanos: f64) {
+fn async_runner(window: &mut window::Window, elapsed: std::time::Duration) {
     // Get the aspcet ratio
     let aspect = window.aspect();
 
@@ -242,7 +210,7 @@ fn async_runner(window: &mut window::Window, nanos: f64) {
         let internal = Internal::new_lazy();
         let mut lock = internal.frame.lock().unwrap();
         lock.waker.take().unwrap().wake();
-        lock.frame = Some((nanos, aspect.into()));
+        lock.frame = Some((elapsed, aspect));
     }
 
     // Wait for async thread to finish writing to the command buffer.
@@ -266,7 +234,7 @@ fn async_runner(window: &mut window::Window, nanos: f64) {
                 window.draw_graphic(
                     &shaders[shader as usize],
                     &*group,
-                    &raster,
+                    &Internal::new_lazy().rasters.borrow()[raster as usize],
                 );
             }
             SetCamera(_shader, camera) => {
@@ -326,7 +294,7 @@ pub(crate) mod __hidden {
     use window::Window;
 
     #[doc(hidden)]
-    pub fn graphics_thread() {
+    pub fn draw_thread() {
         let fallback_window_title = env!("CARGO_PKG_NAME");
         let mut window =
             Window::new(fallback_window_title, super::async_runner);
@@ -336,50 +304,9 @@ pub(crate) mod __hidden {
     }
 }
 
-#[doc(hidden)]
-pub use window::ShaderBuilder;
-
-pub use window::{shader, Group, Key, RasterId, Transform};
+pub use window::{shader, Group, Transform, ShaderBuilder};
 
 // // // // // //
-
-/// Set the display's background color.
-pub fn background(r: f32, g: f32, b: f32) {
-    let mut lock = Internal::new_lazy().cmds.lock().unwrap();
-    lock.push(GpuCmd::Background(r, g, b));
-}
-
-/// Copy and send a raster to the GPU.
-pub fn gpu_raster<P: pix::el::Pixel>(raster: &pix::Raster<P>) -> GpuRaster
-where
-    pix::chan::Ch8: From<<P as pix::el::Pixel>::Chan>,
-{
-    let internal = Internal::new_lazy();
-    let id = if let Some(id) = internal.raster_garbage.lock().unwrap().pop() {
-        id
-    } else {
-        NEXT_RASTER_ID.fetch_add(1, Ordering::Relaxed)
-    };
-    let mut lock = internal.cmds.lock().unwrap();
-    lock.push(GpuCmd::RasterId(
-        pix::Raster::<pix::rgb::SRgba8>::with_raster(&raster),
-        id,
-    ));
-    GpuRaster(id)
-}
-
-/// Copy and send a shader program to the GPU.
-pub fn shader(builder: ShaderBuilder) -> Shader {
-    let internal = Internal::new_lazy();
-    let id = if let Some(id) = internal.shader_garbage.lock().unwrap().pop() {
-        id
-    } else {
-        NEXT_SHADER_ID.fetch_add(1, Ordering::Relaxed)
-    };
-    let mut lock = internal.cmds.lock().unwrap();
-    lock.push(GpuCmd::ShaderId(builder, id));
-    Shader(id)
-}
 
 struct Face {
     vertices: Option<Vec<f32>>,
@@ -446,4 +373,4 @@ impl ShapeBuilder {
     }
 }
 
-pub use crate::timer::*;
+pub use crate::timer::AnimTimer;
