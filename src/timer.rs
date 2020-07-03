@@ -2,41 +2,30 @@
 #[derive(Copy, Clone)]
 pub struct TimedLoop {
     // Incremented every `add()`.
-    counter: u64,
+    counter: f64,
     // `counter` wraps around
-    maximum: u64,
+    maximum: f64,
 }
 
 impl TimedLoop {
-    /// Seconds and nanoseconds (1 / 1_000_000_000 of a second).
+    /// Create a repeating timer over `secs` seconds.
     #[allow(clippy::cast_lossless)] // const fn doesn't support u64::from() yet
-    pub const fn new(secs: u32, nanos: u32) -> TimedLoop {
-        let whol = secs as u64 * 1_000_000_000u64;
-        let frac = nanos as u64;
-        let value = whol + frac;
-
+    pub const fn new(secs: f64) -> TimedLoop {
         TimedLoop {
-            counter: 0,
-            maximum: value,
+            counter: 0.0,
+            maximum: secs,
         }
     }
 
     /// Add time to the `TimedLoop`.  Returns float for use in animations.
-    pub fn add(&mut self) -> f32 {
-        let mut nanos = crate::delta();
-        let left = self.maximum - self.counter;
-        if nanos > left {
-            nanos -= left + 1;
-            self.counter = nanos;
-        } else {
-            self.counter += nanos;
-        }
+    pub fn add(&mut self, dt: f64) -> f32 {
+        self.counter = (self.counter + dt) % 1.0;
         (*self).into()
     }
 }
 
 impl Into<f32> for TimedLoop {
     fn into(self) -> f32 {
-        (self.counter as f64 / self.maximum as f64) as f32
+        (self.counter / self.maximum) as f32
     }
 }

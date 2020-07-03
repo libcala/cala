@@ -28,18 +28,42 @@
 //! // TODO
 //! ```
 
-use std::{mem::MaybeUninit, sync::{Once, Mutex}};
+use std::{cell::RefCell, future::Future, pin::Pin, mem::MaybeUninit, sync::{atomic::{Ordering, AtomicU32}, Arc, Condvar, Once, Mutex, MutexGuard}, task::{Context, Poll, Waker}};
+use pix::{chan::Channel, el::Pixel};
 
 enum GpuCmd {
     /// Set the background color on the GPU output raster.
     Background(f32, f32, f32),
+    Draw(u32, Arc<Group>),
+    DrawGraphic(u32, Arc<Group>, Arc<RasterId>),
+    SetCamera(u32, Transform),
+    SetTint(u32, [f32; 4]),
+    RasterId(pix::Raster<pix::rgb::SRgba8>, u32),
+    ShaderId(ShaderBuilder, u32),
+    ShapeId(ShapeBuilder, u32),
+}
+
+struct FrameInternal {
+    waker: Option<Waker>,
+    frame: Option<(f64, f64)>,
 }
 
 struct Internal {
     cmds: Mutex<Vec<GpuCmd>>,
+    frame: Mutex<FrameInternal>,
+    pair: Arc<(Mutex<bool>, Condvar)>,
+    raster_garbage: Mutex<Vec<u32>>,
+    rasters: RefCell<Vec<RasterId>>,
+    shader_garbage: Mutex<Vec<u32>>,
+    shaders: RefCell<Vec<window::Shader>>,
+    shape_garbage: Mutex<Vec<u32>>,
+    shapes: RefCell<Vec<window::Shape>>,
 }
 static mut INTERNAL: MaybeUninit<Internal> = MaybeUninit::uninit();
 static INIT: Once = Once::new();
+static NEXT_RASTER_ID: AtomicU32 = AtomicU32::new(0);
+static NEXT_SHADER_ID: AtomicU32 = AtomicU32::new(0);
+static NEXT_SHAPE_ID: AtomicU32 = AtomicU32::new(0);
 
 impl Internal {
     // Get internal graphics data, lazily initializing if not used yet.
@@ -48,9 +72,216 @@ impl Internal {
             INIT.call_once(|| {
                 INTERNAL = MaybeUninit::new(Internal {
                     cmds: Mutex::new(Vec::new()),
+                    frame: Mutex::new(FrameInternal { waker: None, frame: None }),
+                    pair: Arc::new((Mutex::new(false), Condvar::new())),
+                    raster_garbage: Mutex::new(Vec::new()),
+                    rasters: RefCell::new(Vec::new()),
+                    shader_garbage: Mutex::new(Vec::new()),
+                    shaders: RefCell::new(Vec::new()),
+                    shape_garbage: Mutex::new(Vec::new()),
+                    shapes: RefCell::new(Vec::new()),
                 });
             });
             &*INTERNAL.as_ptr()
+        }
+    }
+}
+
+struct FrameFuture;
+
+impl Future for FrameFuture {
+    type Output = (f64, f64);
+
+    fn poll(self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<Self::Output> {
+        let internal = Internal::new_lazy();
+        let mut lock = internal.frame.lock().unwrap();
+        if let Some(secs) = lock.frame.take() {
+            Poll::Ready(secs)
+        } else {
+            lock.waker = Some(cx.waker().clone());
+            Poll::Pending
+        }
+    }
+}
+
+/// Aquire the GPU for a frame.
+pub async fn frame<'a>() -> (Gpu<'a>, f64, f64) {
+    let secs = FrameFuture.await;
+    let internal = Internal::new_lazy();
+    let cmds = internal.cmds.lock().unwrap();
+    let pair = internal.pair.clone();
+    let gpu = Gpu {
+        cmds, pair
+    };
+    (gpu, secs.0, secs.1)
+}
+
+/// A raster on the GPU.
+pub struct GpuRaster(u32);
+
+impl Drop for GpuRaster {
+    fn drop(&mut self) {
+        // FIXME: Make GpuCmd
+        let internal = Internal::new_lazy();
+        internal.raster_garbage.lock().unwrap().push(self.0);
+    }
+}
+
+/// A Shader.
+pub struct Shader(u32);
+
+impl Drop for Shader {
+    fn drop(&mut self) {
+        // FIXME: Make GpuCmd
+        let internal = Internal::new_lazy();
+        internal.shader_garbage.lock().unwrap().push(self.0);
+    }
+}
+
+/// A Shader.
+pub struct Shape(u32);
+
+impl Drop for Shape {
+    fn drop(&mut self) {
+        // FIXME: Make GpuCmd
+        let internal = Internal::new_lazy();
+        internal.shape_garbage.lock().unwrap().push(self.0);
+    }
+}
+
+/// Borrowed access to GPU instructions.
+pub struct Gpu<'a> {
+    // Lock on the Gpu command buffers.
+    cmds: MutexGuard<'a, Vec<GpuCmd>>,
+    // For when drop'd; to notify graphics thread
+    pair: Arc<(Mutex<bool>, Condvar)>,
+}
+
+impl<'a> Gpu<'a> {
+    /// Set the background clear color.
+    pub fn background<C: pix::el::Pixel>(&mut self, color: C)
+        where pix::chan::Ch32: From<<C as pix::el::Pixel>::Chan>
+    {
+        let c: pix::rgb::SRgb32 = color.convert();
+        self.cmds.push(GpuCmd::Background(c.one().to_f32(), c.two().to_f32(), c.three().to_f32()));
+    }
+    
+    /// Draw a group on the screen.
+    pub fn draw(&mut self, shader: &Arc<Shader>, group: &Arc<Group>) {
+        self.cmds.push(GpuCmd::Draw(shader.0, group.clone()));
+    }
+    
+    /// Set camera for shader.
+    pub fn set_camera(&mut self, shader: &Arc<Shader>, camera: Transform) {
+        self.cmds.push(GpuCmd::SetCamera(shader.0, camera.clone()));
+    }
+    
+    /// Set tint for shader.
+    pub fn set_tint(&mut self, shader: &Arc<Shader>, tint: [f32; 4]) {
+        self.cmds.push(GpuCmd::SetTint(shader.0, tint));
+    }
+
+    /// Draw a group with a texture on the screen.
+    pub fn draw_graphic(&mut self, shader: &Arc<Shader>, group: &Arc<Group>, graphic: &Arc<RasterId>) {
+        self.cmds.push(GpuCmd::DrawGraphic(shader.0, group.clone(), graphic.clone()));
+    }
+}
+
+impl<'a> Drop for Gpu<'a> {
+    fn drop(&mut self) {
+        let (lock, cvar) = &*self.pair;
+        let mut started = lock.lock().unwrap();
+        *started = true;
+        // We notify the condvar that the value has changed.
+        cvar.notify_one();
+    }
+}
+
+// A function that is run on the graphics thread whenever 
+fn async_runner(window: &mut window::Window, nanos: f64) {
+    // Get the aspcet ratio
+    let aspect = window.aspect();
+
+    // Reset condvar
+    let pair = {
+        let internal = Internal::new_lazy();
+        internal.pair.clone()
+    };
+    let (lock, cvar) = &*pair;
+    *lock.lock().unwrap() = false;
+    
+    // Wake async thread
+    {
+        let internal = Internal::new_lazy();
+        let mut lock = internal.frame.lock().unwrap();
+        lock.waker.take().unwrap().wake();
+        lock.frame = Some((nanos, aspect.into()));
+    }
+
+    // Wait for async thread to finish writing to the command buffer.
+    let mut started = lock.lock().unwrap();
+    while !*started {
+        started = cvar.wait(started).unwrap();
+    }
+    
+    // Process commands in the command buffer.
+    let mut lock = Internal::new_lazy().cmds.lock().unwrap();
+    for cmd in lock.drain(..) {
+        use GpuCmd::*;
+        match cmd {
+            Background(r, g, b) => window.background(r, g, b),
+            Draw(shader, group) => {
+                let shaders = Internal::new_lazy().shaders.borrow();
+                window.draw(&shaders[shader as usize], &*group);
+            }
+            DrawGraphic(shader, group, raster) => {
+                let shaders = Internal::new_lazy().shaders.borrow();
+                window.draw_graphic(&shaders[shader as usize], &*group, &raster);
+            }
+            SetCamera(shader, camera) => {
+                let shaders = Internal::new_lazy().shaders.borrow();
+                window.camera(&shaders[shader as usize], camera);
+            }
+            SetTint(shader, tint) => {
+                let shaders = Internal::new_lazy().shaders.borrow();
+                window.tint(&shaders[shader as usize], tint);
+            }
+            RasterId(raster, id) => {
+                let gpu_raster = window.graphic(raster.as_u8_slice(), raster.width() as usize, raster.height() as usize);
+                let mut rasters = Internal::new_lazy().rasters.borrow_mut();
+                if id as usize == rasters.len() {
+                    rasters.push(gpu_raster);
+                } else {
+                    rasters[id as usize] = gpu_raster;
+                }
+            }
+            ShaderId(shader, id) => {
+                let shader = window.shader_new(shader);
+                let mut shaders = Internal::new_lazy().shaders.borrow_mut();
+                if id as usize == shaders.len() {
+                    shaders.push(shader);
+                } else {
+                    shaders[id as usize] = shader;
+                }
+            }
+            ShapeId(shape_builder, id) => {
+                let mut shapes = Internal::new_lazy().shapes.borrow_mut();
+                let mut shaders = Internal::new_lazy().shaders.borrow_mut();
+                let mut shape = window::ShapeBuilder::new(&mut shaders[shader as usize]);
+                for face in shape_builder.faces {
+                    if let Some(vertices) = face.vertices {
+                        shape = shape.vert(vertices.as_slice());
+                    }
+                    if let Some(transform) = face.transform {
+                        shape = shape.face(transform);
+                    }
+                }
+                if id as usize == shapes.len() {
+                    shapes.push(shape.finish());
+                } else {
+                    shapes[id as usize] = shape.finish();
+                }
+            }
         }
     }
 }
@@ -60,19 +291,9 @@ pub(crate) mod __hidden {
 
     #[doc(hidden)]
     pub fn graphics_thread() {
-        fn dummy_runner(nanos: u64) { } // FIXME
         let fallback_window_title = env!("CARGO_PKG_NAME");
-        let mut window = Window::new(fallback_window_title, dummy_runner);
+        let mut window = Window::new(fallback_window_title, super::async_runner);
         loop {
-            {
-                let mut lock = super::Internal::new_lazy().cmds.lock().unwrap();
-                for cmd in lock.drain(..) {
-                    use super::GpuCmd::*;
-                    match cmd {
-                        Background(r, g, b) => window.background(r, g, b),
-                    }
-                }
-            }
             window.run();
         }
     }
@@ -81,70 +302,9 @@ pub(crate) mod __hidden {
 #[doc(hidden)]
 pub use window::{ShaderBuilder};
 
-pub use window::{ShapeBuilder, Shape, Group, Transform, RasterId, Key};
-
-/// **feature:graphics** Load a generated shader from `res`.
-#[macro_export(self)] macro_rules! shader {
-    ($shadername: literal) => {
-        $crate::Shader::new(include!(concat!(env!("OUT_DIR"), "/res/", $shadername, ".rs")));
-    }
-}
-
-/// A shader.  Shaders are programs that run on the GPU that render things on
-/// the screen.
-pub struct Shader(usize);
-
-struct VideoIO {
-    window: window::Window,
-    shader: Vec<Option<window::Shader>>,
-    shadet: Vec<usize>,
-}
-
-static mut VIDEO_IO: FakeVideoIO = FakeVideoIO([0; std::mem::size_of::<VideoIO>()]);
-
-#[repr(align(8))]
-struct FakeVideoIO([u8; std::mem::size_of::<VideoIO>()]);
+pub use window::{shader, Group, Transform, RasterId, Key};
 
 // // // // // //
-
-impl Drop for Shader {
-    fn drop(&mut self) {
-        let video_io = unsafe { &mut VIDEO_IO as *mut _ as *mut VideoIO };
-
-        unsafe {
-            (*video_io).shadet.push(self.0);
-            (*video_io).shader[self.0] = None;
-        }
-    }
-}
-
-impl Shader {
-    /// Build a shader.
-    #[doc(hidden)]
-    pub fn new(builder: ShaderBuilder) -> Shader {
-        let video_io = unsafe { &mut VIDEO_IO as *mut _ as *mut VideoIO };
-
-        let index = unsafe {
-            let index = if let Some(index) = (*video_io).shadet.pop() {
-                index
-            } else {
-                (*video_io).shader.len()
-            };
-
-            let shader = (*video_io).window.shader_new(builder);
-
-            if index == (*video_io).shader.len() {
-                (*video_io).shader.push(Some(shader));
-            } else {
-                (*video_io).shader[index] = Some(shader);
-            }
-
-            index
-        };
-
-        Shader(index)
-    }
-}
 
 fn toolbar(buffer: &mut [u8], width: u16) {
 /*    let height = buffer.len() / (4 * width as usize);
@@ -182,7 +342,7 @@ fn toolbar(buffer: &mut [u8], width: u16) {
     crate::icons::text(slice, width, height as u16, "Plop Grizzlyhna2");*/
 }
 
-// Initialize graphic shader.
+/*// Initialize graphic shader.
 pub(crate) fn init_toolbar(window: &mut window::Window) -> (window::Shader, Group) {
     let mut gui = window.shader_new(window::shader!("gui"));
 
@@ -204,7 +364,7 @@ pub(crate) fn init_toolbar(window: &mut window::Window) -> (window::Shader, Grou
     let mut group = window.group_new();
     group.push(&rect, &Transform::new());
     (gui, group)
-}
+}*/
 
 /// Set the display's background color.
 pub fn background(r: f32, g: f32, b: f32) {
@@ -212,76 +372,84 @@ pub fn background(r: f32, g: f32, b: f32) {
     lock.push(GpuCmd::Background(r, g, b));
 }
 
-/// Get a `ShapeBuilder` for a `Shader`.
-pub fn shape(shader: &Shader) -> ShapeBuilder {
-    let video_io = unsafe { &mut VIDEO_IO as *mut _ as *mut VideoIO };
-
-    let shader = unsafe {
-        (*video_io).shader[shader.0].as_mut().unwrap()
+/// Copy and send a raster to the GPU.
+pub fn gpu_raster<P: pix::el::Pixel>(raster: &pix::Raster<P>) -> GpuRaster
+    where pix::chan::Ch8: From<<P as pix::el::Pixel>::Chan>
+{
+    let internal = Internal::new_lazy();
+    let id = if let Some(id) = internal.raster_garbage.lock().unwrap().pop() {
+        id
+    } else {
+        NEXT_RASTER_ID.fetch_add(1, Ordering::Relaxed)
     };
-
-    ShapeBuilder::new(shader)
+    let mut lock = internal.cmds.lock().unwrap();
+    lock.push(GpuCmd::RasterId(pix::Raster::<pix::rgb::SRgba8>::with_raster(&raster), id));
+    GpuRaster(id)
 }
 
-/// Draw a group on the screen.
-pub fn draw(shader: &Shader, group: &mut Group) {
-    let video_io = unsafe { &mut VIDEO_IO as *mut _ as *mut VideoIO };
+/// Copy and send a shader program to the GPU.
+pub fn shader(builder: ShaderBuilder) -> Shader {
+    let internal = Internal::new_lazy();
+    let id = if let Some(id) = internal.shader_garbage.lock().unwrap().pop() {
+        id
+    } else {
+        NEXT_SHADER_ID.fetch_add(1, Ordering::Relaxed)
+    };
+    let mut lock = internal.cmds.lock().unwrap();
+    lock.push(GpuCmd::ShaderId(builder, id));
+    Shader(id)
+}
 
-    unsafe {
-        (*video_io).window.draw((*video_io).shader[shader.0].as_ref().unwrap(), group);
+struct Face {
+    vertices: Option<Vec<f32>>,
+    transform: Option<Transform>,
+}
+
+pub struct ShapeBuilder {
+    faces: Vec<Face>
+}
+
+impl ShapeBuilder {
+    /// Create a new `ShapeBuilder`.
+    pub fn new() -> Self {
+        ShapeBuilder {
+            faces: Vec::new(),
+        }
     }
-}
 
-/// Set camera for shader.
-pub fn set_camera(shader: &Shader, camera: Transform) {
-    let video_io = unsafe { &mut VIDEO_IO as *mut _ as *mut VideoIO };
-
-    unsafe {
-        (*video_io).window.camera((*video_io).shader[shader.0].as_ref().unwrap(), camera);
+    /// Set vertices for the following faces.
+    pub fn vert(mut self, vertices: &[f32]) -> Self {
+        self.faces.push(Face { vertices: Some(vertices.to_vec()), transform: None });
+        self
     }
-}
-/// Set tint for shader.
-pub fn set_tint(shader: &Shader, tint: [f32; 4]) {
-    let video_io = unsafe { &mut VIDEO_IO as *mut _ as *mut VideoIO };
 
-    unsafe {
-        (*video_io).window.tint((*video_io).shader[shader.0].as_ref().unwrap(), tint);
+    /// Add a face to the shape using the last set vertices.
+    pub fn face(mut self, transform: Transform) -> Self {
+        if let Some(mut face) = self.faces.pop() {
+            if face.transform.is_none() {
+                face.transform = Some(transform);
+                self.faces.push(face);
+            } else {
+                self.faces.push(face);
+                self.faces.push(Face { vertices: None, transform: Some(transform) });
+            }
+        } else {
+            panic!("Can't have a face without vertices!");
+        }
+        self
     }
-}
 
-/// Draw a group with a texture on the screen.
-pub fn draw_graphic(shader: &Shader, group: &mut Group, graphic: &RasterId) {
-    let video_io = unsafe { &mut VIDEO_IO as *mut _ as *mut VideoIO };
-
-    unsafe {
-        (*video_io).window.draw_graphic((*video_io).shader[shader.0].as_ref().unwrap(), group, graphic);
-    }
-}
-
-/// Load a graphic.
-pub fn graphic(pixels: &[u8], width: usize, height: usize) -> RasterId {
-    let video_io = unsafe { &mut VIDEO_IO as *mut _ as *mut VideoIO };
-
-    unsafe {
-        (*video_io).window.graphic(pixels, width, height)
-    }
-}
-
-/// Create a new group.
-pub fn group_new() -> Group {
-    let video_io = unsafe { &mut VIDEO_IO as *mut _ as *mut VideoIO };
-
-    unsafe {
-        (*video_io).window.group_new()
-    }
-}
-
-/// Get the window aspect ratio.
-pub fn aspect() -> f32 {
-    let video_io = unsafe { &mut VIDEO_IO as *mut _ as *mut VideoIO };
-
-    unsafe {
-        (*video_io).window.aspect()
+    /// Finish building the shape.
+    pub fn finish(self, shader: &Shader) -> Shape {
+        let internal = Internal::new_lazy();
+        let id = if let Some(id) = internal.shape_garbage.lock().unwrap().pop() {
+            id
+        } else {
+            NEXT_SHAPE_ID.fetch_add(1, Ordering::Relaxed)
+        };
+        let mut lock = internal.cmds.lock().unwrap();
+        lock.push(GpuCmd::ShapeId(self, id));
+        Shape(id)
     }
 }
 

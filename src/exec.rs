@@ -1,7 +1,7 @@
 #[cfg(target_arch = "wasm32")]
 pub use cala_core::exec;
 
-/// Set an asynchronous function as the entry point for the application.
+/// Select an asynchronous function as the entry point for the application.
 #[cfg(all(not(target_arch = "wasm32"), not(feature = "graphics")))]
 #[macro_export]
 macro_rules! exec {
