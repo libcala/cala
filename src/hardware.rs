@@ -18,3 +18,11 @@ pub mod accel;
 pub mod speaker;
 #[cfg(feature = "microphone")]
 pub mod microphone;
+#[cfg(feature = "user")]
+pub mod user;
+#[cfg(feature = "journal")]
+pub mod journal;
+#[cfg(feature = "file")]
+pub mod file;
+#[cfg(feature = "time")]
+pub mod time;

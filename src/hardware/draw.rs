@@ -372,5 +372,3 @@ impl ShapeBuilder {
         Shape(id)
     }
 }
-
-pub use crate::timer::AnimTimer;
