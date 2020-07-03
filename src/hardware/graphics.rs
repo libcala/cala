@@ -28,8 +28,18 @@
 //! // TODO
 //! ```
 
-use std::{cell::RefCell, future::Future, pin::Pin, mem::MaybeUninit, sync::{atomic::{Ordering, AtomicU32}, Arc, Condvar, Once, Mutex, MutexGuard}, task::{Context, Poll, Waker}};
 use pix::{chan::Channel, el::Pixel};
+use std::{
+    cell::RefCell,
+    future::Future,
+    mem::MaybeUninit,
+    pin::Pin,
+    sync::{
+        atomic::{AtomicU32, Ordering},
+        Arc, Condvar, Mutex, MutexGuard, Once,
+    },
+    task::{Context, Poll, Waker},
+};
 
 enum GpuCmd {
     /// Set the background color on the GPU output raster.
@@ -40,7 +50,7 @@ enum GpuCmd {
     SetTint(u32, [f32; 4]),
     RasterId(pix::Raster<pix::rgb::SRgba8>, u32),
     ShaderId(ShaderBuilder, u32),
-    ShapeId(ShapeBuilder, u32),
+    ShapeId(ShapeBuilder, u32, u32),
 }
 
 struct FrameInternal {
@@ -68,11 +78,16 @@ static NEXT_SHAPE_ID: AtomicU32 = AtomicU32::new(0);
 impl Internal {
     // Get internal graphics data, lazily initializing if not used yet.
     fn new_lazy() -> &'static Self {
+        // It's in the Condvar docs, so this is the recommended way to do it.
+        #[allow(clippy::mutex_atomic)]
         unsafe {
             INIT.call_once(|| {
                 INTERNAL = MaybeUninit::new(Internal {
                     cmds: Mutex::new(Vec::new()),
-                    frame: Mutex::new(FrameInternal { waker: None, frame: None }),
+                    frame: Mutex::new(FrameInternal {
+                        waker: None,
+                        frame: None,
+                    }),
                     pair: Arc::new((Mutex::new(false), Condvar::new())),
                     raster_garbage: Mutex::new(Vec::new()),
                     rasters: RefCell::new(Vec::new()),
@@ -110,9 +125,7 @@ pub async fn frame<'a>() -> (Gpu<'a>, f64, f64) {
     let internal = Internal::new_lazy();
     let cmds = internal.cmds.lock().unwrap();
     let pair = internal.pair.clone();
-    let gpu = Gpu {
-        cmds, pair
-    };
+    let gpu = Gpu { cmds, pair };
     (gpu, secs.0, secs.1)
 }
 
@@ -138,7 +151,7 @@ impl Drop for Shader {
     }
 }
 
-/// A Shader.
+/// A Shape.
 pub struct Shape(u32);
 
 impl Drop for Shape {
@@ -160,30 +173,44 @@ pub struct Gpu<'a> {
 impl<'a> Gpu<'a> {
     /// Set the background clear color.
     pub fn background<C: pix::el::Pixel>(&mut self, color: C)
-        where pix::chan::Ch32: From<<C as pix::el::Pixel>::Chan>
+    where
+        pix::chan::Ch32: From<<C as pix::el::Pixel>::Chan>,
     {
         let c: pix::rgb::SRgb32 = color.convert();
-        self.cmds.push(GpuCmd::Background(c.one().to_f32(), c.two().to_f32(), c.three().to_f32()));
+        self.cmds.push(GpuCmd::Background(
+            c.one().to_f32(),
+            c.two().to_f32(),
+            c.three().to_f32(),
+        ));
     }
-    
+
     /// Draw a group on the screen.
     pub fn draw(&mut self, shader: &Arc<Shader>, group: &Arc<Group>) {
         self.cmds.push(GpuCmd::Draw(shader.0, group.clone()));
     }
-    
+
     /// Set camera for shader.
     pub fn set_camera(&mut self, shader: &Arc<Shader>, camera: Transform) {
-        self.cmds.push(GpuCmd::SetCamera(shader.0, camera.clone()));
+        self.cmds.push(GpuCmd::SetCamera(shader.0, camera));
     }
-    
+
     /// Set tint for shader.
     pub fn set_tint(&mut self, shader: &Arc<Shader>, tint: [f32; 4]) {
         self.cmds.push(GpuCmd::SetTint(shader.0, tint));
     }
 
     /// Draw a group with a texture on the screen.
-    pub fn draw_graphic(&mut self, shader: &Arc<Shader>, group: &Arc<Group>, graphic: &Arc<RasterId>) {
-        self.cmds.push(GpuCmd::DrawGraphic(shader.0, group.clone(), graphic.clone()));
+    pub fn draw_graphic(
+        &mut self,
+        shader: &Arc<Shader>,
+        group: &Arc<Group>,
+        graphic: &Arc<RasterId>,
+    ) {
+        self.cmds.push(GpuCmd::DrawGraphic(
+            shader.0,
+            group.clone(),
+            graphic.clone(),
+        ));
     }
 }
 
@@ -197,7 +224,7 @@ impl<'a> Drop for Gpu<'a> {
     }
 }
 
-// A function that is run on the graphics thread whenever 
+// A function that is run on the graphics thread whenever
 fn async_runner(window: &mut window::Window, nanos: f64) {
     // Get the aspcet ratio
     let aspect = window.aspect();
@@ -209,7 +236,7 @@ fn async_runner(window: &mut window::Window, nanos: f64) {
     };
     let (lock, cvar) = &*pair;
     *lock.lock().unwrap() = false;
-    
+
     // Wake async thread
     {
         let internal = Internal::new_lazy();
@@ -223,7 +250,7 @@ fn async_runner(window: &mut window::Window, nanos: f64) {
     while !*started {
         started = cvar.wait(started).unwrap();
     }
-    
+
     // Process commands in the command buffer.
     let mut lock = Internal::new_lazy().cmds.lock().unwrap();
     for cmd in lock.drain(..) {
@@ -236,18 +263,26 @@ fn async_runner(window: &mut window::Window, nanos: f64) {
             }
             DrawGraphic(shader, group, raster) => {
                 let shaders = Internal::new_lazy().shaders.borrow();
-                window.draw_graphic(&shaders[shader as usize], &*group, &raster);
+                window.draw_graphic(
+                    &shaders[shader as usize],
+                    &*group,
+                    &raster,
+                );
             }
-            SetCamera(shader, camera) => {
-                let shaders = Internal::new_lazy().shaders.borrow();
-                window.camera(&shaders[shader as usize], camera);
+            SetCamera(_shader, camera) => {
+                // let shaders = Internal::new_lazy().shaders.borrow();
+                window.camera(/*&shaders[shader as usize], */ camera);
             }
             SetTint(shader, tint) => {
                 let shaders = Internal::new_lazy().shaders.borrow();
                 window.tint(&shaders[shader as usize], tint);
             }
             RasterId(raster, id) => {
-                let gpu_raster = window.graphic(raster.as_u8_slice(), raster.width() as usize, raster.height() as usize);
+                let gpu_raster = window.graphic(
+                    raster.as_u8_slice(),
+                    raster.width() as usize,
+                    raster.height() as usize,
+                );
                 let mut rasters = Internal::new_lazy().rasters.borrow_mut();
                 if id as usize == rasters.len() {
                     rasters.push(gpu_raster);
@@ -264,10 +299,11 @@ fn async_runner(window: &mut window::Window, nanos: f64) {
                     shaders[id as usize] = shader;
                 }
             }
-            ShapeId(shape_builder, id) => {
+            ShapeId(shape_builder, id, shader) => {
                 let mut shapes = Internal::new_lazy().shapes.borrow_mut();
                 let mut shaders = Internal::new_lazy().shaders.borrow_mut();
-                let mut shape = window::ShapeBuilder::new(&mut shaders[shader as usize]);
+                let mut shape =
+                    window::ShapeBuilder::new(&mut shaders[shader as usize]);
                 for face in shape_builder.faces {
                     if let Some(vertices) = face.vertices {
                         shape = shape.vert(vertices.as_slice());
@@ -292,7 +328,8 @@ pub(crate) mod __hidden {
     #[doc(hidden)]
     pub fn graphics_thread() {
         let fallback_window_title = env!("CARGO_PKG_NAME");
-        let mut window = Window::new(fallback_window_title, super::async_runner);
+        let mut window =
+            Window::new(fallback_window_title, super::async_runner);
         loop {
             window.run();
         }
@@ -300,71 +337,11 @@ pub(crate) mod __hidden {
 }
 
 #[doc(hidden)]
-pub use window::{ShaderBuilder};
+pub use window::ShaderBuilder;
 
-pub use window::{shader, Group, Transform, RasterId, Key};
+pub use window::{shader, Group, Key, RasterId, Transform};
 
 // // // // // //
-
-fn toolbar(buffer: &mut [u8], width: u16) {
-/*    let height = buffer.len() / (4 * width as usize);
-    let size = (width, height as u16);
-    let mut p = footile::Plotter::new(u32::from(size.0), u32::from(size.1));
-
-    use footile::PathOp::*;
-    use pix::el::Pixel;
-
-    // Render Background.
-    let shape = [
-        Move(0.0, 0.0),
-        Line(width.into(), 0.0),
-        Line(width.into(), height as f32),
-        Line(0.0, height as f32),
-    ];
-
-    let mut raster = Raster::<SRgba8>::with_u8_buffer(p.width(), p.height(), buffer);
-
-    let pix = pix::Raster::<Sfootile::Rgba8::as_slice_mut(buffer);
-    raster.composite_matte(p.fill(&shape, footile::FillRule::EvenOdd), pix::rgb::SRgba8::new(52, 32, 64, 255).convert(), pix /**/, pix::SrcOver);
-    // 
-    let length = buffer.len() / 4;
-    let pointer = buffer as *mut _ as *mut _;
-    let slice = unsafe { std::slice::from_raw_parts_mut(pointer, length) };
-
-    crate::icons::menu(slice, 0, width, height as u16);
-    crate::icons::zoom_out(slice, 1, width, height as u16);
-    crate::icons::zoom_in(slice, 3, width, height as u16);
-    crate::icons::view(slice, 5, width, height as u16);
-    crate::icons::search(slice, 7, width, height as u16);
-    crate::icons::fullscreen(slice, 9, width, height as u16);
-    crate::icons::grid(slice, 11, width, height as u16);
-    crate::icons::next(slice, 13, width, height as u16);
-    crate::icons::text(slice, width, height as u16, "Plop Grizzlyhna2");*/
-}
-
-/*// Initialize graphic shader.
-pub(crate) fn init_toolbar(window: &mut window::Window) -> (window::Shader, Group) {
-    let mut gui = window.shader_new(window::shader!("gui"));
-
-    // Define vertices.
-    #[rustfmt::skip]
-    let vertices = [
-        -1.0, -1.0,  0.0, 1.0,
-         1.0, -1.0,  1.0, 1.0,
-         1.0,  1.0,  1.0, 0.0,
-
-        -1.0,  1.0,  0.0, 0.0,
-        -1.0, -1.0,  0.0, 1.0,
-         1.0,  1.0,  1.0, 0.0,
-    ];
-
-    // Build cube Shape
-    let rect = ShapeBuilder::new(&mut gui).vert(&vertices).face(Transform::new()).finish();
-
-    let mut group = window.group_new();
-    group.push(&rect, &Transform::new());
-    (gui, group)
-}*/
 
 /// Set the display's background color.
 pub fn background(r: f32, g: f32, b: f32) {
@@ -374,7 +351,8 @@ pub fn background(r: f32, g: f32, b: f32) {
 
 /// Copy and send a raster to the GPU.
 pub fn gpu_raster<P: pix::el::Pixel>(raster: &pix::Raster<P>) -> GpuRaster
-    where pix::chan::Ch8: From<<P as pix::el::Pixel>::Chan>
+where
+    pix::chan::Ch8: From<<P as pix::el::Pixel>::Chan>,
 {
     let internal = Internal::new_lazy();
     let id = if let Some(id) = internal.raster_garbage.lock().unwrap().pop() {
@@ -383,7 +361,10 @@ pub fn gpu_raster<P: pix::el::Pixel>(raster: &pix::Raster<P>) -> GpuRaster
         NEXT_RASTER_ID.fetch_add(1, Ordering::Relaxed)
     };
     let mut lock = internal.cmds.lock().unwrap();
-    lock.push(GpuCmd::RasterId(pix::Raster::<pix::rgb::SRgba8>::with_raster(&raster), id));
+    lock.push(GpuCmd::RasterId(
+        pix::Raster::<pix::rgb::SRgba8>::with_raster(&raster),
+        id,
+    ));
     GpuRaster(id)
 }
 
@@ -405,21 +386,29 @@ struct Face {
     transform: Option<Transform>,
 }
 
+/// Builder for a shape.
 pub struct ShapeBuilder {
-    faces: Vec<Face>
+    faces: Vec<Face>,
+}
+
+impl Default for ShapeBuilder {
+    fn default() -> Self {
+        ShapeBuilder::new()
+    }
 }
 
 impl ShapeBuilder {
     /// Create a new `ShapeBuilder`.
     pub fn new() -> Self {
-        ShapeBuilder {
-            faces: Vec::new(),
-        }
+        ShapeBuilder { faces: Vec::new() }
     }
 
     /// Set vertices for the following faces.
     pub fn vert(mut self, vertices: &[f32]) -> Self {
-        self.faces.push(Face { vertices: Some(vertices.to_vec()), transform: None });
+        self.faces.push(Face {
+            vertices: Some(vertices.to_vec()),
+            transform: None,
+        });
         self
     }
 
@@ -431,7 +420,10 @@ impl ShapeBuilder {
                 self.faces.push(face);
             } else {
                 self.faces.push(face);
-                self.faces.push(Face { vertices: None, transform: Some(transform) });
+                self.faces.push(Face {
+                    vertices: None,
+                    transform: Some(transform),
+                });
             }
         } else {
             panic!("Can't have a face without vertices!");
@@ -442,13 +434,14 @@ impl ShapeBuilder {
     /// Finish building the shape.
     pub fn finish(self, shader: &Shader) -> Shape {
         let internal = Internal::new_lazy();
-        let id = if let Some(id) = internal.shape_garbage.lock().unwrap().pop() {
+        let id = if let Some(id) = internal.shape_garbage.lock().unwrap().pop()
+        {
             id
         } else {
             NEXT_SHAPE_ID.fetch_add(1, Ordering::Relaxed)
         };
         let mut lock = internal.cmds.lock().unwrap();
-        lock.push(GpuCmd::ShapeId(self, id));
+        lock.push(GpuCmd::ShapeId(self, id, shader.0));
         Shape(id)
     }
 }

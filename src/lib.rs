@@ -6,7 +6,7 @@
 //! <a href="https://travis-ci.com/libcala/cala"><img src="https://api.travis-ci.com/libcala/cala.svg?branch=master" alt="Cala Build Status"></a>
 //! <a href="https://crates.io/crates/cala"><img src="https://img.shields.io/crates/v/cala.svg" alt = "cala on crates.io"></a>
 //! <a href="https://discord.gg/nXwF59K"><img src="https://img.shields.io/badge/discord-join%20server-green.svg" alt="Discord"></a>
-//! 	  <br>
+//! <br>
 //!   <strong><a href="https://libcala.github.io">Website</a> | <a href="https://github.com/libcala/cala">GitHub</a> | <a href="https://libcala.github.io/changelog">Changelog</a> | <a href="https://libcala.github.io/tutorials">Tutorials</a> </strong>
 //! </p>
 //!
@@ -14,7 +14,7 @@
 //! Each hardware interface can be enabled with a feature.  For example, If you
 //! want to use the `audio` module and the `time` module, you might put this in
 //! your `Cargo.toml`:
-//! 
+//!
 //! <p style="width:100%"><pre style="width:100%"><code style="width:100%"><span style="font-weight:bold;">[dependencies.cala]</span>
 //! <span style="color:#0A0;font-weight:bold;">version</span> = <span style="color:#0A0">"0.8"</span>
 //! <span style="color:#0A0;font-weight:bold;">features</span> = [<span style="color:#0A0">"audio"</span>, <span style="color:#0A0">"time"</span>]</code></pre></p>
@@ -31,28 +31,30 @@
 #[doc(hidden)]
 pub mod __hidden {
     #[cfg(feature = "pasts")]
-    pub use pasts::{Executor, CvarExec};
+    pub use pasts::{CvarExec, Executor};
+
+    #[cfg(feature = "graphics")]
     pub use crate::hardware::graphics::__hidden::graphics_thread;
 }
 
 pub mod prelude {
     //! Automatically import traits with `use cala::prelude::*;`.
-    
+
     #[cfg(feature = "pasts")]
-    pub use pasts::{Select, Join, DynFut as IntoDynFuture};
-    
+    pub use pasts::{DynFut as IntoDynFuture, Join, Select};
+
     #[cfg(feature = "pasts")]
     /// Trait for spawning tasks in a thread pool to run closures as a `Future`.
     pub trait SpawnBlocking<T> {
         /// Turn closure into a future.
         fn spawn_blocking(self) -> Box<dyn std::future::Future<Output = T>>;
     }
-    
+
     impl<T, F> SpawnBlocking<T> for F
     where
-    F: FnOnce() -> T,
-    F: Send + 'static,
-    T: Send + 'static, 
+        F: FnOnce() -> T,
+        F: Send + 'static,
+        T: Send + 'static,
     {
         fn spawn_blocking(self) -> Box<dyn std::future::Future<Output = T>> {
             Box::new(pasts::spawn_blocking(self))
@@ -60,8 +62,8 @@ pub mod prelude {
     }
 }
 
-mod hardware;
 mod exec;
+mod hardware;
 
 pub use hardware::*;
 
@@ -88,7 +90,10 @@ pub mod user {
     //! }
     //! ```
 
-    pub use whoami::{DesktopEnv, Platform, desktop_env, devicename, distro, hostname, platform, realname, username};
+    pub use whoami::{
+        desktop_env, devicename, distro, hostname, platform, realname,
+        username, DesktopEnv, Platform,
+    };
 }
 
 #[cfg(feature = "audio")]
@@ -144,7 +149,7 @@ pub mod journal {
     //! ```rust
     //! // TODO
     //! ```
-    
+
     pub use devout::{dev, out};
 }
 

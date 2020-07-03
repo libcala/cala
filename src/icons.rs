@@ -1,10 +1,16 @@
 #![allow(unused)] // FIXME: remove this
 
-use footile::{Transform, Plotter};
+use footile::{Plotter, Transform};
 use pix::chan::Ch8;
 use pix::chan::Linear;
 use pix::chan::Premultiplied;
-use pix::{el::{Pix1, Pixel}, ops::SrcOver, rgb::SRgba8, matte::Matte8, Raster};
+use pix::{
+    el::{Pix1, Pixel},
+    matte::Matte8,
+    ops::SrcOver,
+    rgb::SRgba8,
+    Raster,
+};
 use rvg::*;
 
 const BACK: &[u8] = include_bytes!("../rvg/back.svg.rvg");
@@ -36,14 +42,17 @@ pub fn text<P>(
     // Render
     let path: Vec<_> = font
         .render(
-            text,                                                      /*text*/
-            raster.width() as f32 / size,                               /*bbox*/
+            text,                         /*text*/
+            raster.width() as f32 / size, /*bbox*/
             fonterator::TextAlign::Center,
         )
         .0
         .collect();
 
-    let temp_raster = Raster::<Pix1<P::Chan, _, pix::chan::Premultiplied, _>>::with_raster(plotter.fill(footile::FillRule::NonZero, &path, Matte8::new(255)));
+    let temp_raster =
+        Raster::<Pix1<P::Chan, _, pix::chan::Premultiplied, _>>::with_raster(
+            plotter.fill(footile::FillRule::NonZero, &path, Matte8::new(255)),
+        );
 
     raster.composite_matte(
         (),

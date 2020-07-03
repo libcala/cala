@@ -9,12 +9,12 @@
 
 use smelling_salts::{Device, Watcher};
 use std::{
-    io::{Result as IoResult, ErrorKind, Read, Write},
-    net::{ToSocketAddrs, TcpListener, TcpStream},
-    os::unix::io::AsRawFd,
-    task::{Context, Poll},
-    pin::Pin,
     future::Future,
+    io::{ErrorKind, Read, Result as IoResult, Write},
+    net::{TcpListener, TcpStream, ToSocketAddrs},
+    os::unix::io::AsRawFd,
+    pin::Pin,
+    task::{Context, Poll},
 };
 
 const DEFAULT_BUF_SIZE: usize = 8 * 1024;
@@ -37,7 +37,8 @@ impl TcpServer {
     /// Try creating a new `TcpServer` at the specified `address`.
     pub fn new<A: ToSocketAddrs>(address: A) -> Option<Self> {
         let std = TcpListener::bind(address).ok()?;
-        std.set_nonblocking(true).expect("Failed to set non-blocking");
+        std.set_nonblocking(true)
+            .expect("Failed to set non-blocking");
 
         let dev = Device::new(std.as_raw_fd(), Watcher::new().input());
 
@@ -56,7 +57,10 @@ impl Future for TcpServer {
                 std.set_nonblocking(true).expect("Couldn't set unblocking!");
                 let dev = Device::new(std.as_raw_fd(), Watcher::new().input());
 
-                Poll::Ready((usize::MAX, ServerEvent::Connect(Ok(TcpConnection { std, dev }))))
+                Poll::Ready((
+                    usize::MAX,
+                    ServerEvent::Connect(Ok(TcpConnection { std, dev })),
+                ))
             }
             Err(ref e) if e.kind() == ErrorKind::WouldBlock => {
                 self.dev.register_waker(cx.waker());
@@ -84,7 +88,8 @@ impl TcpConnection {
     /// `address`.
     pub fn new<A: ToSocketAddrs>(address: A) -> Option<Self> {
         let std = TcpStream::connect(address).ok()?;
-        std.set_nonblocking(true).expect("Failed to set non-blocking");
+        std.set_nonblocking(true)
+            .expect("Failed to set non-blocking");
 
         let dev = Device::new(std.as_raw_fd(), Watcher::new().input());
 
@@ -98,7 +103,7 @@ impl TcpConnection {
             TcpFlush(self).await;
         }
     }
-    
+
     /// Receive data from the stream.
     pub async fn recv(&mut self, data: &mut Vec<u8>) {
         TcpReceiver(self, data).await;
@@ -115,7 +120,7 @@ impl Future for TcpConnection {
             match this.std.peek(&mut buffer) {
                 Ok(bytes) if bytes != 0 => {
                     if bytes != DEFAULT_BUF_SIZE {
-                        return Poll::Ready(ServerEvent::Receive)
+                        return Poll::Ready(ServerEvent::Receive);
                     }
                 }
                 Err(ref e) if e.kind() != ErrorKind::WouldBlock => {
@@ -123,7 +128,7 @@ impl Future for TcpConnection {
                 }
                 _ => {
                     this.dev.register_waker(cx.waker());
-                    return Poll::Pending
+                    return Poll::Pending;
                 }
             }
         }
@@ -143,7 +148,7 @@ impl Future for TcpSender<'_> {
 
     fn poll(self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<()> {
         let this = self.get_mut();
-        match this.0.std.write(&mut this.2) {
+        match this.0.std.write(&this.2) {
             Ok(_) => Poll::Ready(()),
             Err(ref e) if e.kind() == ErrorKind::WouldBlock => {
                 this.0.dev.register_waker(cx.waker());
@@ -175,7 +180,7 @@ struct TcpReceiver<'a>(&'a mut TcpConnection, &'a mut Vec<u8>);
 
 impl Future for TcpReceiver<'_> {
     type Output = ();
-    
+
     fn poll(self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<()> {
         let this = self.get_mut();
         let mut buffer = [0; DEFAULT_BUF_SIZE];
@@ -184,7 +189,7 @@ impl Future for TcpReceiver<'_> {
                 Ok(bytes) if bytes != 0 => {
                     this.1.extend(&buffer[..bytes]);
                     if bytes != DEFAULT_BUF_SIZE {
-                        return Poll::Ready(())
+                        return Poll::Ready(());
                     }
                 }
                 Err(ref e) if e.kind() != ErrorKind::WouldBlock => {
@@ -192,7 +197,7 @@ impl Future for TcpReceiver<'_> {
                 }
                 _ => {
                     this.0.dev.register_waker(cx.waker());
-                    return Poll::Pending
+                    return Poll::Pending;
                 }
             }
         }

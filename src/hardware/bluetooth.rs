@@ -4,5 +4,3 @@
 //! # Getting Started
 //!
 //! ## Example
-
-

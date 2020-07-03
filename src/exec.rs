@@ -8,8 +8,8 @@ macro_rules! exec {
     ($main:ident) => {
         fn main() {
             use $crate::__hidden::Executor;
-            static EXECUTOR: $crate::__hidden::CvarExec
-                = $crate::__hidden::CvarExec::new();
+            static EXECUTOR: $crate::__hidden::CvarExec =
+                $crate::__hidden::CvarExec::new();
             EXECUTOR.block_on($main());
         }
     };
@@ -23,8 +23,8 @@ macro_rules! exec {
         fn main() {
             std::thread::spawn(|| {
                 use $crate::__hidden::Executor;
-                static EXECUTOR: $crate::__hidden::CvarExec
-                    = $crate::__hidden::CvarExec::new();
+                static EXECUTOR: $crate::__hidden::CvarExec =
+                    $crate::__hidden::CvarExec::new();
                 EXECUTOR.block_on($main());
                 std::process::exit(0);
             });
