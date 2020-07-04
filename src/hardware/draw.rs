@@ -146,9 +146,10 @@ impl Texture {
         } else {
             NEXT_RASTER_ID.fetch_add(1, Ordering::Relaxed)
         };
+        let raster = pix::Raster::<pix::rgb::SRgba8>::with_raster(&raster);
         let mut lock = internal.cmds.lock().unwrap();
         lock.push(GpuCmd::RasterId(
-            pix::Raster::<pix::rgb::SRgba8>::with_raster(&raster),
+            raster,
             id,
         ));
         Texture(id)
