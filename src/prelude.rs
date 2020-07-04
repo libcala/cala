@@ -10,7 +10,7 @@ pub trait Canvas {
     /// Draw a group on the screen.
     fn draw(&mut self, shader: &crate::draw::Shader, group: &crate::draw::Group);
     /// Set camera for shader.
-    fn set_camera(&mut self, shader: &crate::draw::Shader, camera: crate::draw::Transform);
+    fn set_camera(&mut self, camera: crate::draw::Transform);
     /// Set tint for shader.
     fn set_tint<P: pix::el::Pixel>(&mut self, shader: &crate::draw::Shader, tint: P)
     where

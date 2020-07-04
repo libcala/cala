@@ -89,8 +89,8 @@ impl<'a> Canvas for Frame<'a> {
         self.cmds.push(GpuCmd::Draw(shader.0, group.0));
     }
 
-    fn set_camera(&mut self, shader: &Shader, camera: Transform) {
-        self.cmds.push(GpuCmd::SetCamera(shader.0, camera));
+    fn set_camera(&mut self, camera: Transform) {
+        self.cmds.push(GpuCmd::SetCamera(camera));
     }
 
     fn set_tint<P: pix::el::Pixel>(&mut self, shader: &Shader, tint: P)

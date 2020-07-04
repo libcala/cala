@@ -67,7 +67,7 @@ pub(super) enum GpuCmd {
     Background(f32, f32, f32),
     Draw(u32, u32),
     DrawGraphic(u32, u32, u32),
-    SetCamera(u32, Transform),
+    SetCamera(Transform),
     SetTint(u32, [f32; 4]),
     RasterId(pix::Raster<pix::rgb::SRgba8>, u32),
     ShaderId(ShaderBuilder, u32),
@@ -294,9 +294,8 @@ fn async_runner(window: &mut window::Window, elapsed: std::time::Duration) {
                     &Internal::new_lazy().rasters.borrow()[raster as usize],
                 );
             }
-            SetCamera(_shader, camera) => {
-                // let shaders = Internal::new_lazy().shaders.borrow();
-                window.camera(/*&shaders[shader as usize], */ camera);
+            SetCamera(camera) => {
+                window.camera(camera);
             }
             SetTint(shader, tint) => {
                 let shaders = Internal::new_lazy().shaders.borrow();
