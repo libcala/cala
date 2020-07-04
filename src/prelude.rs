@@ -8,7 +8,7 @@ pub use pix::{ops::Blend as PixelBlend, el::Pixel};
 /// **feature:draw** - Something that can be drawn on.
 pub trait Canvas {
     /// Draw a group on the screen.
-    fn draw(&mut self, shader: &crate::draw::Shader, group: &std::sync::Arc<crate::draw::Group>);
+    fn draw(&mut self, shader: &crate::draw::Shader, group: &crate::draw::Group);
     /// Set camera for shader.
     fn set_camera(&mut self, shader: &crate::draw::Shader, camera: crate::draw::Transform);
     /// Set tint for shader.
@@ -19,7 +19,7 @@ pub trait Canvas {
     fn draw_graphic(
         &mut self,
         shader: &crate::draw::Shader,
-        group: &std::sync::Arc<crate::draw::Group>,
+        group: &crate::draw::Group,
         graphic: &crate::draw::Texture,
     );
     /// Returns the amount of time elapsed since the previous frame. 

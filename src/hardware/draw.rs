@@ -65,13 +65,16 @@ pub mod color {
 pub(super) enum GpuCmd {
     /// Set the background color on the GPU output raster.
     Background(f32, f32, f32),
-    Draw(u32, Arc<Group>),
-    DrawGraphic(u32, Arc<Group>, u32),
+    Draw(u32, u32),
+    DrawGraphic(u32, u32, u32),
     SetCamera(u32, Transform),
     SetTint(u32, [f32; 4]),
     RasterId(pix::Raster<pix::rgb::SRgba8>, u32),
     ShaderId(ShaderBuilder, u32),
     ShapeId(ShapeBuilder, u32, u32),
+    GroupId(u32),
+    GroupPush(u32, u32, Transform),
+    GroupPushTex(u32, u32, Transform, ([f32; 2], [f32; 2])),
 }
 
 pub(super) struct FrameInternal {
@@ -89,12 +92,15 @@ pub(super) struct Internal {
     shaders: RefCell<Vec<window::Shader>>,
     shape_garbage: Mutex<Vec<u32>>,
     shapes: RefCell<Vec<window::Shape>>,
+    group_garbage: Mutex<Vec<u32>>,
+    groups: RefCell<Vec<window::Group>>,
 }
 static mut INTERNAL: MaybeUninit<Internal> = MaybeUninit::uninit();
 static INIT: Once = Once::new();
 static NEXT_RASTER_ID: AtomicU32 = AtomicU32::new(0);
 static NEXT_SHADER_ID: AtomicU32 = AtomicU32::new(0);
 static NEXT_SHAPE_ID: AtomicU32 = AtomicU32::new(0);
+static NEXT_GROUP_ID: AtomicU32 = AtomicU32::new(0);
 
 impl Internal {
     // Get internal graphics data, lazily initializing if not used yet.
@@ -116,6 +122,8 @@ impl Internal {
                     shaders: RefCell::new(Vec::new()),
                     shape_garbage: Mutex::new(Vec::new()),
                     shapes: RefCell::new(Vec::new()),
+                    group_garbage: Mutex::new(Vec::new()),
+                    groups: RefCell::new(Vec::new()),
                 });
             });
             &*INTERNAL.as_ptr()
@@ -192,6 +200,52 @@ impl Drop for Shape {
     }
 }
 
+/// A Group.
+pub struct Group(pub(crate) u32);
+
+impl Group {
+    /// Create a new Group of Shapes.
+    pub fn new() -> Self {
+        let internal = Internal::new_lazy();
+        let id = if let Some(id) = internal.group_garbage.lock().unwrap().pop() {
+            id
+        } else {
+            NEXT_GROUP_ID.fetch_add(1, Ordering::Relaxed)
+        };
+        let mut lock = internal.cmds.lock().unwrap();
+        lock.push(GpuCmd::GroupId(id));
+        Group(id)
+    }
+    
+    /// Push a shape into the group.
+    pub fn push(&mut self, shape: &Shape, transform: &Transform) {
+        let internal = Internal::new_lazy();
+        let mut lock = internal.cmds.lock().unwrap();
+        lock.push(GpuCmd::GroupPush(self.0, shape.0, transform.clone()));
+    }
+
+    /// Push a shape into the group.
+    pub fn push_tex(
+        &mut self,
+        shape: &Shape,
+        transform: &Transform,
+        tex_coords: ([f32; 2], [f32; 2])
+    )
+    {
+        let internal = Internal::new_lazy();
+        let mut lock = internal.cmds.lock().unwrap();
+        lock.push(GpuCmd::GroupPushTex(self.0, shape.0, transform.clone(), tex_coords));
+    }
+}
+
+impl Drop for Group {
+    fn drop(&mut self) {
+        // FIXME: Make GpuCmd
+        let internal = Internal::new_lazy();
+        internal.group_garbage.lock().unwrap().push(self.0);
+    }
+}
+
 // A function that is run on the graphics thread whenever
 fn async_runner(window: &mut window::Window, elapsed: std::time::Duration) {
     // Get the aspcet ratio
@@ -227,13 +281,15 @@ fn async_runner(window: &mut window::Window, elapsed: std::time::Duration) {
             Background(r, g, b) => window.background(r, g, b),
             Draw(shader, group) => {
                 let shaders = Internal::new_lazy().shaders.borrow();
-                window.draw(&shaders[shader as usize], &*group);
+                let groups = Internal::new_lazy().groups.borrow();
+                window.draw(&shaders[shader as usize], &groups[group as usize]);
             }
             DrawGraphic(shader, group, raster) => {
                 let shaders = Internal::new_lazy().shaders.borrow();
+                let groups = Internal::new_lazy().groups.borrow();
                 window.draw_graphic(
                     &shaders[shader as usize],
-                    &*group,
+                    &groups[group as usize],
                     &Internal::new_lazy().rasters.borrow()[raster as usize],
                 );
             }
@@ -286,6 +342,24 @@ fn async_runner(window: &mut window::Window, elapsed: std::time::Duration) {
                     shapes[id as usize] = shape.finish();
                 }
             }
+            GroupId(id) => {
+                let mut groups = Internal::new_lazy().groups.borrow_mut();
+                if id as usize == groups.len() {
+                    groups.push(window.group_new());
+                } else {
+                    groups[id as usize] = window.group_new();
+                }
+            }
+            GroupPush(group, shape, transform) => {
+                let mut groups = Internal::new_lazy().groups.borrow_mut();
+                let shapes = Internal::new_lazy().shapes.borrow();
+                groups[group as usize].push(&shapes[shape as usize], &transform);
+            }
+            GroupPushTex(group, shape, transform, texcoords) => {
+                let mut groups = Internal::new_lazy().groups.borrow_mut();
+                let shapes = Internal::new_lazy().shapes.borrow();
+                groups[group as usize].push_tex(&shapes[shape as usize], &transform, texcoords);
+            }
         }
     }
 }
@@ -304,7 +378,7 @@ pub(crate) mod __hidden {
     }
 }
 
-pub use window::{shader, Group, Transform, ShaderBuilder};
+pub use window::{shader, Transform, ShaderBuilder};
 
 // // // // // //
 

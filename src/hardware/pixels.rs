@@ -85,8 +85,8 @@ impl<'a> Frame<'a> {
 }
 
 impl<'a> Canvas for Frame<'a> {
-    fn draw(&mut self, shader: &Shader, group: &Arc<Group>) {
-        self.cmds.push(GpuCmd::Draw(shader.0, group.clone()));
+    fn draw(&mut self, shader: &Shader, group: &Group) {
+        self.cmds.push(GpuCmd::Draw(shader.0, group.0));
     }
 
     fn set_camera(&mut self, shader: &Shader, camera: Transform) {
@@ -108,12 +108,12 @@ impl<'a> Canvas for Frame<'a> {
     fn draw_graphic(
         &mut self,
         shader: &Shader,
-        group: &Arc<Group>,
+        group: &Group,
         graphic: &Texture,
     ) {
         self.cmds.push(GpuCmd::DrawGraphic(
             shader.0,
-            group.clone(),
+            group.0,
             graphic.0,
         ));
     }
