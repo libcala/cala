@@ -10,8 +10,8 @@ pub mod net;
 pub mod gpio;
 #[cfg(feature = "camera")]
 pub mod camera;
-#[cfg(feature = "screen")]
-pub mod screen;
+#[cfg(feature = "pixels")]
+pub mod pixels;
 #[cfg(feature = "accel")]
 pub mod accel;
 #[cfg(feature = "speaker")]

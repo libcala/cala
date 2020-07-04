@@ -1,4 +1,4 @@
-//! **feature:screen** - Display graphics onto the screen.
+//! **feature:pixels** - Display graphics onto the screen, usually via a window.
 
 use crate::prelude::*;
 
