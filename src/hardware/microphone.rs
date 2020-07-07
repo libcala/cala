@@ -15,7 +15,7 @@
 //!     /// A stereo audio buffer.
 //!     buffer: Vec<S16LEx2>,
 //! }
-//! 
+//!
 //! /// Create a new monitor.
 //! exec!(monitor);
 //! async fn monitor() {
@@ -38,7 +38,7 @@
 //!             shared.buffer.drain(..n_frames.min(shared.buffer.len()));
 //!         }
 //!     }
-//! 
+//!
 //!     let shared = RefCell::new(Shared { buffer: Vec::new() });
 //!     let mut record = record(&shared);
 //!     let mut play = play(&shared);

@@ -13,6 +13,6 @@
 //! ```
 
 pub use whoami::{
-    desktop_env, devicename, distro, hostname, platform, realname,
-    username, DesktopEnv, Platform,
+    desktop_env, devicename, distro, hostname, platform, realname, username,
+    DesktopEnv, Platform,
 };

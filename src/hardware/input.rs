@@ -2,7 +2,20 @@
 //!
 //! # Usage
 //! ```rust
-//! // TODO
+//! use cala::*;
+//! use input::{Input, UiInput, GameInput, TextInput};
+//!
+//! exec!(input);
+//! async fn input<'a>() {
+//!     loop {
+//!         match cala::input::input().await {
+//!             Input::Ui(UiInput::Back) => break,
+//!             Input::Game(_id, GameInput::Back) => break,
+//!             Input::Text(TextInput::Back) => break,
+//!             input => println!("{:?}", input),
+//!         }
+//!     }
+//! }
 //! ```
 
 #[cfg(feature = "draw")]

@@ -6,6 +6,9 @@
 //! # Getting Started
 //!
 //! ## Example
+//! ```rust
+//! // TODO
+//! ```
 
 use smelling_salts::{Device, Watcher};
 use std::{

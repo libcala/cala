@@ -25,7 +25,32 @@
 //!
 //! # Example
 //! ```rust
-//! // TODO
+//! use cala::*;
+//! use input::{Input, UiInput, GameInput, TextInput};
+//! use draw::color::SRgb32;
+//!
+//! /// Process an input event.
+//! async fn input<'a>() {
+//!     match cala::input::input().await {
+//!         Input::Ui(UiInput::Back) => std::process::exit(0),
+//!         Input::Game(0, GameInput::Back) => std::process::exit(0),
+//!         Input::Text(TextInput::Back) => std::process::exit(0),
+//!         input => println!("{:?}", input),
+//!     }
+//! }
+//!
+//! /// Redraw on the screen.
+//! async fn redraw<'a>() {
+//!     let canvas = pixels::canvas(SRgb32::new(0.0, 0.0, 1.0)).await;
+//!     let _ = canvas;
+//!     // FIXME: Actually draw a triangle.
+//! }
+//!
+//! /// Loading screen
+//! exec!(triangle);
+//! async fn triangle() -> () {
+//!     [input().fut(), redraw().fut()].select().await.1
+//! }
 //! ```
 
 use std::{
@@ -35,7 +60,7 @@ use std::{
         atomic::{AtomicU32, Ordering},
         Arc, Condvar, Mutex, Once,
     },
-    task::{Waker},
+    task::Waker,
 };
 
 /// A 2D rectangular image.
@@ -52,14 +77,14 @@ pub use pix::Region;
 /// These are re-exported from the `pix` crate.
 pub mod color {
     pub use pix::bgr::*;
-    pub use pix::rgb::*;
     pub use pix::cmy::*;
-    pub use pix::ycc::*;
+    pub use pix::gray::*;
     pub use pix::hsl::*;
     pub use pix::hsv::*;
     pub use pix::hwb::*;
-    pub use pix::gray::*;
     pub use pix::matte::*;
+    pub use pix::rgb::*;
+    pub use pix::ycc::*;
 }
 
 pub(super) enum GpuCmd {
@@ -141,17 +166,15 @@ impl Texture {
         pix::chan::Ch8: From<<P as pix::el::Pixel>::Chan>,
     {
         let internal = Internal::new_lazy();
-        let id = if let Some(id) = internal.raster_garbage.lock().unwrap().pop() {
+        let id = if let Some(id) = internal.raster_garbage.lock().unwrap().pop()
+        {
             id
         } else {
             NEXT_RASTER_ID.fetch_add(1, Ordering::Relaxed)
         };
         let raster = pix::Raster::<pix::rgb::SRgba8>::with_raster(&raster);
         let mut lock = internal.cmds.lock().unwrap();
-        lock.push(GpuCmd::RasterId(
-            raster,
-            id,
-        ));
+        lock.push(GpuCmd::RasterId(raster, id));
         Texture(id)
     }
 }
@@ -171,7 +194,8 @@ impl Shader {
     /// Copy and send a shader program to the GPU.
     pub fn new(builder: ShaderBuilder) -> Shader {
         let internal = Internal::new_lazy();
-        let id = if let Some(id) = internal.shader_garbage.lock().unwrap().pop() {
+        let id = if let Some(id) = internal.shader_garbage.lock().unwrap().pop()
+        {
             id
         } else {
             NEXT_SHADER_ID.fetch_add(1, Ordering::Relaxed)
@@ -208,7 +232,8 @@ impl Group {
     /// Create a new Group of Shapes.
     pub fn new() -> Self {
         let internal = Internal::new_lazy();
-        let id = if let Some(id) = internal.group_garbage.lock().unwrap().pop() {
+        let id = if let Some(id) = internal.group_garbage.lock().unwrap().pop()
+        {
             id
         } else {
             NEXT_GROUP_ID.fetch_add(1, Ordering::Relaxed)
@@ -217,7 +242,7 @@ impl Group {
         lock.push(GpuCmd::GroupId(id));
         Group(id)
     }
-    
+
     /// Push a shape into the group.
     pub fn push(&mut self, shape: &Shape, transform: &Transform) {
         let internal = Internal::new_lazy();
@@ -230,12 +255,16 @@ impl Group {
         &mut self,
         shape: &Shape,
         transform: &Transform,
-        tex_coords: ([f32; 2], [f32; 2])
-    )
-    {
+        tex_coords: ([f32; 2], [f32; 2]),
+    ) {
         let internal = Internal::new_lazy();
         let mut lock = internal.cmds.lock().unwrap();
-        lock.push(GpuCmd::GroupPushTex(self.0, shape.0, transform.clone(), tex_coords));
+        lock.push(GpuCmd::GroupPushTex(
+            self.0,
+            shape.0,
+            transform.clone(),
+            tex_coords,
+        ));
     }
 }
 
@@ -353,12 +382,17 @@ fn async_runner(window: &mut window::Window, elapsed: std::time::Duration) {
             GroupPush(group, shape, transform) => {
                 let mut groups = Internal::new_lazy().groups.borrow_mut();
                 let shapes = Internal::new_lazy().shapes.borrow();
-                groups[group as usize].push(&shapes[shape as usize], &transform);
+                groups[group as usize]
+                    .push(&shapes[shape as usize], &transform);
             }
             GroupPushTex(group, shape, transform, texcoords) => {
                 let mut groups = Internal::new_lazy().groups.borrow_mut();
                 let shapes = Internal::new_lazy().shapes.borrow();
-                groups[group as usize].push_tex(&shapes[shape as usize], &transform, texcoords);
+                groups[group as usize].push_tex(
+                    &shapes[shape as usize],
+                    &transform,
+                    texcoords,
+                );
             }
         }
     }
@@ -378,7 +412,7 @@ pub(crate) mod __hidden {
     }
 }
 
-pub use window::{shader, Transform, ShaderBuilder};
+pub use window::{shader, ShaderBuilder, Transform};
 
 // // // // // //
 

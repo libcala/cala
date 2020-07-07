@@ -1,7 +1,17 @@
 //! **feature:exec** - Single / multi-processor execution of tasks / threads.
+//!
+//! # Getting Started
+//! ```
+//! use cala::*;
+//!
+//! exec!(exec);
+//! async fn exec() {
+//!     todo!();
+//! }
+//! ```
 
 #[cfg(target_arch = "wasm32")]
-/// **feature:exec** - 
+/// **feature:exec** -
 pub use cala_core::exec;
 
 /// **feature:exec** - Select an asynchronous function as the entry point for

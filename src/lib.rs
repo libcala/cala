@@ -30,14 +30,14 @@
 //! enum State {
 //!     A(RefCell<a::State>), // The only state
 //! }
-//! 
+//!
 //! async fn event_loop(state: &mut State) {
 //!     use State::*;
 //!     match state {
 //!         A(state) => a::State::event_loop(state).await,
 //!     }
 //! }
-//! 
+//!
 //! // Entry point
 //! exec!(exec); // Set entry point for the app.
 //! async fn exec() {
@@ -60,7 +60,7 @@
 //!
 //!         async fn dummy(state: &RefCell<Self>) {
 //!         }
-//! 
+//!
 //!         // State A's event loop
 //!         pub(super) async fn event_loop(state: &RefCell<Self>) {
 //!             // Leaving this empty will result in the async
@@ -70,7 +70,7 @@
 //!     }
 //! }
 //! ```
-//! 
+//!
 //! Module documentation may include simple tutorials.  More in depth tutorials
 //! may be found <a href="https://libcala.github.io/tutorials">here</a>.
 
@@ -88,16 +88,16 @@
 mod hardware;
 mod prelude;
 
-pub use prelude::*;
 pub use hardware::*;
+pub use prelude::*;
 
 // Hidden, because only used in macros.
 #[doc(hidden)]
 pub mod __hidden {
-    #[cfg(feature = "exec")]
-    pub use pasts::{CvarExec, Executor};
     #[cfg(feature = "draw")]
     pub use crate::hardware::draw::__hidden::draw_thread;
+    #[cfg(feature = "exec")]
+    pub use pasts::{CvarExec, Executor};
 }
 
 // mod icons; // FIXME Do something with the GUI icons

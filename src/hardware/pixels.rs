@@ -1,10 +1,23 @@
 //! **feature:pixels** - Display graphics onto the screen, usually via a window.
+//!
+//! # Getting Started
+//! ```rust
+//! // TODO
+//! ```
 
 use crate::prelude::*;
 
-use pix::chan::Channel;
-use std::{sync::{atomic::{Ordering, AtomicU32}, Condvar, Arc, Mutex, MutexGuard}, task::{Context, Poll}, pin::Pin, future::Future};
 use super::draw::*;
+use pix::chan::Channel;
+use std::{
+    future::Future,
+    pin::Pin,
+    sync::{
+        atomic::{AtomicU32, Ordering},
+        Arc, Condvar, Mutex, MutexGuard,
+    },
+    task::{Context, Poll},
+};
 
 static BACKGROUND_RED: AtomicU32 = AtomicU32::new(0);
 static BACKGROUND_GREEN: AtomicU32 = AtomicU32::new(0);
@@ -29,8 +42,8 @@ impl Future for FrameFuture {
 
 /// Get a canvas for the screen.
 pub async fn canvas<P: pix::el::Pixel>(color: P) -> impl Canvas
-    where
-        pix::chan::Ch32: From<<P as pix::el::Pixel>::Chan>,
+where
+    pix::chan::Ch32: From<<P as pix::el::Pixel>::Chan>,
 {
     Frame::new(color).await
 }
@@ -80,7 +93,12 @@ impl<'a> Frame<'a> {
         if bg_changed {
             cmds.push(GpuCmd::Background(red, green, blue));
         }
-        Frame { cmds, pair, elapsed: secs.0, aspect: secs.1 }
+        Frame {
+            cmds,
+            pair,
+            elapsed: secs.0,
+            aspect: secs.1,
+        }
     }
 }
 
@@ -102,7 +120,8 @@ impl<'a> Canvas for Frame<'a> {
         let green = color.two().to_f32();
         let blue = color.three().to_f32();
         let alpha = color.four().to_f32();
-        self.cmds.push(GpuCmd::SetTint(shader.0, [red, green, blue, alpha]));
+        self.cmds
+            .push(GpuCmd::SetTint(shader.0, [red, green, blue, alpha]));
     }
 
     fn draw_graphic(
@@ -111,17 +130,14 @@ impl<'a> Canvas for Frame<'a> {
         group: &Group,
         graphic: &Texture,
     ) {
-        self.cmds.push(GpuCmd::DrawGraphic(
-            shader.0,
-            group.0,
-            graphic.0,
-        ));
+        self.cmds
+            .push(GpuCmd::DrawGraphic(shader.0, group.0, graphic.0));
     }
-    
+
     fn elapsed(&self) -> std::time::Duration {
         self.elapsed
     }
-    
+
     fn aspect(&self) -> f32 {
         self.aspect
     }
