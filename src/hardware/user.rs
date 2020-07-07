@@ -2,15 +2,13 @@
 //!
 //! # Usage
 //! ```rust
-//! // Set the home loop to `run()`.
-//! cala::init!(run, ());
+//! use cala::*;
 //!
-//! // Function that runs while your app runs.
-//! pub fn run(_: &mut ()) -> cala::Loop<()> {
+//! // Set function that runs while your app runs.
+//! exec!(run);
+//! async fn run() {
 //!     // Get the user's username.
-//!     println!("{}", cala::username());
-//!     // Exit.
-//!     cala::Exit
+//!     println!("{}", user::username());
 //! }
 //! ```
 
