@@ -23,41 +23,49 @@
 //! in separate files):
 //!
 //! ```rust,no_run
+//! use std::cell::RefCell;
 //! // When no features are enabled, only imports prelude traits.
 //! use cala::*;
 //!
-//! exec!(async_main); // Set entry point for the app.
-//!
 //! enum State {
-//!     A(a::State), // The only state
+//!     A(RefCell<a::State>), // The only state
 //! }
 //! 
 //! async fn event_loop(state: &mut State) {
 //!     use State::*;
 //!     match state {
-//!         A(state) => state.event_loop().await,
+//!         A(state) => a::State::event_loop(state).await,
 //!     }
 //! }
 //! 
 //! // Entry point
-//! async fn async_main() {
-//!     let mut state = State { };
+//! exec!(exec); // Set entry point for the app.
+//! async fn exec() {
+//!     let mut state = State::A(RefCell::new(a::State::new()));
 //!     loop { event_loop(&mut state).await }
 //! }
 //!
-//! // This module contains state A's structure and event loop.
 //! mod a {
+//!     //! State A's structure and event loop.
+//!     use std::cell::RefCell;
 //!     use cala::*;
 //!
 //!     // Data associated with state A.
-//!     struct State { }
+//!     pub(super) struct State { }
 //!
 //!     impl State {
+//!         pub(super) fn new() -> Self {
+//!             State { }
+//!         }
+//!
+//!         async fn dummy(state: &RefCell<Self>) {
+//!         }
+//! 
 //!         // State A's event loop
-//!         async fn event_loop(&mut self) {
+//!         pub(super) async fn event_loop(state: &RefCell<Self>) {
 //!             // Leaving this empty will result in the async
 //!             // executor going to sleep.
-//!             [/*put futures here*/].select().await
+//!             [Self::dummy(state).fut()].select().await;
 //!         }
 //!     }
 //! }
@@ -77,7 +85,6 @@
 /////////////////
 
 // Private
-mod exec;
 mod hardware;
 mod prelude;
 
@@ -87,13 +94,13 @@ pub use hardware::*;
 // Hidden, because only used in macros.
 #[doc(hidden)]
 pub mod __hidden {
-    #[cfg(feature = "pasts")]
+    #[cfg(feature = "exec")]
     pub use pasts::{CvarExec, Executor};
     #[cfg(feature = "draw")]
     pub use crate::hardware::draw::__hidden::draw_thread;
 }
 
-// mod icons; // FIXME Do somethign with the GUI icons
+// mod icons; // FIXME Do something with the GUI icons
 
 /////////////////////
 //// End of File ////

@@ -2,16 +2,19 @@
 //!
 //! # Getting Started
 //! ```rust,no_run
+//! use cala::*;
+//! use time::Clock;
+//!
 //! // Print current Local time and UTC time.
-//! let clock = cala::Clock::new();
+//! let clock = Clock::new();
 //! println!("Local: {}", clock);
 //! println!("UTC:   {:?}", clock);
 //!
 //! // Print 'Hello, world #!' every 1/3 seconds
 //! let mut a = 0;
 //! loop {
-//!     let now = cala::Clock::new();
-//!     let b = now.since(&clock, cala::SECOND / 3);
+//!     let now = Clock::new();
+//!     let b = now.since(&clock, time::SECOND / 3);
 //!     if a != b {
 //!         a = b;
 //!         println!("Hello, world {}!", a);
@@ -148,7 +151,9 @@ pub enum DayOfWeek {
 
 /// A calendar date and time.  Stored as UTC.
 /// ```
-/// let clock = cala::Clock::new();
+/// use cala::*;
+/// use time::Clock;
+/// let clock = Clock::new();
 /// println!("{}", clock); // Print out in local time.
 /// println!("{:?}", clock); // Print out in UTC.
 /// ```
@@ -158,7 +163,9 @@ impl Clock {
     /// Get the current time.
     ///
     /// ```
-    /// let clock = cala::Clock::new();
+    /// use cala::*;
+    /// use time::Clock;
+    /// let clock = Clock::new();
     /// ```
     pub fn new() -> Self {
         Clock(chrono::offset::Utc::now().naive_utc())
@@ -183,7 +190,9 @@ impl Clock {
     /// Define a local time.
     ///
     /// ```
-    /// cala::Clock::new();
+    /// use cala::*;
+    /// use time::Clock;
+    /// Clock::new();
     /// ```
     pub fn local(
         year: i32,
@@ -246,8 +255,10 @@ impl Clock {
     /// Get the amount of time since another clock in fractions of a second.
     ///
     /// ```
-    /// let start = cala::Clock::new();
-    /// let nanos_since_start = cala::Clock::new().since(&start, cala::NANOSECOND);
+    /// use cala::*;
+    /// use time::Clock;
+    /// let start = Clock::new();
+    /// let nanos_since_start = Clock::new().since(&start, time::NANOSECOND);
     /// assert!(nanos_since_start >= 0);
     /// ```
     pub fn since(&self, other: &Self, frac: Duration) -> i64 {

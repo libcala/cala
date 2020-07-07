@@ -1,7 +1,11 @@
+//! **feature:exec** - Single / multi-processor execution of tasks / threads.
+
 #[cfg(target_arch = "wasm32")]
+/// **feature:exec** - 
 pub use cala_core::exec;
 
-/// Select an asynchronous function as the entry point for the application.
+/// **feature:exec** - Select an asynchronous function as the entry point for
+/// the application.
 #[cfg(all(not(target_arch = "wasm32"), not(feature = "draw")))]
 #[macro_export]
 macro_rules! exec {
@@ -15,7 +19,8 @@ macro_rules! exec {
     };
 }
 
-/// Set an asynchronous function as the entry point for the application.
+/// **feature:exec** - Set an asynchronous function as the entry point for the
+/// application.
 #[cfg(all(not(target_arch = "wasm32"), feature = "draw"))]
 #[macro_export]
 macro_rules! exec {

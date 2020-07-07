@@ -2,6 +2,8 @@
 pub mod bluetooth;
 #[cfg(feature = "draw")]
 pub mod draw;
+#[cfg(feature = "exec")]
+pub mod exec;
 #[cfg(feature = "input")]
 pub mod input;
 #[cfg(feature = "net")]

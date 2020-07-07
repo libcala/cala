@@ -29,7 +29,7 @@ maintenance = { status = "actively-developed" }
 
 [dependencies]
 human = {path = "../human", optional = true} # input
-pasts = {version = "0.4", optional = true} # async main
+pasts = {version = "0.4", optional = true} # async
 whoami = {version = "0.9", optional = true} # user
 wavy = {version = "0.3", optional = true} # audio
 stronghold = {version = "0.2", optional = true} # file
@@ -55,11 +55,12 @@ all-features = true
 default-target = "x86_64-unknown-linux-gnu"
 
 [features]
-default = ["pasts"]
+default = ["exec"]
 accel = []
 bluetooth = []
 camera = []
 draw = ["window", "fonterator", "res", "rvg", "footile", "pix"]
+exec = ["pasts"]
 file = ["stronghold", "serde"]
 gpio = []
 input = ["human"]

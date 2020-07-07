@@ -28,19 +28,19 @@ pub trait Canvas {
     fn aspect(&self) -> f32;
 }
 
-#[cfg(feature = "pasts")]
-/// **feature:pasts** - 
+#[cfg(feature = "exec")]
+/// **feature:exec** - 
 pub use pasts::{DynFut as IntoDynFut, Join as JoinFut, Select as SelectFut};
 
-#[cfg(feature = "pasts")]
-/// **feature:pasts** - Trait for spawning tasks in a thread pool to run
+#[cfg(feature = "exec")]
+/// **feature:exec** - Trait for spawning tasks in a thread pool to run
 /// closures as a `Future`.
 pub trait SpawnBlocking<T> {
     /// Turn closure into a future.
     fn spawn_blocking(self) -> Box<dyn std::future::Future<Output = T>>;
 }
 
-#[cfg(feature = "pasts")]
+#[cfg(feature = "exec")]
 impl<T, F> SpawnBlocking<T> for F
 where
     F: FnOnce() -> T,
