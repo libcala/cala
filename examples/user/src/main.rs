@@ -1,10 +1,10 @@
+use cala::*;
+
 // Set the home loop to `run()`.
-cala::init!(run, ());
+exec!(run);
 
 // Function that runs while your app runs.
-pub fn run(_: &mut ()) -> cala::Loop<()> {
+pub async fn run() {
     // Print out the user's information.
-    println!("{}", cala::user());
-    // Exit.
-    cala::Exit
+    println!("{}", user::realname());
 }

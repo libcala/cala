@@ -1,30 +1,40 @@
-use std::collections::VecDeque;
+use std::cell::RefCell;
+use cala::*;
+use microphone::{S16LEx2, Recorder};
+use speaker::Player;
 
-// The program data context.
-struct Data {
-    buffer: VecDeque<(i16, i16)>,
+/// Shared data between recorder and player.
+struct Shared {
+    /// A stereo audio buffer.
+    buffer: Vec<S16LEx2>,
 }
-
-// Set the home loop to `run()`.
-cala::init!(run, Data {
-    buffer: VecDeque::new(),
-});
-
-fn run(data: &mut Data) -> cala::Loop<Data> {
-    // Record some sound.
-    cala::record(&mut |_whichmic, l, r| {
-        data.buffer.push_back((l, r));
-    });
-
-    // Play that sound.
-    cala::play(&mut || {
-        if let Some((lsample, rsample)) = data.buffer.pop_front() {
-            cala::AudioSample::stereo(lsample, rsample)
-        } else {
-            // Play silence if not enough has been recorded yet.
-            cala::AudioSample::stereo(0, 0)
+ 
+exec!(monitor);
+async fn monitor() {
+    /// Extend buffer by slice of new frames from last plugged in device.
+    async fn record(shared: &RefCell<Shared>) {
+        let mut recorder = Recorder::<S16LEx2>::new().unwrap();
+        loop {
+            let _sample_rate = recorder.fut().await;
+            let shared: &mut Shared = &mut *shared.borrow_mut();
+            recorder.record_last(&mut shared.buffer);
         }
-    });
-
-    cala::Continue
+    }
+    /// Drain double ended queue frames into last plugged in device.
+    async fn play(shared: &RefCell<Shared>) {
+        let mut player = Player::<S16LEx2>::new().unwrap();
+        loop {
+            let _sample_rate = player.fut().await;
+            let shared: &mut Shared = &mut *shared.borrow_mut();
+            let n_frames = player.play_last(shared.buffer.as_slice());
+            shared.buffer.drain(..n_frames.min(shared.buffer.len()));
+        }
+    }
+ 
+    let shared = RefCell::new(Shared { buffer: Vec::new() });
+    let mut record = record(&shared);
+    let mut play = play(&shared);
+    println!("Entering async loop…");
+    [record.fut(), play.fut()].select().await;
+    unreachable!()
 }

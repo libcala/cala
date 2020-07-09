@@ -1,15 +1,19 @@
+use cala::*;
+use input::{Input, GameInput};
+
 // Set the home loop to `run()`.
-cala::init!(run, ());
+exec!(input);
+
+async fn input() {
+    while run().await { }
+}
 
 // Function that runs while your app runs.
-pub fn run(_: &mut ()) -> cala::Loop<()> {
-    let layout = cala::ControllerLayout::new().joy(false).lrt(false).abxy(false);
-
-    // Iterate through all of the controllers.
-    'a: for (id, state) in cala::controllers(&layout) {
-        println!("{}: {:?}", id, state.get());
+async fn run() -> bool {
+    match cala::input::input().await {
+        Input::Game(_id, GameInput::Back) => return false,
+        Input::Game(id, input) => println!("{}: {:?}", id, input),
+        _input => {}
     }
-    std::thread::sleep(std::time::Duration::from_millis(16));
-    // Exit.
-    cala::Continue
+    true
 }

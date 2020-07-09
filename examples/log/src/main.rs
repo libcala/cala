@@ -1,7 +1,8 @@
-use cala;
+use cala::*;
+
+const INFO: &str = "Info";
 
 fn main() {
-    cala::info!("Info message");
-    cala::warn!("Warn message");
-    cala::note!("Note message");
+    journal::out!(INFO, "User message");
+    journal::dev!(INFO, "Developer message");
 }

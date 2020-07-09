@@ -5,15 +5,12 @@ use std::sync::{Arc, Condvar, Mutex};
 use cala::*;
 use net::{ServerEvent, TcpConnection, TcpServer};
 
-cala::start!(init);
+exec!(init);
 
-fn init() {
+async fn init() {
     let pair = Arc::new((Mutex::new(false), Condvar::new()));
     let pair2 = pair.clone();
-    Page::new()
-        .spawn(|| server(pair))
-        .spawn(|| client(pair2))
-        .join()
+    [server(pair).fut(), client(pair2).fut()].select().await;
 }
 
 async fn server(pair: Arc<(Mutex<bool>, Condvar)>) {
