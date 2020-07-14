@@ -28,7 +28,7 @@
 //!
 //! # Example
 //! Open a window with a triangle that rotates once a second:
-//! ```rust
+//! ```rust,ignore
 //! use cala::*;
 //!
 //! use cala::draw::{

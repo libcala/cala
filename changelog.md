@@ -4,10 +4,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://code.plopgrizzly.com/semver/).
 
-## [0.8.0] - Unreleased
+## [0.8.0] - 2020-07-13
+### Added
+- Better documentation, examples compile
+- Async support
+- WASM speaker and microphone support
+- "input" feature
+- "net" feature
+- Empty modules for unimplemented features
+
 ### Changed
 - Redesigned the controller API to be event based using a message queue.
-- Renamed "controller" module & feature to "gamepad"
+- Merged "controller" module & feature into "input"
+- `info!`, `warn!` and `note!` are replaced with `dev!` and `out!`
+- `graphics` module replaced with `draw` and `pixels`
 
 ### Fixed
 - Not compiling with the newest version of rust (broken due to changes with
