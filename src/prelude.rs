@@ -31,8 +31,10 @@ pub trait Canvas {
     );
     /// Returns the amount of time elapsed since the previous frame.
     fn elapsed(&self) -> std::time::Duration;
-    /// Return the aspect ratio of the `Canvas`.
-    fn aspect(&self) -> f32;
+    /// Return the aspect ratio (`height / width`) of the `Canvas`.
+    fn height(&self) -> f32;
+    /// Returns true if the canvas has changed size since the last redraw.
+    fn resized(&self) -> bool;
 }
 
 #[cfg(feature = "exec")]

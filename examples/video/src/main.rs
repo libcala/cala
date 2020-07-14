@@ -1,9 +1,11 @@
 use cala::*;
 
-use cala::input::{Input, UiInput, GameInput, TextInput};
-use cala::draw::{Group, Shader, ShaderBuilder, ShapeBuilder, shader, Transform, color::SRgb32};
+use cala::draw::{
+    color::SRgb32, shader, Group, Shader, ShaderBuilder, ShapeBuilder,
+    Transform,
+};
+use cala::input::{GameInput, Input, TextInput, UiInput};
 
-#[allow(unused)]
 pub struct Context {
     colors: Shader,
     triangle: Group,
@@ -18,71 +20,62 @@ async fn init() {
     // Load a shader.
     let colors = Shader::new(shader!("color"));
 
-    // Define vertices.
-    #[rustfmt::skip]
-    let vertices = [
-         0.25, 0.75,  1.0, 0.5, 0.0,
-         0.75, 0.75,  0.0, 0.0, 1.0,
-         0.50, 0.25,  1.0, 1.0, 1.0,
-    ];
-
     // Build triangle Shape
-    let mut triangle = Group::new();
-    let triangle_shape = ShapeBuilder::new()
-        .vert(&vertices)
-        .face(Transform::new())
-        .finish(&colors);
-    triangle.push(
-        &triangle_shape,
-        &Transform::new()
-    );
-    /*triangle.push(
-        &triangle_shape,
-        &Transform::new()
-            .scale(0.5, 0.5, 0.5)
-            .translate(-0.5, 0.5, 0.0),
-    );
-    triangle.push(
-        &triangle_shape,
-        &Transform::new()
-            .scale(0.5, 0.5, 0.5)
-            .translate(0.5, 0.5, 0.0),
-    );*/
-
-    let context = Context {
+    let triangle = Group::new();
+    let mut context = Context {
         colors,
         triangle,
         timed,
     };
-    [canvas(context).fut(), input().fut()].select().await;
+
+    // Game loop
+    while [canvas(&mut context).fut(), input().fut()].select().await.1 {}
+}
+
+fn animate_triangle(context: &mut Context, time: f32, aspect: f32) {
+    #[rustfmt::skip]
+    let vertices = [
+         -1.0,  1.0,  1.0, 0.5, 0.0,
+          1.0,  1.0,  0.0, 0.0, 1.0,
+          0.0, -1.0,  1.0, 1.0, 1.0,
+          
+          0.0, -1.0,  1.0, 0.7, 0.0,
+          1.0,  1.0,  1.0, 0.7, 0.0,
+         -1.0,  1.0,  1.0, 0.7, 0.0,
+    ];
+
+    let triangle_shape = ShapeBuilder::new()
+        .vert(&vertices)
+        .face(Transform::new())
+        .finish(&context.colors);
+    let transform = Transform::new()
+        .rotate(0.0, 1.0, 0.0, time)
+        .scale(0.25, 0.25 * aspect, 0.25)
+        .translate(0.5, 0.5 * aspect, 0.0);
+    context.triangle.write(0, &triangle_shape, &transform);
 }
 
 // Function that runs while your app runs.
-pub async fn canvas(mut context: Context) {
-    loop {
-        // Set the background color.
-        let mut canvas = pixels::canvas(SRgb32::new(0.0, 1.0, 0.0)).await;
+pub async fn canvas(context: &mut Context) -> bool {
+    // Set the background color.
+    let mut canvas = pixels::canvas(SRgb32::new(0.0, 0.5, 0.0)).await;
 
-        context.timed = (context.timed + canvas.elapsed().as_secs_f64()) % 1.0;
-        let delta = context.timed as f32;
+    // Update triangle
+    context.timed = (context.timed + canvas.elapsed().as_secs_f64()) % 1.0;
+    animate_triangle(context, context.timed as f32, canvas.height());
 
-        /*context.triangle.transform(0, Transform::new()
-            .scale(0.5, 0.5, 0.5)
-            .translate(-0.5, -0.5 + delta, 0.0)
-        );*/
+    // Draw triangle
+    canvas.draw(&context.colors, &context.triangle);
 
-        // Draw triangle
-        canvas.draw(&context.colors, &context.triangle);
-    }
+    true
 }
 
-async fn input<'a>() {
-    loop {
-        match cala::input::input().await {
-            Input::Ui(UiInput::Back) => break,
-            Input::Game(_id, GameInput::Back) => break,
-            Input::Text(TextInput::Back) => break,
-            input => println!("{:?}", input),
-        }
+async fn input<'a>() -> bool {
+    match cala::input::input().await {
+        Input::Ui(UiInput::Back) => return false,
+        Input::Game(_id, GameInput::Back) => return false,
+        Input::Text(TextInput::Back) => return false,
+        input => println!("{:?}", input),
     }
+    true
 }

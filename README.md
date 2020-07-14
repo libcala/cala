@@ -38,13 +38,37 @@ The name cala is derived from the fungus known as
 [calafate rust](https://en.wikipedia.org/wiki/Aecidium_magellanicum).
 
 ### Support
-Here's a list of all of the targeted platforms (**bold** means a port has been made, *italic* means the feature doesn't work on the platform):
+Here's a list of all of the targeted platforms and what they support.  "X" means
+it's supported, "-" means it's not planned.  "?" means it might work, but hasn't
+been tested yet.  Some planned features have associated issues linked with the
+number.
 
-- **Linux**
-- **MacOS** - WIP [*audio*](https://github.com/libcala/cala/issues/5), [*controller*](https://github.com/libcala/cala/issues/7), [*draw*](https://github.com/libcala/cala/issues/9)
-- **Windows** - WIP [*audio*](https://github.com/libcala/cala/issues/4), [*controller*](https://github.com/libcala/cala/issues/6), [*draw*](https://github.com/libcala/cala/issues/8)
-- **Web (WASM)** - WIP controller, draw, files
-- Android
+| Feature    | Linux | MacOS | Windows | Web | Android |
+|------------|-------|-------|---------|-----|---------|
+| accel      |       |       |         |     |         |
+| bluetooth  |       |       |         |     |         |
+| camera     |       |       |         |     |         |
+| draw       | X     |[9][3] | [8][6]  |     |         |
+| exec       | X     |       |         | X   |         |
+| file       | X     | X     | X       |     |         |
+| gpio       |       | -     | -       | -   |         |
+| input      | X     |[7][2] | [6][5]  | ?   |         |
+| journal    | X     | X     | X       | X   |         |
+| microphone | X     |[5][1] | [4][4]  | X   | ?       |
+| net        | X     | X     | X       | ?   |         |
+| pixels     | X     |[9][3] |         |     |         |
+| speaker    | X     |       | [4][4]  | X   | ?       |
+| time       | X     | X     | X       | X   |         |
+| user       | X     | X     | X       | X   |         |
+
+[1]: https://github.com/libcala/cala/issues/5
+[2]: https://github.com/libcala/cala/issues/7
+[3]: https://github.com/libcala/cala/issues/9
+[4]: https://github.com/libcala/cala/issues/4
+[5]: https://github.com/libcala/cala/issues/6
+[6]: https://github.com/libcala/cala/issues/8
+
+#### Not Yet Attempted Support, But Planned
 - iOS
 - Fuchsia
 - Redox

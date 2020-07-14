@@ -23,33 +23,92 @@
 //! When putting a shape into a group you may attach a transform and optionally
 //! texture coordinates to it.
 //!
+//! # Coordinate System
+//! ![X goes from 0 to 1, Y goes from 0 to `Canvas.height()`](https://raw.githubusercontent.com/libcala/window/5205e59f0cd9f37a619f590e94218900afc2395b/res/coordinate_system.svg)
+//!
 //! # Example
+//! Open a window with a triangle that rotates once a second:
 //! ```rust
 //! use cala::*;
-//! use input::{Input, UiInput, GameInput, TextInput};
-//! use draw::color::SRgb32;
 //!
-//! /// Process an input event.
-//! async fn input<'a>() {
+//! use cala::draw::{
+//!     color::SRgb32, shader, Group, Shader, ShaderBuilder, ShapeBuilder,
+//!     Transform,
+//! };
+//! use cala::input::{GameInput, Input, TextInput, UiInput};
+//!
+//! pub struct Context {
+//!     colors: Shader,
+//!     triangle: Group,
+//!     timed: f64,
+//! }
+//!
+//! // Initialize & set loop to `init()`.
+//! cala::exec!(init);
+//!
+//! async fn init() {
+//!     let timed = 0.0;
+//!     // Load a shader.
+//!     let colors = Shader::new(shader!("color"));
+//!
+//!     // Build triangle Shape
+//!     let triangle = Group::new();
+//!     let mut context = Context {
+//!         colors,
+//!         triangle,
+//!         timed,
+//!     };
+//!
+//!     // Game loop
+//!     while [canvas(&mut context).fut(), input().fut()].select().await.1 {}
+//! }
+//!
+//! fn animate_triangle(context: &mut Context, time: f32, aspect: f32) {
+//!     #[rustfmt::skip]
+//!     let vertices = [
+//!          -1.0,  1.0,  1.0, 0.5, 0.0,
+//!           1.0,  1.0,  0.0, 0.0, 1.0,
+//!           0.0, -1.0,  1.0, 1.0, 1.0,
+//!
+//!           0.0, -1.0,  1.0, 0.7, 0.0,
+//!           1.0,  1.0,  1.0, 0.7, 0.0,
+//!          -1.0,  1.0,  1.0, 0.7, 0.0,
+//!     ];
+//!
+//!     let triangle_shape = ShapeBuilder::new()
+//!         .vert(&vertices)
+//!         .face(Transform::new())
+//!         .finish(&context.colors);
+//!     let transform = Transform::new()
+//!         .rotate(0.0, 1.0, 0.0, time)
+//!         .scale(0.25, 0.25 * aspect, 0.25)
+//!         .translate(0.5, 0.5 * aspect, 0.0);
+//!     context.triangle.write(0, &triangle_shape, &transform);
+//! }
+//!
+//! // Function that runs while your app runs.
+//! pub async fn canvas(context: &mut Context) -> bool {
+//!     // Set the background color.
+//!     let mut canvas = pixels::canvas(SRgb32::new(0.0, 0.5, 0.0)).await;
+//!
+//!     // Update triangle
+//!     context.timed = (context.timed + canvas.elapsed().as_secs_f64()) % 1.0;
+//!     animate_triangle(context, context.timed as f32, canvas.aspect());
+//!
+//!     // Draw triangle
+//!     canvas.draw(&context.colors, &context.triangle);
+//!
+//!     true
+//! }
+//!
+//! async fn input<'a>() -> bool {
 //!     match cala::input::input().await {
-//!         Input::Ui(UiInput::Back) => std::process::exit(0),
-//!         Input::Game(0, GameInput::Back) => std::process::exit(0),
-//!         Input::Text(TextInput::Back) => std::process::exit(0),
+//!         Input::Ui(UiInput::Back) => return false,
+//!         Input::Game(_id, GameInput::Back) => return false,
+//!         Input::Text(TextInput::Back) => return false,
 //!         input => println!("{:?}", input),
 //!     }
-//! }
-//!
-//! /// Redraw on the screen.
-//! async fn redraw<'a>() {
-//!     let canvas = pixels::canvas(SRgb32::new(0.0, 0.0, 1.0)).await;
-//!     let _ = canvas;
-//!     // FIXME: Actually draw a triangle.
-//! }
-//!
-//! /// Loading screen
-//! exec!(triangle);
-//! async fn triangle() -> () {
-//!     [input().fut(), redraw().fut()].select().await.1
+//!     true
 //! }
 //! ```
 
@@ -98,14 +157,16 @@ pub(super) enum GpuCmd {
     ShaderId(ShaderBuilder, u32),
     ShapeId(ShapeBuilder, u32, u32),
     GroupId(u32),
-    GroupPush(u32, u32, Transform),
-    GroupPushTex(u32, u32, Transform, ([f32; 2], [f32; 2])),
+    GroupWrite(u32, u32, u32, Transform),
+    GroupWriteTex(u32, u32, u32, Transform, ([f32; 2], [f32; 2])),
 }
 
 pub(super) struct FrameInternal {
     pub(super) waker: Option<Waker>,
-    pub(super) frame: Option<(std::time::Duration, f32)>,
+    pub(super) frame: Option<(std::time::Duration, f32, bool)>,
 }
+
+type Location = Vec<(usize, usize)>;
 
 pub(super) struct Internal {
     pub(super) cmds: Mutex<Vec<GpuCmd>>,
@@ -118,7 +179,7 @@ pub(super) struct Internal {
     shape_garbage: Mutex<Vec<u32>>,
     shapes: RefCell<Vec<window::Shape>>,
     group_garbage: Mutex<Vec<u32>>,
-    groups: RefCell<Vec<window::Group>>,
+    groups: RefCell<Vec<(window::Group, Location)>>,
 }
 static mut INTERNAL: MaybeUninit<Internal> = MaybeUninit::uninit();
 static INIT: Once = Once::new();
@@ -228,6 +289,12 @@ impl Drop for Shape {
 /// A Group.
 pub struct Group(pub(crate) u32);
 
+impl Default for Group {
+    fn default() -> Self {
+        Group::new()
+    }
+}
+
 impl Group {
     /// Create a new Group of Shapes.
     pub fn new() -> Self {
@@ -244,26 +311,24 @@ impl Group {
     }
 
     /// Push a shape into the group.
-    pub fn push(&mut self, shape: &Shape, transform: &Transform) {
+    pub fn write(&mut self, id: u32, shape: &Shape, transform: &Transform) {
         let internal = Internal::new_lazy();
         let mut lock = internal.cmds.lock().unwrap();
-        lock.push(GpuCmd::GroupPush(self.0, shape.0, transform.clone()));
+        lock.push(GpuCmd::GroupWrite(self.0, id, shape.0, *transform));
     }
 
     /// Push a shape into the group.
-    pub fn push_tex(
+    pub fn write_tex(
         &mut self,
+        id: u32,
         shape: &Shape,
         transform: &Transform,
         tex_coords: ([f32; 2], [f32; 2]),
     ) {
         let internal = Internal::new_lazy();
         let mut lock = internal.cmds.lock().unwrap();
-        lock.push(GpuCmd::GroupPushTex(
-            self.0,
-            shape.0,
-            transform.clone(),
-            tex_coords,
+        lock.push(GpuCmd::GroupWriteTex(
+            self.0, id, shape.0, *transform, tex_coords,
         ));
     }
 }
@@ -276,10 +341,16 @@ impl Drop for Group {
     }
 }
 
+static ASPECT: AtomicU32 = AtomicU32::new(0);
+
 // A function that is run on the graphics thread whenever
 fn async_runner(window: &mut window::Window, elapsed: std::time::Duration) {
-    // Get the aspcet ratio
+    // Get the aspect ratio
     let aspect = window.aspect();
+    // Check if the window has been resized.
+    let new_aspect = u32::from_ne_bytes(aspect.to_ne_bytes());
+    let old_aspect = ASPECT.swap(new_aspect, Ordering::Relaxed);
+    let resized = new_aspect != old_aspect;
 
     // Reset condvar
     let pair = {
@@ -294,7 +365,7 @@ fn async_runner(window: &mut window::Window, elapsed: std::time::Duration) {
         let internal = Internal::new_lazy();
         let mut lock = internal.frame.lock().unwrap();
         lock.waker.take().unwrap().wake();
-        lock.frame = Some((elapsed, aspect));
+        lock.frame = Some((elapsed, aspect, resized));
     }
 
     // Wait for async thread to finish writing to the command buffer.
@@ -312,14 +383,15 @@ fn async_runner(window: &mut window::Window, elapsed: std::time::Duration) {
             Draw(shader, group) => {
                 let shaders = Internal::new_lazy().shaders.borrow();
                 let groups = Internal::new_lazy().groups.borrow();
-                window.draw(&shaders[shader as usize], &groups[group as usize]);
+                window
+                    .draw(&shaders[shader as usize], &groups[group as usize].0);
             }
             DrawGraphic(shader, group, raster) => {
                 let shaders = Internal::new_lazy().shaders.borrow();
                 let groups = Internal::new_lazy().groups.borrow();
                 window.draw_graphic(
                     &shaders[shader as usize],
-                    &groups[group as usize],
+                    &groups[group as usize].0,
                     &Internal::new_lazy().rasters.borrow()[raster as usize],
                 );
             }
@@ -374,25 +446,68 @@ fn async_runner(window: &mut window::Window, elapsed: std::time::Duration) {
             GroupId(id) => {
                 let mut groups = Internal::new_lazy().groups.borrow_mut();
                 if id as usize == groups.len() {
-                    groups.push(window.group_new());
+                    groups.push((window.group_new(), Vec::new()));
                 } else {
-                    groups[id as usize] = window.group_new();
+                    groups[id as usize] = (window.group_new(), Vec::new());
                 }
             }
-            GroupPush(group, shape, transform) => {
+            GroupWrite(group, id, shape, transform) => {
                 let mut groups = Internal::new_lazy().groups.borrow_mut();
                 let shapes = Internal::new_lazy().shapes.borrow();
-                groups[group as usize]
-                    .push(&shapes[shape as usize], &transform);
+                if id >= groups[group as usize].1.len() as u32 {
+                    let location = if id == 0 {
+                        (0, 0)
+                    } else {
+                        groups[group as usize].1[id as usize - 1]
+                    };
+                    let location = groups[group as usize].0.write(
+                        location,
+                        &shapes[shape as usize],
+                        &transform,
+                    );
+                    groups[group as usize].1.push(location);
+                } else {
+                    let location = if id == 0 {
+                        (0, 0)
+                    } else {
+                        groups[group as usize].1[id as usize - 1]
+                    };
+                    groups[group as usize].1[id as usize] = groups
+                        [group as usize]
+                        .0
+                        .write(location, &shapes[shape as usize], &transform);
+                }
             }
-            GroupPushTex(group, shape, transform, texcoords) => {
+            GroupWriteTex(group, id, shape, transform, texcoords) => {
                 let mut groups = Internal::new_lazy().groups.borrow_mut();
                 let shapes = Internal::new_lazy().shapes.borrow();
-                groups[group as usize].push_tex(
-                    &shapes[shape as usize],
-                    &transform,
-                    texcoords,
-                );
+                if id >= groups[group as usize].1.len() as u32 {
+                    let location = if id == 0 {
+                        (0, 0)
+                    } else {
+                        groups[group as usize].1[id as usize - 1]
+                    };
+                    let location = groups[group as usize].0.write_tex(
+                        location,
+                        &shapes[shape as usize],
+                        &transform,
+                        texcoords,
+                    );
+                    groups[group as usize].1.push(location);
+                } else {
+                    let location = if id == 0 {
+                        (0, 0)
+                    } else {
+                        groups[group as usize].1[id as usize - 1]
+                    };
+                    groups[group as usize].1[id as usize] =
+                        groups[group as usize].0.write_tex(
+                            location,
+                            &shapes[shape as usize],
+                            &transform,
+                            texcoords,
+                        );
+                }
             }
         }
     }
