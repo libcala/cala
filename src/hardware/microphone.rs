@@ -48,4 +48,4 @@
 //! }
 //! ```
 
-pub use wavy::{Recorder, S16LEx2};
+pub use wavy::Microphone;

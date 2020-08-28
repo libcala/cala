@@ -22,8 +22,8 @@ pub mod microphone;
 pub mod net;
 #[cfg(feature = "pixels")]
 pub mod pixels;
-#[cfg(feature = "speaker")]
-pub mod speaker;
+#[cfg(feature = "speakers")]
+pub mod speakers;
 #[cfg(feature = "time")]
 pub mod time;
 #[cfg(feature = "user")]
