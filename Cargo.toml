@@ -35,7 +35,7 @@ wavy = {version = "0.4", optional = true} # audio
 stronghold = {version = "0.2", optional = true} # file
 serde = {version = "1.0", optional = true}
 window = {version = "0.4", optional = true} # pixels, draw
-fonterator = {version = "0.8", optional = true, default-features = false, features = ["normal-font"]}
+fonterator = {version = "0.9", optional = true, default-features = false, features = ["normal-font"]}
 pix = {version = "0.13", optional = true}
 rvg = {version = "0.1", optional = true, default-features = false, features = ["render"]}
 footile = {version = "0.6", optional = true}
@@ -49,6 +49,9 @@ features = ["cala"]
 
 [build-dependencies]
 res = {version = "0.6", optional = true} # video
+
+[dev-dependencies]
+fon = "0.2"
 
 [package.metadata.docs.rs]
 all-features = true
