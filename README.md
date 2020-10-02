@@ -104,32 +104,32 @@ Here's a list of the features, with links to documentation.
 - [`net`](https://docs.rs/cala/0.7.0/cala/net/index.html) Network - Bluetooth & Wifi Direct [WIP](https://github.com/libcala/cala/issues/10)
 - [`access`](https://docs.rs/cala/0.7.0/cala/access/index.html) - Accessibility [WIP](https://github.com/libcala/cala/issues/11)
 
-# Contributing
-Contributors are always welcome!  Whether it is a bug report, bug fix, feature
-request, feature implementation or whatever.  Don't be shy about getting
-involved.  I always make time to fix bugs, so usually a patched version of the
-library will be out soon after a report.  Features take me longer, though.  I'll
-also always listen to any design critiques you have.  If you have any questions
-you can email me at jeronlau@plopgrizzly.com.  Otherwise, here's a link to the
-[issues on GitHub](https://github.com/libcala/cala/issues).
-
-And, as always, make sure to always follow the
-[code of conduct](https://github.com/libcala/cala/blob/master/CODEOFCONDUCT.md).
-Happy coding!
-
-# License
-This repository is licensed under either of the following:
-
-- MIT License (MIT) - See accompanying file
-  [LICENSE_MIT.txt](https://github.com/libcala/cala/blob/master/LICENSE_MIT.txt)
-  or copy at https://opensource.org/licenses/MIT
-- Boost Software License (BSL-1.0) - See accompanying file
-  [LICENSE_BSL.txt](https://github.com/libcala/cala/blob/master/LICENSE_BSL.txt)
-  or copy at https://www.boost.org/LICENSE_1_0.txt
+## License
+Licensed under either of
+ - Apache License, Version 2.0,
+   ([LICENSE-APACHE](https://github.com/AldaronLau/pasts/blob/master/LICENSE-APACHE) or
+   [https://www.apache.org/licenses/LICENSE-2.0](https://www.apache.org/licenses/LICENSE-2.0))
+ - Zlib License,
+   ([LICENSE-ZLIB](https://github.com/AldaronLau/pasts/blob/master/LICENSE-ZLIB) or
+   [https://opensource.org/licenses/Zlib](https://opensource.org/licenses/Zlib))
 
 at your option.
 
-## Contribution Licensing
+### Contribution
 Unless you explicitly state otherwise, any contribution intentionally submitted
-for inclusion in the work by you shall be dual licensed as above without any
-additional terms or conditions.
+for inclusion in the work by you, as defined in the Apache-2.0 license, shall be
+dual licensed as above, without any additional terms or conditions.
+
+Contributors are always welcome (thank you for being interested!), whether it
+be a bug report, bug fix, feature request, feature implementation or whatever.
+Don't be shy about getting involved.  I always make time to fix bugs, so usually
+a patched version of the library will be out a few days after a report.
+Features requests will not complete as fast.  If you have any questions, design
+critques, or want me to find you something to work on based on your skill level,
+you can email me at [jeronlau@plopgrizzly.com](mailto:jeronlau@plopgrizzly.com).
+Otherwise,
+[here's a link to the issues on GitHub](https://github.com/AldaronLau/pasts/issues).
+Before contributing, check out the
+[contribution guidelines](https://github.com/AldaronLau/pasts/blob/master/CONTRIBUTING.md),
+and, as always, make sure to follow the
+[code of conduct](https://github.com/AldaronLau/pasts/blob/master/CODE_OF_CONDUCT.md).
