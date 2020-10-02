@@ -12,6 +12,12 @@
 [Tutorials](https://libcala.github.io/tutorials) |
 [Blog](https://libcala.github.io)
 
+Are you sad that the standard library's only system interface is the filesystem?  This
+crate is for you!  This crate provides a safe abstraction over windowing, audio,
+accessibility, input, and video.  This crate, however, is not intended to support
+multimedia format parsing - that's developed as a separate crate:
+[Caved](https://crates.io/crates/caved).
+
 Cala is intended to be an "oxidized re-implementation" of both
 [Flutter](https://flutter.dev/)/[GTK](https://www.gtk.org/) and
 [SDL](https://www.libsdl.org/)/[other SDL projects](https://www.libsdl.org/projects/)
@@ -36,36 +42,41 @@ module.
 The name cala is derived from the fungus known as
 [calafate rust](https://en.wikipedia.org/wiki/Aecidium_magellanicum).
 
-### Support
-Here's a list of all of the targeted platforms and what they support.  "X" means
-it's supported, "-" means it's not planned.  "?" means it might work, but hasn't
-been tested yet.  Some planned features have associated issues linked with the
-number.
+### Feature Support
+Each system interface can be enabled with a feature.  Names of features match the
+module names where the API is located.  Just add it to your Cargo.toml:
 
-| Feature    | Linux | MacOS | Windows | Web | Android |
-|------------|-------|-------|---------|-----|---------|
-| access     |       |       |         |     |         |
-| bluetooth  |       |       |         |     |         |
-| camera     |       |       |         |     |         |
-| draw       | ✓     |[9][3] | [8][6]  |     |         |
-| exec       | ✓     |       |         | ✓   |         |
-| file       | ✓     | ✓     | ✓       |     |         |
-| gpio       |       | —     | —       | —   |         |
-| input      | ✓     |[7][2] | [6][5]  | ?   |         |
-| journal    | ✓     | ✓     | ✓       | ✓   |         |
-| microphone | ✓     |[5][1] | [4][4]  | ✓   | ?       |
-| net        | ✓     | ✓     | ✓       | ?   |         |
-| pixels     | ✓     |[9][3] |         |     |         |
-| speaker    | ✓     |       | [4][4]  | ✓   | ?       |
-| time       | ✓     | ✓     | ✓       | ✓   |         |
-| user       | ✓     | ✓     | ✓       | ✓   |         |
+```toml
+[dependencies.cala]
+version = "0.8"
+features = ["access", "speaker"]
+```
 
-[1]: https://github.com/libcala/cala/issues/5
-[2]: https://github.com/libcala/cala/issues/7
-[3]: https://github.com/libcala/cala/issues/9
-[4]: https://github.com/libcala/cala/issues/4
-[5]: https://github.com/libcala/cala/issues/6
-[6]: https://github.com/libcala/cala/issues/8
+Here's a list of all of the targeted platforms and what they support.
+ - ✓: supported
+ - —: not planned / possible
+ - ?: untested
+
+| Feature           | Linux | MacOS | Windows | Web | Android |
+|-------------------|-------|-------|---------|-----|---------|
+| [access][100]     |       |       |         |     |         |
+| [bluetooth][101]  |       |       |         |     |         |
+| [camera][102]     |       |       |         |     |         |
+| [draw][103]       | ✓     |[9][3] | [8][6]  |     |         |
+| [exec][104]       | ✓     |       |         | ✓   |         |
+| [file][105]       | ✓     | ✓     | ✓       |     |         |
+| [gpio][106]       |       | —     | —       | —   |         |
+| [input][107]      | ✓     |[7][2] | [6][5]  | ?   |         |
+| [journal][108]    | ✓     | ✓     | ✓       | ✓   |         |
+| [microphone][109] | ✓     |[5][1] | [4][4]  | ✓   | ?       |
+| [net][110]        | ✓     | ✓     | ✓       | ?   |         |
+| [pixels][111]     | ✓     |[9][3] |         |     |         |
+| [speaker][112]    | ✓     |       | [4][4]  | ✓   | ?       |
+| [time][113]       | ✓     | ✓     | ✓       | ✓   |         |
+| [user][114]       | ✓     | ✓     | ✓       | ✓   |         |
+
+Module documentation may include simple tutorials.  More in depth tutorials may be
+found [here](https://libcala.github.io/tutorials).
 
 #### Not Yet Attempted Support, But Planned
 - iOS
@@ -77,40 +88,13 @@ number.
 - BSD variants
 - Others not on this list that you will make a pull request for adding them
 
-# Getting Started
-Each hardware interface can be enabled with a feature.  For example, If you
-want to depend on the `audio` feature and the `clock`
-feature, you might put this in your `Cargo.toml`:
-
-```toml
-[dependencies.cala]
-version = "0.8"
-features = ["audio", "clock"]
-```
-
-There is a module for each feature (feature and module names match).  Module documentation may include simple tutorials.  More in depth tutorials may be
-found [here](https://libcala.github.io/tutorials).
-
-## Features
-Here's a list of the features, with links to documentation.
-
-- [`user`](https://docs.rs/cala/0.7.0/cala/user/index.html) - Getting user information
-- [`audio`](https://docs.rs/cala/0.7.0/cala/audio/index.html) - Playing / recording audio
-- [`clock`](https://docs.rs/cala/0.7.0/cala/clock/index.html) - Date, Time of day, Timer
-- [`gamepad`](https://docs.rs/cala/0.7.0/cala/gamepad/index.html) - Game Controller - JoyStick
-- [`files`](https://docs.rs/cala/0.7.0/cala/files/index.html) - Containerized filesystem loading / saving ZIP files
-- [`draw`](https://docs.rs/cala/0.7.0/cala/draw/index.html) - Render and User Interface
-- [`camera`](https://docs.rs/cala/0.7.0/cala/camera/index.html) Camera - Webcam [WIP](https://github.com/libcala/cala/issues/1)
-- [`net`](https://docs.rs/cala/0.7.0/cala/net/index.html) Network - Bluetooth & Wifi Direct [WIP](https://github.com/libcala/cala/issues/10)
-- [`access`](https://docs.rs/cala/0.7.0/cala/access/index.html) - Accessibility [WIP](https://github.com/libcala/cala/issues/11)
-
 ## License
 Licensed under either of
  - Apache License, Version 2.0,
-   ([LICENSE-APACHE](https://github.com/AldaronLau/pasts/blob/master/LICENSE-APACHE) or
+   ([LICENSE-APACHE](https://github.com/libcala/cala/blob/master/LICENSE-APACHE) or
    [https://www.apache.org/licenses/LICENSE-2.0](https://www.apache.org/licenses/LICENSE-2.0))
  - Zlib License,
-   ([LICENSE-ZLIB](https://github.com/AldaronLau/pasts/blob/master/LICENSE-ZLIB) or
+   ([LICENSE-ZLIB](https://github.com/libcala/cala/blob/master/LICENSE-ZLIB) or
    [https://opensource.org/licenses/Zlib](https://opensource.org/licenses/Zlib))
 
 at your option.
@@ -128,8 +112,30 @@ Features requests will not complete as fast.  If you have any questions, design
 critques, or want me to find you something to work on based on your skill level,
 you can email me at [jeronlau@plopgrizzly.com](mailto:jeronlau@plopgrizzly.com).
 Otherwise,
-[here's a link to the issues on GitHub](https://github.com/AldaronLau/pasts/issues).
+[here's a link to the issues on GitHub](https://github.com/libcala/cala/issues).
 Before contributing, check out the
-[contribution guidelines](https://github.com/AldaronLau/pasts/blob/master/CONTRIBUTING.md),
+[contribution guidelines](https://github.com/libcala/cala/blob/master/CONTRIBUTING.md),
 and, as always, make sure to follow the
-[code of conduct](https://github.com/AldaronLau/pasts/blob/master/CODE_OF_CONDUCT.md).
+[code of conduct](https://github.com/libcala/cala/blob/master/CODE_OF_CONDUCT.md).
+
+[1]: https://github.com/libcala/cala/issues/5
+[2]: https://github.com/libcala/cala/issues/7
+[3]: https://github.com/libcala/cala/issues/9
+[4]: https://github.com/libcala/cala/issues/4
+[5]: https://github.com/libcala/cala/issues/6
+[6]: https://github.com/libcala/cala/issues/8
+[100]: https://docs.rs/cala/latest/cala/accel/
+[101]: https://docs.rs/cala/latest/cala/bluetooth/
+[102]: https://docs.rs/cala/latest/cala/camera/
+[103]: https://docs.rs/cala/latest/cala/draw/
+[104]: https://docs.rs/cala/latest/cala/exec/
+[105]: https://docs.rs/cala/latest/cala/file/
+[106]: https://docs.rs/cala/latest/cala/gpio/
+[107]: https://docs.rs/cala/latest/cala/input/
+[108]: https://docs.rs/cala/latest/cala/journal/
+[109]: https://docs.rs/cala/latest/cala/microphone/
+[110]: https://docs.rs/cala/latest/cala/net/
+[111]: https://docs.rs/cala/latest/cala/pixels/
+[112]: https://docs.rs/cala/latest/cala/speaker/
+[113]: https://docs.rs/cala/latest/cala/time/
+[114]: https://docs.rs/cala/latest/cala/user/
