@@ -3,7 +3,6 @@
 #### Make portable apps and video games in Rust!
 
 [![docs.rs](https://docs.rs/cala/badge.svg)](https://docs.rs/cala)
-[![build status](https://api.travis-ci.com/libcala/cala.svg?branch=master)](https://travis-ci.com/libcala/cala)
 [![crates.io](https://img.shields.io/crates/v/cala.svg)](https://crates.io/crates/cala)
 [![Zulip Chat](https://img.shields.io/badge/zulip-join_chat-darkgreen.svg)](https://cala.zulipchat.com/join/wkdkw53xb5htnchg8kqz0du0/)
 
@@ -45,21 +44,21 @@ number.
 
 | Feature    | Linux | MacOS | Windows | Web | Android |
 |------------|-------|-------|---------|-----|---------|
-| accel      |       |       |         |     |         |
+| access     |       |       |         |     |         |
 | bluetooth  |       |       |         |     |         |
 | camera     |       |       |         |     |         |
-| draw       | X     |[9][3] | [8][6]  |     |         |
-| exec       | X     |       |         | X   |         |
-| file       | X     | X     | X       |     |         |
-| gpio       |       | -     | -       | -   |         |
-| input      | X     |[7][2] | [6][5]  | ?   |         |
-| journal    | X     | X     | X       | X   |         |
-| microphone | X     |[5][1] | [4][4]  | X   | ?       |
-| net        | X     | X     | X       | ?   |         |
-| pixels     | X     |[9][3] |         |     |         |
-| speaker    | X     |       | [4][4]  | X   | ?       |
-| time       | X     | X     | X       | X   |         |
-| user       | X     | X     | X       | X   |         |
+| draw       | ✓     |[9][3] | [8][6]  |     |         |
+| exec       | ✓     |       |         | ✓   |         |
+| file       | ✓     | ✓     | ✓       |     |         |
+| gpio       |       | —     | —       | —   |         |
+| input      | ✓     |[7][2] | [6][5]  | ?   |         |
+| journal    | ✓     | ✓     | ✓       | ✓   |         |
+| microphone | ✓     |[5][1] | [4][4]  | ✓   | ?       |
+| net        | ✓     | ✓     | ✓       | ?   |         |
+| pixels     | ✓     |[9][3] |         |     |         |
+| speaker    | ✓     |       | [4][4]  | ✓   | ?       |
+| time       | ✓     | ✓     | ✓       | ✓   |         |
+| user       | ✓     | ✓     | ✓       | ✓   |         |
 
 [1]: https://github.com/libcala/cala/issues/5
 [2]: https://github.com/libcala/cala/issues/7
@@ -101,9 +100,9 @@ Here's a list of the features, with links to documentation.
 - [`gamepad`](https://docs.rs/cala/0.7.0/cala/gamepad/index.html) - Game Controller - JoyStick
 - [`files`](https://docs.rs/cala/0.7.0/cala/files/index.html) - Containerized filesystem loading / saving ZIP files
 - [`draw`](https://docs.rs/cala/0.7.0/cala/draw/index.html) - Render and User Interface
-- Camera - Webcam [WIP](https://github.com/libcala/cala/issues/1)
-- Network - Bluetooth & Wifi Direct [WIP](https://github.com/libcala/cala/issues/10)
-- Hardware acceleration - SIMD, GPU [WIP](https://github.com/libcala/cala/issues/11)
+- [`camera`](https://docs.rs/cala/0.7.0/cala/camera/index.html) Camera - Webcam [WIP](https://github.com/libcala/cala/issues/1)
+- [`net`](https://docs.rs/cala/0.7.0/cala/net/index.html) Network - Bluetooth & Wifi Direct [WIP](https://github.com/libcala/cala/issues/10)
+- [`access`](https://docs.rs/cala/0.7.0/cala/access/index.html) - Accessibility [WIP](https://github.com/libcala/cala/issues/11)
 
 # Contributing
 Contributors are always welcome!  Whether it is a bug report, bug fix, feature

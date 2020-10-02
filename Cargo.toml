@@ -59,7 +59,7 @@ default-target = "x86_64-unknown-linux-gnu"
 
 [features]
 default = ["exec"]
-accel = []
+access = []
 bluetooth = []
 camera = []
 draw = ["window", "fonterator", "res", "rvg", "footile", "pix"]

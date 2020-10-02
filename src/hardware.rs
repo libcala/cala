@@ -1,5 +1,5 @@
-#[cfg(feature = "accel")]
-pub mod accel;
+#[cfg(feature = "access")]
+pub mod access;
 #[cfg(feature = "bluetooth")]
 pub mod bluetooth;
 #[cfg(feature = "camera")]
