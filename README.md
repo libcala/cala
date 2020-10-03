@@ -27,8 +27,8 @@ video games depend on GTK, like [Veloren][26] (at least when
 built on Linux).  There's clearly a shared interest; so they *should* be
 combined.  That said, Cala is extremely modular, and doesn't include any modules
 at all unless you enable some features.  The modules are named exactly the same
-as the features, so you enable the `audio` feature to be able to use the `audio`
-module.
+as the features, so you enable the `camera` feature to be able to use the
+`camera` module.
 
 ### Naming
 The name cala is derived from the fungus known as [calafate rust][30].
