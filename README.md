@@ -145,7 +145,7 @@ you can email me at [jeronlau@plopgrizzly.com][99].  Otherwise,
 
 [99]: mailto:jeronlau@plopgrizzly.com
 
-[100]: https://docs.rs/cala/latest/cala/accel
+[100]: https://docs.rs/cala/latest/cala/access
 [101]: https://docs.rs/cala/latest/cala/bluetooth
 [102]: https://docs.rs/cala/latest/cala/camera
 [103]: https://docs.rs/cala/latest/cala/draw
