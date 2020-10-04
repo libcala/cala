@@ -20,10 +20,8 @@ data.
    - Staves: Bool # Allow user to add/remove staves?
  - Math (Fancy-Rendered Expression)
    - Default: [Byte] # Default math (template)
- - Audio (Record Audio, And Edit Samples)
-   - Default: [Byte] # Default audio
- - Video (Record Video, And Edit Tracks)
-   - Default: [Byte] # Default video
+ - Audio/Video (Record AudioVideo, And Edit Samples/Tracks)
+   - Default: [Byte] # Default audio/video
  - Coordinates (Image, Map)
    - Default: Option[[Byte]] # Default coordinate or area
    - Area: Bool
@@ -31,8 +29,10 @@ data.
      - Max: (Real, Real)
  - Color
    - Default: [Byte] # Default color
- - Graphic (Both 2D/3D, Still and Animated, Vector and Raster)
+ - Graphic (2D - Both Still and Animated, Vector and Raster)
    - Default: [Byte] # Default graphic
+ - Simulation (Games, Scientific, 3D Modeling etc.)
+   - Default: [Byte] # Default world-state
 
 ## Reserved
 These are the shortcuts that can't be used in internal input fields, because
@@ -99,12 +99,14 @@ they apply to the whole program.
  - `Alt`+`.`: Larger Font
  - `Ctr`+`/`: 
  - `Alt`+`/`:
+ - `Ctr`+`\`: 
+ - `Alt`+`\`:
  - `Ctr`+`[`: Insert Column Left
  - `Alt`+`[`: Align Left
  - `Ctr`+`]`: Insert Column Right
  - `Alt`+`]`: Align Right
- - `Ctr`+`\`: Set Row-span/Column-span
- - `Alt`+`\`: Align Center
+ - `Ctr`+`'`: Set Row-span/Column-span
+ - `Alt`+`'`: Align Center
  - `Ctr`+`Enter`: Page Break
  - `Alt`+`Enter`: Align Justified
  - `Ctr`+`ArrowLeft`: Beginning of Word Left
@@ -268,11 +270,54 @@ they apply to the whole program.
  - `Alt`+`ArrowLeft`: Swap operand left
  - `Alt`+`ArrowRight`: Swap operand right
 
-# Audio Buffer
- - 
-
-# Video Buffer
- - 
+# Audio / Video Tracks
+ - `x`: Cut Track / Split "Tape"
+ - `Space`: Play/Pause
+ - `ArrowLeft`: Move Cursor Frame or Sample Left
+ - `ArrowRight`: Move Cursor Frame or Sample Right
+ - `ArrowUp`: Move Cursor Track Up
+ - `ArrowDown`: Move Cursor Track Down
+ - `[`: Trim Start
+ - `]`: Trim End
+ - `{`: Extend Start
+ - `}`: Extend End
+ - `Ctr`+`[`: Slide Source Content Left (Trim Left + Extend Right)
+ - `Ctr`+`]`: Slide Source Content Right (Trim Right + Extend Left)
 
 # Graphic
- - 
+ - `h`: Move Pen Left
+ - `j`: Move Pen Down
+ - `k`: Move Pen Up
+ - `l`: Move Pen Right
+ - `p`: Change Pen Shape
+ - `f`: Toggle Pen Down (Drawing)
+ - `i`: Draw Straight Line
+ - `s`: Shape Select
+ - `Shift`: Rectangle Select
+ - `Space`: Play Animation
+
+# Simulation
+ - `w`: Move Forward (MStick)
+ - `a`: Strafe Left (MStick)
+ - `s`: Move Backward (MStick)
+ - `d`: Strafe Right (MStick)
+ - `CapsLk`: Sneak Lock (MStickPress)
+ - `h`: Look Left (CStick/MouseXY)
+ - `j`: Look Down (CStick/MouseXY)
+ - `k`: Look Right (CStick/MouseXY)
+ - `l`: Look Right (CStick/MouseXY)
+ - `;`: Inspect (CStickPress/Middle Click)
+ - `Space`: Jump / Reach (Y)
+ - `Shift`: Run / Cancel (B)
+ - `Enter`: Start (Start)
+ - `Escape`: Menu (Back)
+ - `Ctr`: Sneak (RTrigger)
+ - `Tab`: Aim (LTrigger)
+ - `q`: Show Map (S-ZL)
+ - `e`: Inventory (Z-ZR)
+ - `f`: Action (X/Left Click)
+ - `r`: Interact (A/Right Click)
+ - `ArrowUp`/`t`: Throw
+ - `ArrowDown`/`g`: Drop on Ground/Give
+ - `ArrowRight`: Switch Held Item (MouseScrollUp)
+ - `ArrowLeft`: Switch Held Item (MouseScrollDown)
