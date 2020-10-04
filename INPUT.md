@@ -153,8 +153,8 @@ they apply to the whole program.
  - `U`: Unstress 
  - `v`: Standard Vibrato
  - `V`: Vibrato Shape
- - `w`: Three-Quarter-Tone Down
- - `W`: Three-Quarter-Tone Up
+ - `w`: Half-Step Down
+ - `W`: Half-Step Up
  - `x`: Insert Fingering/Position Marking
  - `X`: Toggle Double Sharp 
  - `y`: Insert Dynamic
