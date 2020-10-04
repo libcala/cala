@@ -81,8 +81,14 @@ they apply to the whole program.
  - `Ctr`+`u`: Underline
  - `Ctr`+`y`/`Alt`+`z`: Redo
  - `Ctr`+`z`: Undo
+ - `Ctr`+`ArrowLeft`: Beginning of Word Left
+ - `Ctr`+`ArrowRight`: End of Word Right
+ - `Ctr`+`ArrowUp`: Beginning of Line Up
+ - `Ctr`+`ArrowDown`: End of Line Down
  - `Alt`+`ArrowLeft`: Swap Word or Selection Left
  - `Alt`+`ArrowRight`: Swap Word or Selection Right
+ - `Alt`+`ArrowUp`: Swap Line Up
+ - `Alt`+`ArrowDown`: Swap Line Down
 
 ## Music
  - `0`: Set Duration To 128th Note
@@ -203,8 +209,14 @@ they apply to the whole program.
  - `Ctr`+`g`: Go to Measure Number
  - `Ctr`+`y`/`Alt`+`z`: Redo
  - `Ctr`+`z`: Undo
+ - `Ctr`+`ArrowLeft`: Beginning of Measure Left
+ - `Ctr`+`ArrowRight`: End of Measure Right
+ - `Ctr`+`ArrowUp`: Beginning of Rehearsal Section
+ - `Ctr`+`ArrowDown`: End of Rehearsal Section 
  - `Alt`+`ArrowLeft`: Swap Note or Selection Left
  - `Alt`+`ArrowRight`: Swap Note or Selection Right
+ - `Alt`+`ArrowUp`: Swap Note or Selection Up One Stave
+ - `Alt`+`ArrowDown`: Swap Note or Selection Down One Stave
 
 # Math & Logic Expressions
  - `v`: Logical OR Symbol
