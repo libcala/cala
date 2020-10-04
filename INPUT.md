@@ -293,6 +293,8 @@ they apply to the whole program.
  - `f`: Toggle Pen Down (Drawing)
  - `i`: Draw Straight Line
  - `s`: Shape Select
+ - `f`: Fill By Color
+ - `F`: Fill Selection
  - `Shift`: Rectangle Select
  - `Space`: Play Animation
 
