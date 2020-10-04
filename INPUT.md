@@ -50,8 +50,15 @@ they apply to the whole program.
  - `Alt`+`t`: Internal Open New Tab (App Within App)
  - `Ctr`+`s`: Share
  - `Alt`+`s`: Save A Copy
+ - `Ctr`+`n`: New Blank File
+ - `Alt`+`n`: New File From Template
  - `Ctr`+`o`: Open
  - `Alt`+`o`: Open Recent
+ - `Ctr`+`p`: Print
+ - `Alt`+`p`: Print Preview
+ - `Ctr`+`y`/`Alt`+`z`: Redo
+ - `Ctr`+`z`: Undo
+ - `Alt`+`y`: Select Alternate History Branch
  - `Enter`/`Tab`: Next Input Field
  - `Shift`+`Tab`/`Shift`+`Enter`/`CapsLk`: Previous Input Field
 
@@ -73,14 +80,33 @@ they apply to the whole program.
  - `Ctr`+`a`: Select all (Whole Document)
  - `Alt`+`a`: Select line
  - `Ctr`+`b`: Bold
+ - `Alt`+`b`: Lowercase / Snake Case (abc) 
  - `Ctr`+`d`: Delete line
  - `Alt`+`d`: Duplicate line
  - `Ctr`+`f`: Find (And Replace)
+ - `Alt`+`f`: Find Embedded Media Elements
  - `Ctr`+`g`: Goto Line Number
+ - `Alt`+`g`: Goto Function Declaration / Heading
  - `Ctr`+`i`: Italic
+ - `Alt`+`i`: Strikethrough
+ - `Ctr`+`m`: Clear Formatting
+ - `Alt`+`m`: Title Case / Upper Camel Case (Abc)
  - `Ctr`+`u`: Underline
- - `Ctr`+`y`/`Alt`+`z`: Redo
- - `Ctr`+`z`: Undo
+ - `Alt`+`u`: Uppercase / Screaming Snake Case (ABC)
+ - `Ctr`+`,`: Subscript
+ - `Ctr`+`.`: Superscript
+ - `Alt`+`,`: Smaller Font
+ - `Alt`+`.`: Larger Font
+ - `Ctr`+`/`: 
+ - `Alt`+`/`:
+ - `Ctr`+`[`: Insert Column Left
+ - `Alt`+`[`: Align Left
+ - `Ctr`+`]`: Insert Column Right
+ - `Alt`+`]`: Align Right
+ - `Ctr`+`\`: Set Row-span/Column-span
+ - `Alt`+`\`: Align Center
+ - `Ctr`+`Enter`: Page Break
+ - `Alt`+`Enter`: Align Justified
  - `Ctr`+`ArrowLeft`: Beginning of Word Left
  - `Ctr`+`ArrowRight`: End of Word Right
  - `Ctr`+`ArrowUp`: Beginning of Line Up
@@ -89,6 +115,16 @@ they apply to the whole program.
  - `Alt`+`ArrowRight`: Swap Word or Selection Right
  - `Alt`+`ArrowUp`: Swap Line Up
  - `Alt`+`ArrowDown`: Swap Line Down
+ - `Alt`+`1`: Heading Level 1
+ - `Alt`+`2`: Heading Level 2
+ - `Alt`+`3`: Heading Level 3
+ - `Alt`+`4`: Heading Level 4
+ - `Alt`+`5`: Heading Level 5
+ - `Alt`+`6`: Heading Level 6
+ - `Alt`+`7`: Paragraph
+ - `Alt`+`8`: Aside
+ - `Alt`+`9`: Block Quote
+ - `Alt`+`0`: Code Block
 
 ## Music
  - `0`: Set Duration To 128th Note
@@ -207,8 +243,7 @@ they apply to the whole program.
  - `Ctr`+`f`: Find Notes (And Replace)
  - `Alt`+`f`: Find Lyrics (And Replace)
  - `Ctr`+`g`: Go to Measure Number
- - `Ctr`+`y`/`Alt`+`z`: Redo
- - `Ctr`+`z`: Undo
+ - `Alt`+`g`: Go to Rehearsal Marking
  - `Ctr`+`ArrowLeft`: Beginning of Measure Left
  - `Ctr`+`ArrowRight`: End of Measure Right
  - `Ctr`+`ArrowUp`: Beginning of Rehearsal Section
