@@ -2,12 +2,37 @@
 This file contains notes on different input methods for different types of
 data.
 
- - Text (Both Plain and Formatted, includes spreadsheet, number, date/time)
+ - Text
+   - Default: [Byte] # Default Text Data
+   - CanFormat: Bool # Can The Text Be Formatted Bold/Italic/Headings/Colors?
+   - Table: Bool # Is the text arranged in a grid spreadsheet-like fashion?
+   - Numeric: Bool # Does the text resolve expresions into numeric values?
+     - Min: Opt\[Real\] # Minimum numeric value allowed
+     - Max: Opt\[Real\] # Maximum numeric value allowed
+ - Date (Opt[(Year-Text, Month-Select, Day-Text)])
+   - Default: [Byte] # Default Date
+ - Select
+   - Multiple: Bool # Can multiple be selected? (uses checkboxes if true)
+   - Options: [Text] # What are the options (default pop-up list)
  - Music (Score)
- - Math (Expression)
- - Audio (Samples)
- - Video (Tracks)
+   - Default: [Byte] # Default music (template)
+   - Playback: Bool # Allow user to play back audio?
+   - Staves: Bool # Allow user to add/remove staves?
+ - Math (Fancy-Rendered Expression)
+   - Default: [Byte] # Default math (template)
+ - Audio (Record Audio, And Edit Samples)
+   - Default: [Byte] # Default audio
+ - Video (Record Video, And Edit Tracks)
+   - Default: [Byte] # Default video
+ - Coordinates (Image, Map)
+   - Default: Option[[Byte]] # Default coordinate or area
+   - Area: Bool
+     - Min: (Real, Real)
+     - Max: (Real, Real)
+ - Color
+   - Default: [Byte] # Default color
  - Graphic (Both 2D/3D, Still and Animated, Vector and Raster)
+   - Default: [Byte] # Default graphic
 
 ## Reserved
 These are the shortcuts that can't be used in internal input fields, because
@@ -72,7 +97,7 @@ they apply to the whole program.
  - `$`: Toggle Alternate Note Spelling
  - `5`: Set Duration To Quarter Note
  - `%`: Measure Repeat
- - `6`: Set Duration TO Half Note
+ - `6`: Set Duration To Half Note
  - `^`: Marcato
  - `7`: Set Duration To Whole Note
  - `&`: Accent
@@ -148,7 +173,7 @@ they apply to the whole program.
  - `"`: Caesura
  - `;`: Insert Grace Note Before
  - `:`: Insert Grace Note After
- - `~`: Insert Ornament (Turn, Inverted Turn, Trill, etc.)
+ - `~`: Insert Trill
  - `[`: Repeat Open
  - `]`: Repeat Close
  - `{`: Additional Ending Open
