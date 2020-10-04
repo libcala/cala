@@ -317,7 +317,7 @@ they apply to the whole program.
  - `e`: Inventory (Z-ZR)
  - `f`: Action (X/Left Click)
  - `r`: Interact (A/Right Click)
- - `ArrowUp`/`t`: Throw
- - `ArrowDown`/`g`: Drop on Ground/Give
- - `ArrowRight`: Switch Held Item (MouseScrollUp)
- - `ArrowLeft`: Switch Held Item (MouseScrollDown)
+ - `ArrowUp`/`t`: Throw (DpadUp)
+ - `ArrowDown`/`g`: Drop on Ground/Give (DpadDown)
+ - `ArrowRight`: Switch Held Item (MouseScrollUp, DpadRight)
+ - `ArrowLeft`: Switch Held Item (MouseScrollDown, DpadLeft)
