@@ -1,4 +1,123 @@
 # Input
+This file contains notes on how widgets are handled in cala.
+
+## Focus
+There are two modes within a cala application: *focused* an *unfocused*.  Press
+`ESCAPE` to go into unfocused mode.  You may also use `CTRL` to run unfocused
+mode actions from focused mode.
+
+### UNFOCUSED
+ - `TAB`: Select Next Widget
+ - `SHIFT`+`TAB`: Select Previous Widget
+ - `ENTER`: Shift Widget Into Focus
+ - `SHIFT`+`ENTER`: Preview Shift Widget Into Focus (Highlight Widget)
+ - `Q`: Quit/Close Tab/File
+ - `SHIFT`+`Q`: Return Focus To Emulator
+ - `W`: Suspend Workspace (Exit All Programs In Workspace)
+ - `SHIFT`+`W`: Re-Open Workspace
+ - `E`: Exit Program (Close All Tabs/Files)
+ - `SHIFT`+`E`: Re-Open Program
+ - `R`: Replace Tab
+ - `SHIFT`+`R`: Unreplace Tab
+ - `T`: Open New Tab/File
+ - `SHIFT`+`T`: Re-Open Tab
+ - `Y`: Yank Tab (Grab and Move It)
+ - `SHIFT`+`Y`: Undo Tab Move
+ - `U`: Use Elsewhere (Export Tab/File)…
+ - `SHIFT`+`U`: Use Selection Elsewhere (Export Part of File)…
+ - `I`: Import File (To Embed In Tab/File)…
+ - `SHIFT`+`I`: Import Recent
+ - `O`: Open New Tab/File…
+ - `SHIFT`+`O`: Open Recent…
+ - `P`: Print Preview + Print Tab/File…
+ - `SHIFT`+`P`: Save Widget Screenshot
+ - `[`: Tab Left
+ - `SHIFT`+`[`: Tab Tree Up
+ - `]`: Tab Right
+ - `SHIFT`+`]`: Tab Tree Down
+ - `A`: Select All (In Previously Selected Widget)
+ - `SHIFT`+`A`: Select Chunk (Line/Paragraph/etc.)
+ - `S`: Select Word
+ - `SHIFT`+`S`: Save As…
+ - `D`: Delete Chunk (Line/Paragraph/etc.)
+ - `SHIFT`+`D`: Duplicate Chunk (Line/Paragraph/etc.)
+ - `F`: Find Matching (And Optional Replace)
+ - `SHIFT`+`F`: Alternate Find
+ - `G`: Goto Line (In Previously Selected Widget)
+ - `SHIFT`+`G`: Undo Goto Line
+ - `H`: Cursor Left (In Previously Selected Widget)
+ - `SHIFT`+`H`: Visual Select Left
+ - `J`: Cursor Down (In Previously Selected Widget)
+ - `SHIFT`+`J`: Visual Select Down
+ - `K`: Cursor Up (In Previously Selected Widget)
+ - `SHIFT`+`K`: Visual Select Up
+ - `L`: Cursor Right (In Previously Selected Widget)
+ - `SHIFT`+`L`: Visual Select Right
+ - `;`: Insert Emoji
+ - `SHIFT`+`;`: Insert Custom Emoji
+ - `'`: Superscript
+ - `ENTER`: Page Break
+ - `SHIFT`+`ENTER`: Alternate Break
+ - `SHIFT`+`'`: Quote Block
+ - `Z`: Undo
+ - `SHIFT`+`Z`: Redo
+ - `X`: Cut
+ - `SHIFT`+`X`: Swap Clipboard
+ - `C`: Copy
+ - `SHIFT`+`C`: Copy Unformatted
+ - `V`: Paste
+ - `SHIFT`+`V`: Paste Unformatted
+ - `B`: Save Clipboard Buffer
+ - `SHIFT`+`B`: Pop Clipboard Buffer
+ - `N`: Next Word
+ - `SHIFT`+`N`: Previous Word
+ - `M`: Transform Menu (To Lowercase, etc.)
+ - `SHIFT`+`M`: Clear Formatting
+ - `,`: Subscript
+ - `SHIFT`+`,`: Decrease Font Size
+ - `.`: Bold
+ - `SHIFT`+`.`: Increase Font Size
+ - `/`: Italic (For Code: Comment)
+ - `SHIFT`+`/`: Help
+ - `BACKTICK`: View Alternate Undo History Paths
+ - `SHIFT`+`BACKTICK`: Switch To Alternate Undo History Timeline
+ - `ESCAPE`: Re-Focus
+ - `1`: Numbered List
+ - `SHIFT`+`1`: Heading 1
+ - `2`: Bullet List
+ - `SHIFT`+`2`: Heading 2
+ - `3`: Comment/Code Block
+ - `SHIFT`+`3`: Heading 3
+ - `4`: Insert Currency
+ - `SHIFT`+`4`: Heading 4
+ - `5`: Insert Table
+ - `SHIFT`+`5`: Heading 5
+ - `6`: Insert Keyboard Shortcut
+ - `SHIFT`+`6`: Heading 6
+ - `7`: Add Column
+ - `SHIFT`+`7`: Remove Column
+ - `8`: Add Row
+ - `SHIFT`+`8`: Remove Row
+ - `9`: Insert Link
+ - `SHIFT`+`9`: Paragraph
+ - `0`: Zoom Reset
+ - `SHIFT`+`0`: Set Zoom Reset Level
+ - `-`: Zoom Out
+ - `SHIFT`+`-`: Underline
+ - `+`: Zoom In
+ - `SHIFT`+`+`: Strikethrough
+ - `\`: Insert Alternate Media Box
+ - `SHIFT`+`\`: Overline
+ - `INSERT`: View Clipboard Buffer
+ - `SHIFT`+`INSERT`: Undo/Redo Last Clipboard Modification
+ - `HOME`|`PAGEUP`: Toggle Align Left (Both Off: Center, Both On: Justified)
+ - `END`|`PAGEUP`: Toggle Align Right (Both Off: Center, Both On: Justified)
+
+### FOCUSED
+ - `ESCAPE`: Shift Widget Out of Focus And Show Options
+ - `CTRL`: Shift Widget Out of Focus Temporarily Without Showing Options
+
+# Input
 This file contains notes on different input methods for different types of
 data.
 
