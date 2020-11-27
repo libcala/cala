@@ -1,8 +1,7 @@
 use cala::*;
 
-const INFO: &str = "Info";
+const INFO: &str = Tag::new("Info");
 
 fn main() {
-    journal::out!(INFO, "User message");
-    journal::dev!(INFO, "Developer message");
+    log::out!(INFO, "User message");
 }
