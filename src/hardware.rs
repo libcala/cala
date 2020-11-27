@@ -14,8 +14,8 @@ pub mod file;
 pub mod gpio;
 #[cfg(feature = "input")]
 pub mod input;
-#[cfg(feature = "journal")]
-pub mod journal;
+#[cfg(feature = "log")]
+pub mod log;
 #[cfg(feature = "microphone")]
 pub mod microphone;
 #[cfg(feature = "net")]

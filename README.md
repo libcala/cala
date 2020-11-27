@@ -58,7 +58,7 @@ Here's a list of all of the targeted platforms and what they support.
 | [file][105]       | ✓     | ✓      | ✓       |     |         |
 | [gpio][106]       |       | —      | —       | —   |         |
 | [input][107]      | ✓     |[7][51] | [6][54] | ?   |         |
-| [journal][108]    | ✓     | ✓      | ✓       | ✓   |         |
+| [log][108]        | ✓     | ✓      | ✓       | ✓   |         |
 | [microphone][109] | ✓     |[5][50] | [4][53] | ✓   | ?       |
 | [net][110]        | ✓     | ✓      | ✓       | ?   |         |
 | [pixels][111]     | ✓     |[9][52] |         |     |         |
@@ -153,7 +153,7 @@ you can email me at [jeronlau@plopgrizzly.com][99].  Otherwise,
 [105]: https://docs.rs/cala/latest/cala/file
 [106]: https://docs.rs/cala/latest/cala/gpio
 [107]: https://docs.rs/cala/latest/cala/input
-[108]: https://docs.rs/cala/latest/cala/journal
+[108]: https://docs.rs/cala/latest/cala/log
 [109]: https://docs.rs/cala/latest/cala/microphone
 [110]: https://docs.rs/cala/latest/cala/net
 [111]: https://docs.rs/cala/latest/cala/pixels
