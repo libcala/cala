@@ -10,7 +10,7 @@ features = ["input", "draw", "pixels"]
 path = "../../"
 
 [build-dependencies]
-res = "0.5"
+res = "0.6"
 
-[replace]
-"res:0.5.0" = { path = "../../../res" }
+# [replace]
+# "res:0.5.0" = { path = "../../../res" }
