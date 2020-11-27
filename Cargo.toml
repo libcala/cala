@@ -41,7 +41,7 @@ rvg = {version = "0.2", optional = true, default-features = false, features = ["
 footile = {version = "0.6", optional = true}
 chrono = {version = "0.4", optional = true, default-features = false, features = ["clock"]}
 smelling_salts = {version = "0.1", optional = true}
-devout = {version = "0.1", optional = true}
+devout = {version = "0.2", optional = true}
 
 [target.'cfg(target_arch = "wasm32")'.dependencies.cala_core]
 version = "0.1"
@@ -67,7 +67,7 @@ exec = ["pasts"]
 file = ["stronghold", "serde"]
 gpio = []
 input = ["human"]
-journal = ["devout"]
+log = ["devout"]
 microphone = ["wavy"]
 net = ["smelling_salts"]
 user = ["whoami"]
