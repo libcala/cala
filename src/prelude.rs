@@ -39,24 +39,4 @@ pub trait Canvas {
 
 #[cfg(feature = "exec")]
 /// **feature:exec** -
-pub use pasts::{DynFut as IntoDynFut, Join as JoinFut, Select as SelectFut};
-
-#[cfg(feature = "exec")]
-/// **feature:exec** - Trait for spawning tasks in a thread pool to run
-/// closures as a `Future`.
-pub trait SpawnBlocking<T> {
-    /// Turn closure into a future.
-    fn spawn_blocking(self) -> Box<dyn std::future::Future<Output = T>>;
-}
-
-#[cfg(feature = "exec")]
-impl<T, F> SpawnBlocking<T> for F
-where
-    F: FnOnce() -> T,
-    F: Send + 'static,
-    T: Send + 'static,
-{
-    fn spawn_blocking(self) -> Box<dyn std::future::Future<Output = T>> {
-        Box::new(pasts::spawn_blocking(self))
-    }
-}
+pub use pasts::{join, poll, task};

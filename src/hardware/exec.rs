@@ -21,10 +21,7 @@ pub use cala_core::exec;
 macro_rules! exec {
     ($main:ident) => {
         fn main() {
-            use $crate::__hidden::Executor;
-            static EXECUTOR: $crate::__hidden::CvarExec =
-                $crate::__hidden::CvarExec::new();
-            EXECUTOR.block_on($main());
+            $crate::__hidden::exec!($main());
         }
     };
 }
@@ -37,10 +34,7 @@ macro_rules! exec {
     ($main:ident) => {
         fn main() {
             std::thread::spawn(|| {
-                use $crate::__hidden::Executor;
-                static EXECUTOR: $crate::__hidden::CvarExec =
-                    $crate::__hidden::CvarExec::new();
-                EXECUTOR.block_on($main());
+                $crate::__hidden::exec!($main());
                 std::process::exit(0);
             });
             $crate::__hidden::draw_thread();
