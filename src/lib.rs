@@ -63,9 +63,13 @@
 //!
 //!         // State A's event loop
 //!         pub(super) async fn event_loop(state: &RefCell<Self>) {
+//!             task! {
+//!                 let dummy = Self::dummy(state);
+//!             }
+//!
 //!             // Leaving this empty will result in the async
 //!             // executor going to sleep.
-//!             [Self::dummy(state).fut()].select().await;
+//!             poll![dummy,].await;
 //!         }
 //!     }
 //! }
@@ -97,7 +101,7 @@ pub mod __hidden {
     #[cfg(feature = "draw")]
     pub use crate::hardware::draw::__hidden::draw_thread;
     #[cfg(feature = "exec")]
-    pub use pasts::{CvarExec, Executor};
+    pub use pasts::exec;
 }
 
 // mod icons; // FIXME Do something with the GUI icons
