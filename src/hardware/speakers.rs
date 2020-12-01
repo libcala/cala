@@ -5,4 +5,4 @@
 //! // TODO
 //! ```
 
-pub use wavy::Speakers;
+pub use wavy::{Speaker, SpeakerId};
