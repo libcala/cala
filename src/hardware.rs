@@ -28,3 +28,5 @@ pub mod speakers;
 pub mod time;
 #[cfg(feature = "user")]
 pub mod user;
+#[cfg(feature = "random")]
+pub mod random;
