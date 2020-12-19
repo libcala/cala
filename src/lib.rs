@@ -100,8 +100,6 @@ pub use prelude::*;
 pub mod __hidden {
     #[cfg(feature = "draw")]
     pub use crate::hardware::draw::__hidden::draw_thread;
-    #[cfg(feature = "exec")]
-    pub use pasts::exec;
 }
 
 // mod icons; // FIXME Do something with the GUI icons

@@ -11,6 +11,78 @@ use std::ops::Range;
 
 use pix::{rgb::SRgba8, Raster};
 
+/// Possible Events For Text Input
+pub enum TextEv {
+    /// Escape Key, Back: To Selection Mode
+    Back,
+    /// Autocompletion, Indentation, Or Next One-Line-Input
+    Tab,
+    /// De-Indentation, Or Previous One-Line-Input
+    UnTab,
+    /// Ctr-X
+    Cut,
+    /// Alt-X
+    Swap,
+    /// Ctr-C
+    Copy,
+    /// Alt-C
+    Cancel,
+    /// Ctr-V
+    Paste,
+    /// Alt-V
+    PasteUnformat,
+    /// Insert
+    Clipboard,
+    /// Backspace
+    Backspace,
+    /// Shift+Backspace,Delete
+    Delete,
+    /// Ctr+Insert
+    Emoji,
+    /// Alt+Insert
+    Compose,
+    ///
+    Text(char),
+}
+
+/// Possible commands to interface with the accessibility system.
+pub enum TextCmd {
+    /// Turn composing on or off.
+    Compose(bool),
+}
+
+/// Text Input Field User Interface.
+pub trait TextInput {
+    /// Event handler.
+    fn event(&mut self, event: TextEv);
+}
+
+/// User Interface Builder.
+// FIXME: Rename Ui
+#[derive(Default)]
+pub struct UiBuilder {
+    text_input: Option<Box<dyn TextInput>>,
+}
+
+impl UiBuilder {
+    /// Create a new User Interface Builder.
+    pub fn new() -> Self {
+        Self::default()
+    }
+
+    /// Add state for editable text fields.
+    pub fn text<Text>(mut self, text: Text) -> Self
+    where
+        Text: 'static + TextInput,
+    {
+        self.text_input = Some(Box::new(text));
+        self
+    }
+
+    /// Set input rules by communicating with the system.
+    pub fn text_cmd(&mut self, event: TextCmd) {}
+}
+
 /// An activatable action.
 pub struct Action<T>
 where
