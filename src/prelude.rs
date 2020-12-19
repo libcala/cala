@@ -39,4 +39,4 @@ pub trait Canvas {
 
 #[cfg(feature = "exec")]
 /// **feature:exec** -
-pub use pasts::{DynFut as IntoDynFut, Join as JoinFut, Select as SelectFut};
+pub use pasts::{join, poll, task};

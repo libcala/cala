@@ -63,9 +63,13 @@
 //!
 //!         // State A's event loop
 //!         pub(super) async fn event_loop(state: &RefCell<Self>) {
+//!             task! {
+//!                 let dummy = Self::dummy(state);
+//!             }
+//!
 //!             // Leaving this empty will result in the async
 //!             // executor going to sleep.
-//!             [Self::dummy(state).fut()].select().await;
+//!             poll![dummy,].await;
 //!         }
 //!     }
 //! }

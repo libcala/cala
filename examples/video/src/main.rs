@@ -28,8 +28,14 @@ async fn init() {
         timed,
     };
 
+    // Tasks
+    task! {
+        let canvas = async { loop { canvas(&mut context).await } };
+        let input = async { while input().await { } };
+    }
+
     // Game loop
-    while [canvas(&mut context).fut(), input().fut()].select().await.1 {}
+    poll![canvas, input].await;
 }
 
 fn animate_triangle(context: &mut Context, time: f32, aspect: f32) {
@@ -56,7 +62,7 @@ fn animate_triangle(context: &mut Context, time: f32, aspect: f32) {
 }
 
 // Function that runs while your app runs.
-pub async fn canvas(context: &mut Context) -> bool {
+pub async fn canvas(context: &mut Context) {
     // Set the background color.
     let mut canvas = pixels::canvas(SRgb32::new(0.0, 0.5, 0.0)).await;
 
@@ -66,8 +72,6 @@ pub async fn canvas(context: &mut Context) -> bool {
 
     // Draw triangle
     canvas.draw(&context.colors, &context.triangle);
-
-    true
 }
 
 async fn input<'a>() -> bool {

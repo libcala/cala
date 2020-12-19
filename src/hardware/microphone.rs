@@ -8,8 +8,8 @@
 //! use std::cell::RefCell;
 //! use cala::*;
 //! use fon::{chan::Ch16, mono::Mono16, Audio, Stream};
-//! use microphone::Microphone;
-//! use speakers::Speakers;
+//! use microphone::{Microphone, MicrophoneId};
+//! use speakers::SpeakerId;
 //!
 //! /// The program's shared state.
 //! struct State {
@@ -32,7 +32,7 @@
 //! /// Speakers task (play recorded audio).
 //! async fn speakers_task(state: &RefCell<State>) {
 //!     // Connect to system's speaker(s)
-//!     let mut speakers = Speakers::<Mono16>::new();
+//!     let mut speakers = SpeakerId::default().connect::<Mono16>().unwrap();
 //!
 //!     loop {
 //!         // 1. Wait for speaker to need more samples.
@@ -48,18 +48,19 @@
 //! /// Program start.
 //! async fn start() {
 //!     // Connect to a user-selected microphone.
-//!     let microphone = Microphone::new().expect("Need a microphone");
+//!     let microphone = MicrophoneId::default().connect().expect("Need a microphone");
 //!     // Get the microphone's sample rate.
 //!     // Initialize shared state.
 //!     let state = RefCell::new(State {
 //!         buffer: Audio::with_silence(microphone.sample_rate(), 0),
 //!     });
-//!     // Create speaker task.
-//!     let mut speakers = speakers_task(&state);
-//!     // Create microphone task.
-//!     let mut microphone = microphone_task(&state, microphone);
+//!     // Create speaker and microphone tasks.
+//!     task! {
+//!         let speakers = speakers_task(&state);
+//!         let microphone = microphone_task(&state, microphone);
+//!     }
 //!     // Wait for first task to complete.
-//!     [speakers.fut(), microphone.fut()].select().await;
+//!     poll![speakers, microphone].await;
 //! }
 
-pub use wavy::Microphone;
+pub use wavy::{Microphone, MicrophoneId};
