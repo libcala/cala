@@ -52,7 +52,7 @@ features = ["cala"]
 res = {version = "0.6", optional = true} # video
 
 [dev-dependencies]
-fon = "0.2"
+fon = "0.4"
 
 [package.metadata.docs.rs]
 all-features = true
