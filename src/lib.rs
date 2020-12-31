@@ -23,56 +23,7 @@
 //! in separate files):
 //!
 //! ```rust,no_run
-//! use std::cell::RefCell;
-//! // When no features are enabled, only imports prelude traits.
-//! use cala::*;
-//!
-//! enum State {
-//!     A(RefCell<a::State>), // The only state
-//! }
-//!
-//! async fn event_loop(state: &mut State) {
-//!     use State::*;
-//!     match state {
-//!         A(state) => a::State::event_loop(state).await,
-//!     }
-//! }
-//!
-//! // Entry point
-//! exec!(exec); // Set entry point for the app.
-//! async fn exec() {
-//!     let mut state = State::A(RefCell::new(a::State::new()));
-//!     loop { event_loop(&mut state).await }
-//! }
-//!
-//! mod a {
-//!     //! State A's structure and event loop.
-//!     use std::cell::RefCell;
-//!     use cala::*;
-//!
-//!     // Data associated with state A.
-//!     pub(super) struct State { }
-//!
-//!     impl State {
-//!         pub(super) fn new() -> Self {
-//!             State { }
-//!         }
-//!
-//!         async fn dummy(state: &RefCell<Self>) {
-//!         }
-//!
-//!         // State A's event loop
-//!         pub(super) async fn event_loop(state: &RefCell<Self>) {
-//!             task! {
-//!                 let dummy = Self::dummy(state);
-//!             }
-//!
-//!             // Leaving this empty will result in the async
-//!             // executor going to sleep.
-//!             poll![dummy,].await;
-//!         }
-//!     }
-//! }
+//! todo!();
 //! ```
 //!
 //! Module documentation may include simple tutorials.  More in depth tutorials

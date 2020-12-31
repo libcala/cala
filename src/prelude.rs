@@ -39,4 +39,4 @@ pub trait Canvas {
 
 #[cfg(feature = "exec")]
 /// **feature:exec** -
-pub use pasts::{join, poll, task};
+pub use pasts::{join, wait, exec, race};
