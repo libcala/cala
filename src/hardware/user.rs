@@ -4,9 +4,7 @@
 //! ```rust
 //! use cala::*;
 //!
-//! // Set function that runs while your app runs.
-//! exec!(run);
-//! async fn run() {
+//! fn main() {
 //!     // Get the user's username.
 //!     println!("{}", user::username());
 //! }

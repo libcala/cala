@@ -1,8 +1,9 @@
 //! **feature:input** - Get user input.
 //!
 //! # Usage
-//! ```rust
-//! use cala::*;
+//! ```rust,no_run
+//! todo!();
+//! /*use cala::*;
 //! use input::{Input, UiInput, GameInput, TextInput};
 //!
 //! exec!(input);
@@ -15,7 +16,7 @@
 //!             input => println!("{:?}", input),
 //!         }
 //!     }
-//! }
+//! }*/
 //! ```
 
 #[cfg(feature = "draw")]

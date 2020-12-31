@@ -29,9 +29,9 @@ maintenance = { status = "actively-developed" }
 
 [dependencies]
 human = {version = "0.1", optional = true} # input
-pasts = {version = "0.6", optional = true} # async
+pasts = {version = "0.7", optional = true} # async
 whoami = {version = "1.0", optional = true} # user
-wavy = {version = "0.6", optional = true} # audio
+wavy = {version = "0.8", optional = true} # audio
 stronghold = {version = "0.2", optional = true} # file
 serde = {version = "1.0", optional = true}
 window = {version = "0.4", optional = true} # pixels, draw
@@ -40,9 +40,10 @@ pix = {version = "0.13", optional = true}
 rvg = {version = "0.2", optional = true, default-features = false, features = ["render"]}
 footile = {version = "0.6", optional = true}
 chrono = {version = "0.4", optional = true, default-features = false, features = ["clock"]}
-smelling_salts = {version = "0.1", optional = true}
+smelling_salts = {version = "0.2", optional = true}
 devout = {version = "0.2", optional = true}
 nanorand = {version = "0.5", optional = true}
+fon = {version = "0.4", optional = true}
 
 [target.'cfg(target_arch = "wasm32")'.dependencies.cala_core]
 version = "0.1"
@@ -50,9 +51,6 @@ features = ["cala"]
 
 [build-dependencies]
 res = {version = "0.6", optional = true} # video
-
-[dev-dependencies]
-fon = "0.2"
 
 [package.metadata.docs.rs]
 all-features = true
@@ -69,10 +67,10 @@ file = ["stronghold", "serde"]
 gpio = []
 input = ["human"]
 log = ["devout"]
-microphone = ["wavy"]
+microphone = ["wavy", "fon"]
 net = ["smelling_salts"]
 user = ["whoami"]
 pixels = ["draw"]
-speakers = ["wavy"]
+speakers = ["wavy", "fon"]
 time = ["chrono"]
 random = ["nanorand"]
