@@ -3,9 +3,10 @@
 //! # Getting Started
 //! **TODO**
 
-use crate::graphics::*;
 use crate::graphics::Canvas;
+use crate::graphics::*;
 use pix::chan::Channel;
+use pix::el::Pixel;
 use std::{
     future::Future,
     pin::Pin,

@@ -15,17 +15,17 @@
 //! use cala::exec::{exec, wait};
 //! use cala::log::{log, Tag};
 //! use cala::input::Input;
-//! 
+//!
 //! const INFO: Tag = Tag::new("Info").show(true);
-//! 
+//!
 //! /// The program's shared state.
 //! struct State {}
-//! 
+//!
 //! /// Event handled by the event loop.
 //! enum Event {
 //!     Input(Input),
 //! }
-//! 
+//!
 //! impl State {
 //!     /// Event loop.
 //!     fn event(&mut self, event: Event) {
@@ -34,12 +34,12 @@
 //!         }
 //!     }
 //! }
-//! 
+//!
 //! /// Start the async executor.
 //! fn main() {
 //!     let mut state = State {};
 //!     let mut input = human::Input::listener();
-//! 
+//!
 //!     exec!(state.event(wait! {
 //!         Event::Input((&mut input).await),
 //!     }));

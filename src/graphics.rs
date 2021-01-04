@@ -609,19 +609,12 @@ impl ShapeBuilder {
 /// Something that can be drawn on.
 pub trait Canvas {
     /// Draw a group on the screen.
-    fn draw(
-        &mut self,
-        shader: &Shader,
-        group: &Group,
-    );
+    fn draw(&mut self, shader: &Shader, group: &Group);
     /// Set camera for shader.
     fn set_camera(&mut self, camera: Transform);
     /// Set tint for shader.
-    fn set_tint<P: pix::el::Pixel>(
-        &mut self,
-        shader: &Shader,
-        tint: P,
-    ) where
+    fn set_tint<P: pix::el::Pixel>(&mut self, shader: &Shader, tint: P)
+    where
         pix::chan::Ch32: From<<P as pix::el::Pixel>::Chan>;
     /// Draw a group with a texture on the screen.
     fn draw_graphic(
