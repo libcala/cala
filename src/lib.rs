@@ -158,3 +158,15 @@ pub mod video;
 pub mod when;
 #[cfg(feature = "window")]
 pub mod window;
+
+/// Insert glue code so that your application can run on WASM and Android.
+#[macro_export]
+macro_rules! glue {
+    () => {
+        #[cfg(target_arch = "wasm32")]
+        #[wasm_bindgen::prelude::wasm_bindgen]
+        pub fn cala_main_() {
+            main();
+        }
+    }
+}

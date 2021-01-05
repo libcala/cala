@@ -16,8 +16,11 @@ and this project adheres to
  - **usb** feature (WIP)
  - **audio** feature and API
  - **video** feature and API
+ - `glue!()` macro.
 
 ### Changed
+ - The **exec** feature is no longer enabled by default, so there are no
+   default features.
  - **speaker** feature -> **speakers**
  - `Recorder` -> `Microphone`
  - `Player` -> `Speakers`
@@ -34,6 +37,7 @@ and this project adheres to
  - `S16LEx2` type from **microphone** and **speakers**
  - **accel** module.
  - **net** feature in favor of **client** and **server**
+ - All re-exports to the root module.
 
 ## [0.8.0] - 2020-07-13
 ### Added
