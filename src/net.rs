@@ -10,6 +10,8 @@
 
 //! TCP network communication.
 
+#![allow(dead_code)] // FIXME
+
 use smelling_salts::{Device, Watcher};
 use std::{
     future::Future,

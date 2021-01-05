@@ -8,6 +8,8 @@
 // At your choosing (See accompanying files LICENSE_APACHE_2_0.txt,
 // LICENSE_MIT.txt and LICENSE_BOOST_1_0.txt).
 
+#![allow(clippy::needless_doctest_main)]
+
 //! Execution of asynchronous tasks.
 //!
 //! # Getting Started
@@ -43,10 +45,10 @@
 //! ```
 
 use core::future::Future;
-use core::task::{Context, Poll};
 use core::pin::Pin;
+use core::task::{Context, Poll};
 
-pub use pasts::{exec, join, wait, race};
+pub use pasts::{exec, join, race, wait};
 
 struct Never;
 

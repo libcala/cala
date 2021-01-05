@@ -1,85 +1,93 @@
-use cala::*;
-
-use cala::draw::{
-    color::SRgb32, shader, Group, Shader, ShaderBuilder, ShapeBuilder,
-    Transform,
+use cala::video::rgb::SRgb32;
+use cala::graphics::{
+    shader, Group, Shader, ShaderBuilder, ShapeBuilder,
+    Transform, Canvas
 };
-use cala::input::{GameInput, Input, TextInput, UiInput};
+use cala::window::{Frame, input};
+use cala::input::{Input, Key};
+use cala::task::{exec, wait};
 
-pub struct Context {
+enum Event {
+    Redraw(Frame),
+    Input(Input),
+}
+
+struct State {
     colors: Shader,
     triangle: Group,
     timed: f64,
 }
 
-// Initialize & set loop to `init()`.
-cala::exec!(init);
+impl State {
+    fn event(&mut self, event: Event) {
+        match event {
+            Event::Redraw(canvas) => self.redraw(canvas),
+            Event::Input(input) => self.input(input),
+        }
+    }
 
-async fn init() {
+    fn animate_triangle(&mut self, time: f32, aspect: f32) {
+        #[rustfmt::skip]
+        let vertices = [
+             -1.0,  1.0,  1.0, 0.5, 0.0,
+              1.0,  1.0,  0.0, 0.0, 1.0,
+              0.0, -1.0,  1.0, 1.0, 1.0,
+              
+              0.0, -1.0,  1.0, 0.7, 0.0,
+              1.0,  1.0,  1.0, 0.7, 0.0,
+             -1.0,  1.0,  1.0, 0.7, 0.0,
+        ];
+
+        let triangle_shape = ShapeBuilder::new()
+            .vert(&vertices)
+            .face(Transform::new())
+            .finish(&self.colors);
+        let transform = Transform::new()
+            .rotate(0.0, 1.0, 0.0, time)
+            .scale(0.25, 0.25 * aspect, 0.25)
+            .translate(0.5, 0.5 * aspect, 0.0);
+        self.triangle.write(0, &triangle_shape, &transform);
+    }
+
+    fn redraw(&mut self, mut frame: Frame) {
+        // Update triangle
+        self.timed = (self.timed + frame.elapsed().as_secs_f64()) % 1.0;
+        self.animate_triangle(self.timed as f32, frame.height());
+
+        // Draw triangle
+        frame.draw(&self.colors, &self.triangle);
+    }
+
+    fn input(&mut self, input: Input) {
+        match input {
+            Input::Key(_mods, Key::Back, true) => std::process::exit(0),
+            input => println!("{:?}", input),
+        }
+    }
+}
+
+fn start() {
     let timed = 0.0;
     // Load a shader.
     let colors = Shader::new(shader!("color"));
 
     // Build triangle Shape
     let triangle = Group::new();
-    let mut context = Context {
+    let mut state = State {
         colors,
         triangle,
         timed,
     };
 
-    // Tasks
-    task! {
-        let canvas = async { loop { canvas(&mut context).await } };
-        let input = async { while input().await { } };
-    }
-
-    // Game loop
-    poll![canvas, input].await;
+    exec!(state.event(wait!(
+        Event::Redraw(Frame::new(SRgb32::new(0.0, 0.5, 0.0)).await),
+        Event::Input(input().await),
+    )));
 }
 
-fn animate_triangle(context: &mut Context, time: f32, aspect: f32) {
-    #[rustfmt::skip]
-    let vertices = [
-         -1.0,  1.0,  1.0, 0.5, 0.0,
-          1.0,  1.0,  0.0, 0.0, 1.0,
-          0.0, -1.0,  1.0, 1.0, 1.0,
-          
-          0.0, -1.0,  1.0, 0.7, 0.0,
-          1.0,  1.0,  1.0, 0.7, 0.0,
-         -1.0,  1.0,  1.0, 0.7, 0.0,
-    ];
-
-    let triangle_shape = ShapeBuilder::new()
-        .vert(&vertices)
-        .face(Transform::new())
-        .finish(&context.colors);
-    let transform = Transform::new()
-        .rotate(0.0, 1.0, 0.0, time)
-        .scale(0.25, 0.25 * aspect, 0.25)
-        .translate(0.5, 0.5 * aspect, 0.0);
-    context.triangle.write(0, &triangle_shape, &transform);
-}
-
-// Function that runs while your app runs.
-pub async fn canvas(context: &mut Context) {
-    // Set the background color.
-    let mut canvas = pixels::canvas(SRgb32::new(0.0, 0.5, 0.0)).await;
-
-    // Update triangle
-    context.timed = (context.timed + canvas.elapsed().as_secs_f64()) % 1.0;
-    animate_triangle(context, context.timed as f32, canvas.height());
-
-    // Draw triangle
-    canvas.draw(&context.colors, &context.triangle);
-}
-
-async fn input<'a>() -> bool {
-    match cala::input::input().await {
-        Input::Ui(UiInput::Back) => return false,
-        Input::Game(_id, GameInput::Back) => return false,
-        Input::Text(TextInput::Back) => return false,
-        input => println!("{:?}", input),
-    }
-    true
+fn main() {
+    // Start the async thread.
+    std::thread::spawn(start);
+    // Start the draw thread.
+    cala::graphics::draw_thread();
 }

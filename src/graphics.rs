@@ -38,10 +38,10 @@
 //!
 //! # Example
 //! Open a window with a triangle that rotates once a second:
-//! ```rust,no_run
+//! ```rust,no_run,ignore
 //! use cala::*;
 //!
-//! use cala::draw::{
+//! use cala::graphics::{
 //!     color::SRgb32, shader, Group, Shader, ShaderBuilder, ShapeBuilder,
 //!     Transform,
 //! };
@@ -523,17 +523,12 @@ fn async_runner(window: &mut window::Window, elapsed: std::time::Duration) {
     }
 }
 
-pub(crate) mod __hidden {
-    use window::Window;
-
-    #[doc(hidden)]
-    pub fn draw_thread() {
-        let fallback_window_title = env!("CARGO_PKG_NAME");
-        let mut window =
-            Window::new(fallback_window_title, super::async_runner);
-        loop {
-            window.run();
-        }
+/// Run the infinite event loop.  You should only call this on the main thread.
+pub fn draw_thread() {
+    let fallback_window_title = env!("CARGO_PKG_NAME");
+    let mut window = window::Window::new(fallback_window_title, async_runner);
+    loop {
+        window.run();
     }
 }
 
@@ -609,19 +604,12 @@ impl ShapeBuilder {
 /// Something that can be drawn on.
 pub trait Canvas {
     /// Draw a group on the screen.
-    fn draw(
-        &mut self,
-        shader: &Shader,
-        group: &Group,
-    );
+    fn draw(&mut self, shader: &Shader, group: &Group);
     /// Set camera for shader.
     fn set_camera(&mut self, camera: Transform);
     /// Set tint for shader.
-    fn set_tint<P: pix::el::Pixel>(
-        &mut self,
-        shader: &Shader,
-        tint: P,
-    ) where
+    fn set_tint<P: pix::el::Pixel>(&mut self, shader: &Shader, tint: P)
+    where
         pix::chan::Ch32: From<<P as pix::el::Pixel>::Chan>;
     /// Draw a group with a texture on the screen.
     fn draw_graphic(

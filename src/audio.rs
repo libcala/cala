@@ -19,7 +19,7 @@
 //! use cala::audio::mono::Mono8;
 //! use cala::audio::stereo::Stereo16;
 //! use cala::audio::{Audio, Frame};
-//! 
+//!
 //! let mut a = Audio::<Mono8>::with_silence(44_100, 256);
 //! for (i, s) in a.iter_mut().enumerate() {
 //!     s.channels_mut()[0] = Ch8::new(i as i8);

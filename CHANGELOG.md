@@ -2,16 +2,42 @@
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://code.plopgrizzly.com/semver/).
+and this project adheres to
+[Semantic Versioning](https://github.com/AldaronLau/semver#a-guide-to-semver).
 
-## [0.9.0] - Unreleased
+## [0.9.0] - 2021-01-05
+### Added
+ - **client** feature (WIP)
+ - **server** feature (WIP)
+ - **gui** feature (WIP)
+ - **haptic** feature (WIP)
+ - **random** feature and API
+ - **timer** feature (WIP)
+ - **usb** feature (WIP)
+ - **audio** feature and API
+ - **video** feature and API
+ - `glue!()` macro.
+
 ### Changed
+ - The **exec** feature is no longer enabled by default, so there are no
+   default features.
  - **speaker** feature -> **speakers**
  - `Recorder` -> `Microphone`
  - `Player` -> `Speakers`
+ - **draw** feature -> **graphics**
+ - **file** feature -> **database**
+ - **user** feature -> **info**
+ - Completely re-did **input** module.
+ - **journal** feature -> **log**
+ - **gpio** feature -> **port**
+ - **exec** feature -> **task** (Completely re-did API)
+ - **time** feature -> **when**
 
 ### Removed
  - `S16LEx2` type from **microphone** and **speakers**
+ - **accel** module.
+ - **net** feature in favor of **client** and **server**
+ - All re-exports to the root module.
 
 ## [0.8.0] - 2020-07-13
 ### Added

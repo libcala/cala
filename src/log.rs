@@ -13,9 +13,9 @@
 //! # Getting Started
 //! ```rust
 //! use devout::{log, Tag};
-//! 
+//!
 //! const INFO: Tag = Tag::new("Info").show(true);
-//! 
+//!
 //! log!(INFO, "Result: {}", 4.4);
 //! ```
 

@@ -1,5 +1,5 @@
 fn main() {
-    #[cfg(feature = "draw")]
+    #[cfg(feature = "graphics")]
     {
         res::generate(&[res::shader("gui").transform().graphic()]);
     }

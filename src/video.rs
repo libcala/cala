@@ -18,7 +18,7 @@
 //! use pix::hwb::SHwb8;
 //! use pix::rgb::SRgb8;
 //! use pix::Raster;
-//! 
+//!
 //! let mut r = Raster::with_clear(256, 256);
 //! for (y, row) in r.rows_mut(()).enumerate() {
 //!     for (x, p) in row.iter_mut().enumerate() {

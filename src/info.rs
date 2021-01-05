@@ -12,12 +12,8 @@
 //!
 //! # Usage
 //! ```rust
-//! use cala::info;
-//!
-//! fn main() {
-//!     // Get the user's username.
-//!     println!("{}", info::username());
-//! }
+//! // Get the user's username.
+//! println!("{}", cala::info::username());
 //! ```
 
 pub use whoami::{
