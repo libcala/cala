@@ -39,8 +39,8 @@ the module names where the API is located.  Just add it to your Cargo.toml:
 
 ```toml
 [dependencies.cala]
-version = "0.8"
-features = ["access", "speaker"]
+version = "0.9"
+features = ["log", "speaker"]
 ```
 
 Here's a list of all of the targeted platforms and what they support.
@@ -50,21 +50,25 @@ Here's a list of all of the targeted platforms and what they support.
 
 | Feature           | Linux | MacOS  | Windows | Web | Android |
 |-------------------|-------|--------|---------|-----|---------|
-| [access][100]     |       |        |         |     |         |
 | [bluetooth][101]  |       |        |         |     |         |
 | [camera][102]     |       |        |         |     |         |
-| [draw][103]       | ✓     |[9][52] | [8][55] |     |         |
-| [exec][104]       | ✓     |        |         | ✓   |         |
-| [file][105]       | ✓     | ✓      | ✓       |     |         |
-| [gpio][106]       |       | —      | —       | —   |         |
-| [input][107]      | ✓     |[7][51] | [6][54] | ?   |         |
+| [client][100]     |       |        |         |     |         |
+| [database][105]   | ✓     | ✓      | ✓       |     |         |
+| [graphics][103]   | ✓     |[9][52] | [8][55] |     |         |
+| [haptic]          |       |        |         |     |         |
+| [info][114]       | ✓     | ✓      | ✓       | ✓   |         |
+| [input][107]      | ✓     |[7][51] | [6][54] | ✓   |         |
 | [log][108]        | ✓     | ✓      | ✓       | ✓   |         |
 | [microphone][109] | ✓     |[5][50] | [4][53] | ✓   | ?       |
-| [net][110]        | ✓     | ✓      | ✓       | ?   |         |
-| [pixels][111]     | ✓     |[9][52] |         |     |         |
+| [port][106]       |       | —      | —       | —   |         |
+| [random]          | ✓     | ✓      | ✓       | ?   | ✓       |
+| [server][110]     |       |        |         |     |         |
 | [speaker][112]    | ✓     |        | [4][53] | ✓   | ?       |
-| [time][113]       | ✓     | ✓      | ✓       | ✓   |         |
-| [user][114]       | ✓     | ✓      | ✓       | ✓   |         |
+| [task][104]       | ✓     | ✓      | ✓       | ✓   |         |
+| [timer]           |       |        |         |     |         |
+| [usb]             |       |        |         |     |         |
+| [when][113]       | ✓     | ✓      | ✓       | ✓   |         |
+| [window][111]     | ✓     |[9][52] |         |     |         |
 
 Module documentation may include simple tutorials.  More in depth tutorials may
 be found [here][16].
@@ -153,18 +157,23 @@ you can email me at [jeronlau@plopgrizzly.com][99].  Otherwise,
 
 [99]: mailto:jeronlau@plopgrizzly.com
 
-[100]: https://docs.rs/cala/latest/cala/access
+[100]: https://docs.rs/cala/latest/cala/client
 [101]: https://docs.rs/cala/latest/cala/bluetooth
 [102]: https://docs.rs/cala/latest/cala/camera
-[103]: https://docs.rs/cala/latest/cala/draw
+[103]: https://docs.rs/cala/latest/cala/graphics
 [104]: https://docs.rs/cala/latest/cala/exec
-[105]: https://docs.rs/cala/latest/cala/file
-[106]: https://docs.rs/cala/latest/cala/gpio
+[105]: https://docs.rs/cala/latest/cala/database
+[106]: https://docs.rs/cala/latest/cala/port
 [107]: https://docs.rs/cala/latest/cala/input
 [108]: https://docs.rs/cala/latest/cala/log
 [109]: https://docs.rs/cala/latest/cala/microphone
-[110]: https://docs.rs/cala/latest/cala/net
-[111]: https://docs.rs/cala/latest/cala/pixels
+[110]: https://docs.rs/cala/latest/cala/server
+[111]: https://docs.rs/cala/latest/cala/window
 [112]: https://docs.rs/cala/latest/cala/speaker
-[113]: https://docs.rs/cala/latest/cala/time
-[114]: https://docs.rs/cala/latest/cala/user
+[113]: https://docs.rs/cala/latest/cala/when
+[114]: https://docs.rs/cala/latest/cala/info
+
+[random]: https://docs.rs/cala/latest/cala/random
+[timer]: https://docs.rs/cala/latest/cala/timer
+[haptic]: https://docs.rs/cala/latest/cala/haptic
+[usb]: https://docs.rs/cala/latest/cala/usb
