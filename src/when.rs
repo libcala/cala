@@ -2,8 +2,7 @@
 //!
 //! # Getting Started
 //! ```rust,no_run
-//! use cala::*;
-//! use time::Clock;
+//! use cala::when::{Clock, SECOND};
 //!
 //! // Print current Local time and UTC time.
 //! let clock = Clock::new();
@@ -14,7 +13,7 @@
 //! let mut a = 0;
 //! loop {
 //!     let now = Clock::new();
-//!     let b = now.since(&clock, time::SECOND / 3);
+//!     let b = now.since(&clock, SECOND / 3);
 //!     if a != b {
 //!         a = b;
 //!         println!("Hello, world {}!", a);
@@ -151,8 +150,7 @@ pub enum DayOfWeek {
 
 /// A calendar date and time.  Stored as UTC.
 /// ```
-/// use cala::*;
-/// use time::Clock;
+/// use cala::when::Clock;
 /// let clock = Clock::new();
 /// println!("{}", clock); // Print out in local time.
 /// println!("{:?}", clock); // Print out in UTC.
@@ -163,8 +161,7 @@ impl Clock {
     /// Get the current time.
     ///
     /// ```
-    /// use cala::*;
-    /// use time::Clock;
+    /// use cala::when::Clock;
     /// let clock = Clock::new();
     /// ```
     pub fn new() -> Self {
@@ -190,8 +187,7 @@ impl Clock {
     /// Define a local time.
     ///
     /// ```
-    /// use cala::*;
-    /// use time::Clock;
+    /// use cala::when::Clock;
     /// Clock::new();
     /// ```
     pub fn local(
@@ -256,9 +252,9 @@ impl Clock {
     ///
     /// ```
     /// use cala::*;
-    /// use time::Clock;
+    /// use when::Clock;
     /// let start = Clock::new();
-    /// let nanos_since_start = Clock::new().since(&start, time::NANOSECOND);
+    /// let nanos_since_start = Clock::new().since(&start, when::NANOSECOND);
     /// assert!(nanos_since_start >= 0);
     /// ```
     pub fn since(&self, other: &Self, frac: Duration) -> i64 {

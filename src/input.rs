@@ -12,7 +12,7 @@
 //!
 //! # Getting Started
 //! ```rust,no_run
-//! use cala::exec::{exec, wait};
+//! use cala::task::{exec, wait};
 //! use cala::log::{log, Tag};
 //! use cala::input::Input;
 //!

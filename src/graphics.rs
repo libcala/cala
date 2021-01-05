@@ -38,10 +38,10 @@
 //!
 //! # Example
 //! Open a window with a triangle that rotates once a second:
-//! ```rust,no_run
+//! ```rust,no_run,ignore
 //! use cala::*;
 //!
-//! use cala::draw::{
+//! use cala::graphics::{
 //!     color::SRgb32, shader, Group, Shader, ShaderBuilder, ShapeBuilder,
 //!     Transform,
 //! };
