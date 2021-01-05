@@ -23,6 +23,8 @@ static BACKGROUND_BLUE: AtomicU32 = AtomicU32::new(0);
 
 struct FrameFuture;
 
+pub use window::input::input;
+
 impl Future for FrameFuture {
     type Output = (std::time::Duration, f32, bool);
 
@@ -38,16 +40,8 @@ impl Future for FrameFuture {
     }
 }
 
-/// Get a canvas for the screen.
-pub async fn canvas<P: pix::el::Pixel>(color: P) -> impl Canvas
-where
-    pix::chan::Ch32: From<<P as pix::el::Pixel>::Chan>,
-{
-    Frame::new(color).await
-}
-
 /// A Canvas to draw on.
-struct Frame {
+pub struct Frame {
     // For when drop'd; to notify graphics thread
     pair: Arc<(Mutex<bool>, Condvar)>,
     // Delta time since previous frame

@@ -523,17 +523,12 @@ fn async_runner(window: &mut window::Window, elapsed: std::time::Duration) {
     }
 }
 
-pub(crate) mod __hidden {
-    use window::Window;
-
-    #[doc(hidden)]
-    pub fn draw_thread() {
-        let fallback_window_title = env!("CARGO_PKG_NAME");
-        let mut window =
-            Window::new(fallback_window_title, super::async_runner);
-        loop {
-            window.run();
-        }
+/// Run the infinite event loop.  You should only call this on the main thread.
+pub fn draw_thread() {
+    let fallback_window_title = env!("CARGO_PKG_NAME");
+    let mut window = window::Window::new(fallback_window_title, async_runner);
+    loop {
+        window.run();
     }
 }
 
