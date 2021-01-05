@@ -80,11 +80,12 @@ be found [here][16].
 - Others not on this list that you will make a pull request for adding them
 
 ## License
-Licensed under either of
- - Apache License, Version 2.0, ([LICENSE-APACHE][40]
-   or [https://www.apache.org/licenses/LICENSE-2.0][41])
- - Zlib License, ([LICENSE-ZLIB][42]
-   or [https://opensource.org/licenses/Zlib][43])
+Licensed under any of
+ - Apache License, Version 2.0, ([LICENSE_APACHE_2_0.txt][4]
+   or [https://www.apache.org/licenses/LICENSE-2.0][5])
+ - MIT License, ([LICENSE_MIT.txt][6] or [https://mit-license.org/][7])
+ - Boost Software License, Version 1.0, ([LICENSE_BOOST_1_0.txt][8]
+   or [https://www.boost.org/LICENSE_1_0.txt][9])
 
 at your option.
 
@@ -108,6 +109,13 @@ you can email me at [jeronlau@plopgrizzly.com][99].  Otherwise,
 [1]: https://docs.rs/cala/badge.svg
 [2]: https://img.shields.io/crates/v/cala.svg
 [3]: https://img.shields.io/badge/zulip-join_chat-darkgreen.svg
+
+[4]: https://github.com/libcala/cala/blob/main/LICENSE_APACHE_2_0.txt
+[5]: https://www.apache.org/licenses/LICENSE-2.0
+[6]: https://github.com/libcala/cala/blob/main/LICENSE_MIT.txt
+[7]: https://mit-license.org/
+[8]: https://github.com/libcala/cala/blob/main/LICENSE_BOOST_1_0.txt
+[9]: https://www.boost.org/LICENSE_1_0.txt
 
 [10]: https://docs.rs/cala
 [11]: https://crates.io/crates/cala
